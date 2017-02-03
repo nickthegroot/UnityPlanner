@@ -35,9 +35,6 @@
                 android:value="com.nbdeg.unityplanner.MainActivity" />
         </activity>
         <activity
-            android:name=".LoginActivity"
-            android:label="@string/title_activity_login" />
-        <activity
             android:name=".addClass"
             android:label="@string/addClass_label" />
         <activity

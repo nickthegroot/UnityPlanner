@@ -2,11 +2,13 @@ package com.nbdeg.unityplanner;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v4.view.GravityCompat;
@@ -14,15 +16,16 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Layout;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -35,13 +38,13 @@ import com.nbdeg.unityplanner.data.Classes;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
-import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     TextView dueAssignments;
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    FirebaseUser user;
     DatabaseReference assignmentDb;
     DatabaseReference classDb;
 
@@ -50,18 +53,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ArrayList<String> classListNames = new ArrayList<>();
 
     String TAG = "Database";
+    private static final int RC_SIGN_IN = 145;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Checks if user is signed in - if not sends them to log in page
-        if (user == null) {
-            startActivity(new Intent(this, LoginActivity.class));
-        }
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        if (auth.getCurrentUser() == null) {
+            logIn();
+        }
+        else {
+            user = FirebaseAuth.getInstance().getCurrentUser();
+        }
 
         // Sets button to send user to add assignment page when clicked
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -208,12 +215,43 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         if (id == R.id.action_logout) {
-            FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            AuthUI.getInstance()
+                    .delete(this)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                View view = findViewById(R.id.main_view);
+                                Snackbar snackbar = Snackbar
+                                        .make(view, "Signed Out Successfully", Snackbar.LENGTH_LONG);
+                                snackbar.show();
 
+                                logIn();
+                            } else {
+                                View view = findViewById(R.id.main_view);
+                                Snackbar snackbar = Snackbar
+                                        .make(view, "Sign Out Failed, Please Try Again.", Snackbar.LENGTH_LONG);
+                                snackbar.show();
+                            }
+                        }
+                    });
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void logIn() {
+        startActivityForResult(
+                AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
+                                new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
+                                new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build()))
+                        .setTosUrl("https://www.nbdeg.com/unityplanner/tos/")
+                        .setIsSmartLockEnabled(!BuildConfig.DEBUG)
+                        .build(),
+                RC_SIGN_IN);
     }
 }

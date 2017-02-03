@@ -13,7 +13,8 @@
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
         tools:context="com.nbdeg.unityplanner.MainActivity"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:id="@+id/main_view">
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
