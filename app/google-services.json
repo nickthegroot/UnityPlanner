@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1084759978628",
+    "firebase_url": "https://unity-planner.firebaseio.com",
+    "project_id": "unity-planner",
+    "storage_bucket": "unity-planner.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1084759978628:android:10d3885fcd3be0f5",
+        "android_client_info": {
+          "package_name": "com.nbdeg.unityplanner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1084759978628-qrur4ekn6orqvsnfj0l7aigdcts1lg7s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nbdeg.unityplanner",
+            "certificate_hash": "277F623468BFD04CF46A455FA4F6350F58A2A471"
+          }
+        },
+        {
+          "client_id": "1084759978628-je98io85qo41ca7a1isl0829keu8b914.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2nupmuKPdt9pAUJVJ3GTFXd5G2x7c8dw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1084759978628-je98io85qo41ca7a1isl0829keu8b914.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
