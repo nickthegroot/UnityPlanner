@@ -12,7 +12,7 @@
             android:title="Assignments" />
         <item
             android:id="@+id/nav_classes"
-            android:icon="@drawable/ic_classes"
+            android:icon="@drawable/ic_class"
             android:title="Classes" />
 
     </group>
