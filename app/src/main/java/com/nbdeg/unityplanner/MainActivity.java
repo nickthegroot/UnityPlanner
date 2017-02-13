@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     TextView dueAssignments;
     FirebaseUser user;
+    String UID;
     DatabaseReference assignmentDb;
     DatabaseReference classDb;
 
@@ -62,12 +63,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        if (auth.getCurrentUser() == null) {
-            logIn();
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            startActivityForResult(
+                    AuthUI.getInstance()
+                            .createSignInIntentBuilder()
+                            .setProviders(Arrays.asList(
+                                    new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                    new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
+                            .setIsSmartLockEnabled(!BuildConfig.DEBUG)
+                            .build(),
+                    RC_SIGN_IN);
         }
         else {
+            Log.d("HELP", "Huh");
             user = FirebaseAuth.getInstance().getCurrentUser();
+            UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         }
 
         // Sets button to send user to add assignment page when clicked
@@ -100,8 +110,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         // FirebaseDatabase.getInstance().getReference().setValue(null);   // Use to reset database
-        assignmentDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments");
-        classDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("classes");
+        assignmentDb = FirebaseDatabase.getInstance().getReference().child("users").child(UID).child("assignments");
+        classDb = FirebaseDatabase.getInstance().getReference().child("users").child(UID).child("classes");
 
         // Gets all assignments
         assignmentDb.addValueEventListener(new ValueEventListener() {
@@ -226,11 +236,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                         .make(view, "Signed Out Successfully", Snackbar.LENGTH_LONG);
                                 snackbar.show();
 
-                                logIn();
+                                startActivityForResult(
+                                        AuthUI.getInstance()
+                                                .createSignInIntentBuilder()
+                                                .setProviders(Arrays.asList(
+                                                        new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                                        new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
+                                                .setIsSmartLockEnabled(!BuildConfig.DEBUG)
+                                                .build(),
+                                        RC_SIGN_IN);
                             } else {
                                 View view = findViewById(R.id.main_view);
                                 Snackbar snackbar = Snackbar
-                                        .make(view, "Sign Out Failed, Please Try Again.", Snackbar.LENGTH_LONG);
+                                        .make(view, "Sign Ou t Failed, Please Try Again.", Snackbar.LENGTH_LONG);
                                 snackbar.show();
                             }
                         }
@@ -239,19 +257,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void logIn() {
-        startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setProviders(Arrays.asList(new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
-                                new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
-                                new AuthUI.IdpConfig.Builder(AuthUI.TWITTER_PROVIDER).build()))
-                        .setTosUrl("https://www.nbdeg.com/unityplanner/tos/")
-                        .setIsSmartLockEnabled(!BuildConfig.DEBUG)
-                        .build(),
-                RC_SIGN_IN);
     }
 }
