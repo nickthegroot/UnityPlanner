@@ -1,33 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
+    <group android:checkableBehavior="single"
+        android:id="@+id/nav_top">
         <item
             android:icon="@drawable/ic_home"
-            android:title="Home"
+            android:title="@string/home"
             />
         <item
             android:id="@+id/nav_assignments"
             android:icon="@drawable/ic_assignment"
-            android:title="Assignments" />
+            android:title="@string/homework" />
         <item
             android:id="@+id/nav_classes"
             android:icon="@drawable/ic_class"
-            android:title="Classes" />
+            android:title="@string/classes" />
 
     </group>
 
-    <item android:title="Intergrations">
-        <menu>
+    <group
+        android:id="@+id/nav_bottom" >
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
-        </menu>
-    </item>
+                android:title="@string/share" />
+    </group>
 
 </menu>

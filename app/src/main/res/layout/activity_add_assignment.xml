@@ -19,7 +19,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:id="@+id/assignment_name"
-        android:hint="Assignment Name"
+        android:hint="@string/assignment_name"
         android:padding="5dp"
         android:textSize="18sp"
         android:background="@null" />
@@ -59,9 +59,10 @@
             android:id="@+id/due_date_edittext"
             android:padding="5dp"
             android:focusable="false"
-            android:hint="Due Date"
+            android:hint="@string/due_date"
             android:textSize="16sp"
-            android:background="@null" />
+            android:background="@null"
+            tools:ignore="TextFields" />
     </LinearLayout>
 
     <View
@@ -82,7 +83,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Completion"
+            android:text="@string/completion"
             android:padding="5dp"
             android:textColor="@color/black"
             android:textSize="15sp"/>
@@ -105,7 +106,7 @@
         android:inputType="textMultiLine"
         android:ems="10"
         android:id="@+id/extra_homework_info"
-        android:hint="Extra Infomation"
+        android:hint="@string/extra_infomation"
         android:textSize="16sp"
         android:layout_below="@id/percentCompleteLayout"
         android:layout_alignParentStart="true"

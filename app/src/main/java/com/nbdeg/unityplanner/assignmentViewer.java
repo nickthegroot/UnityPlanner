@@ -3,7 +3,6 @@ package com.nbdeg.unityplanner;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -23,11 +22,11 @@ import java.util.ArrayList;
 
 public class assignmentViewer extends AppCompatActivity {
 
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    DatabaseReference assignmentDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments");
-    String TAG = "Database";
+    private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private final DatabaseReference assignmentDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments");
+    private final String TAG = "Database";
 
-    TextView assignmentListView;
+    private TextView assignmentListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

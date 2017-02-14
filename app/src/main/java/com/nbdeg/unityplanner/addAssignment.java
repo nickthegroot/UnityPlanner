@@ -15,31 +15,22 @@ import android.widget.Spinner;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.nbdeg.unityplanner.data.Assignments;
-import com.nbdeg.unityplanner.data.Classes;
 
 import java.util.ArrayList;
 
 public class addAssignment extends AppCompatActivity  {
 
-    EditText mAssignmentName;
-    EditText mDueDate;
-    EditText mExtraInfo;
-    Spinner mDueClass;
-    SeekBar mPercentComplete;
-    int percentComplete = 0;
+    private EditText mAssignmentName;
+    private EditText mDueDate;
+    private EditText mExtraInfo;
+    private Spinner mDueClass;
+    private int percentComplete = 0;
 
-    FirebaseAnalytics mFirebaseAnalytics;
-    DatabaseReference assignmentDb;
-    DatabaseReference classDb;
-    FirebaseUser user;
-
-    ArrayList<String> classListNames;
+    private FirebaseAnalytics mFirebaseAnalytics;
+    private DatabaseReference assignmentDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,21 +39,20 @@ public class addAssignment extends AppCompatActivity  {
 
         // Gets class list
         Bundle extras = getIntent().getExtras();
-        classListNames = extras.getStringArrayList("classListNames");
+        ArrayList<String> classListNames = extras.getStringArrayList("classListNames");
 
 
         // Gets firebase database
-        user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         assignmentDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments");
-        classDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("classes");
 
         // Find view by ID calls
         mAssignmentName = (EditText) findViewById(R.id.assignment_name);
         mDueDate = (EditText) findViewById(R.id.due_date_edittext);
         mExtraInfo = (EditText) findViewById(R.id.extra_homework_info);
         mDueClass = (Spinner) findViewById(R.id.class_spinner);
-        mPercentComplete = (SeekBar) findViewById(R.id.percentComplete);
+        SeekBar mPercentComplete = (SeekBar) findViewById(R.id.percentComplete);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_layout, classListNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

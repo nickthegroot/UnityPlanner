@@ -19,7 +19,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:id="@+id/class_name"
-        android:hint="Class Name"
+        android:hint="@string/class_name"
         android:padding="5dp"
         android:textSize="18sp"
         android:background="@null" />
@@ -36,7 +36,7 @@
         android:inputType="textCapWords"
         android:ems="10"
         android:id="@+id/class_teacher"
-        android:hint="Teacher Name"
+        android:hint="@string/teacher_name"
         android:textSize="16sp"
         android:layout_below="@id/class_name"
         android:layout_alignParentStart="true"
@@ -65,7 +65,7 @@
             android:id="@+id/class_start_date"
             android:padding="5dp"
             android:focusable="false"
-            android:hint="Start Date"
+            android:hint="@string/start_date"
             android:textSize="16sp"
             android:background="@null"
             android:gravity="center"/>
@@ -82,7 +82,7 @@
             android:id="@+id/class_end_date"
             android:padding="5dp"
             android:focusable="false"
-            android:hint="End Date"
+            android:hint="@string/end_date"
             android:textSize="16sp"
             android:background="@null"
             android:gravity="center"/>
@@ -100,7 +100,7 @@
         android:inputType="number"
         android:id="@+id/class_room"
         android:padding="5dp"
-        android:hint="Room Number"
+        android:hint="@string/room_number"
         android:textSize="16sp"
         android:background="@null"
         android:layout_below="@id/linearLayout"/>
@@ -117,7 +117,7 @@
         android:inputType="textCapWords"
         android:id="@+id/class_building"
         android:padding="5dp"
-        android:hint="Building Name"
+        android:hint="@string/building_name"
         android:textSize="16sp"
         android:background="@null"
         android:layout_below="@id/class_room"/>

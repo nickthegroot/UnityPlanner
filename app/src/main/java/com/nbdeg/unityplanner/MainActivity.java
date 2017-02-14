@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -41,19 +40,18 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+@SuppressWarnings("CanBeFinal")
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    TextView dueAssignments;
-    FirebaseUser user;
-    String UID;
-    DatabaseReference assignmentDb;
-    DatabaseReference classDb;
+    private TextView dueAssignments;
+    private FirebaseUser user;
+    private String UID;
 
-    ArrayList<Assignments> assignmentList = new ArrayList<>();
-    ArrayList<Classes> classList = new ArrayList<>();
-    ArrayList<String> classListNames = new ArrayList<>();
+    private ArrayList<Assignments> assignmentList = new ArrayList<>();
+    private ArrayList<Classes> classList = new ArrayList<>();
+    private ArrayList<String> classListNames = new ArrayList<>();
 
-    String TAG = "Database";
+    private final String TAG = "Database";
     private static final int RC_SIGN_IN = 145;
 
     @Override
@@ -95,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -110,8 +108,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         // FirebaseDatabase.getInstance().getReference().setValue(null);   // Use to reset database
-        assignmentDb = FirebaseDatabase.getInstance().getReference().child("users").child(UID).child("assignments");
-        classDb = FirebaseDatabase.getInstance().getReference().child("users").child(UID).child("classes");
+        DatabaseReference assignmentDb = FirebaseDatabase.getInstance().getReference().child("users").child(UID).child("assignments");
+        DatabaseReference classDb = FirebaseDatabase.getInstance().getReference().child("users").child(UID).child("classes");
 
         // Gets all assignments
         assignmentDb.addValueEventListener(new ValueEventListener() {
@@ -197,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 

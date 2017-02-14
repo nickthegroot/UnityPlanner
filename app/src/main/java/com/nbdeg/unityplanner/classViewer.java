@@ -3,14 +3,12 @@ package com.nbdeg.unityplanner;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.api.client.util.Data;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -22,13 +20,10 @@ import com.nbdeg.unityplanner.data.Classes;
 
 public class classViewer extends AppCompatActivity {
 
-    DatabaseReference classDb;
-    FirebaseUser user;
-
     long classCount;
-    TextView classList;
+    private TextView classList;
 
-    String TAG = "Database";
+    private final String TAG = "Database";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +36,8 @@ public class classViewer extends AppCompatActivity {
         classList = (TextView) findViewById(R.id.class_list);
 
         // Gets Firebase Information
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        classDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("classes");
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference classDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("classes");
 
         classDb.addValueEventListener(new ValueEventListener() {
             @Override
