@@ -40,7 +40,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-@SuppressWarnings("CanBeFinal")
+@SuppressWarnings({"CanBeFinal", "MismatchedQueryAndUpdateOfCollection"})
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private TextView dueAssignments;
@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         else {
             user = FirebaseAuth.getInstance().getCurrentUser();
+            //noinspection ConstantConditions
             UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         }
 

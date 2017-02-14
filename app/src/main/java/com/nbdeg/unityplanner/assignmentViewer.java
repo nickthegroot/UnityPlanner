@@ -23,6 +23,7 @@ import java.util.ArrayList;
 public class assignmentViewer extends AppCompatActivity {
 
     private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    @SuppressWarnings("ConstantConditions")
     private final DatabaseReference assignmentDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments");
     private final String TAG = "Database";
 
@@ -52,8 +53,6 @@ public class assignmentViewer extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         assignmentDb.addValueEventListener(new ValueEventListener() {
             @Override

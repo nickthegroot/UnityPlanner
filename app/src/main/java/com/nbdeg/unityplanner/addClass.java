@@ -50,6 +50,7 @@ public class addClass extends AppCompatActivity {
 
         // Setting Firebase Variables
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        assert user != null;
         classDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("classes");
     }
 

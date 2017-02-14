@@ -68,7 +68,8 @@
             android:hint="@string/start_date"
             android:textSize="16sp"
             android:background="@null"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:inputType="date"/>
 
         <View
             android:layout_width="1dp"
@@ -85,7 +86,8 @@
             android:hint="@string/end_date"
             android:textSize="16sp"
             android:background="@null"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:inputType="date"/>
     </LinearLayout>
 
     <View

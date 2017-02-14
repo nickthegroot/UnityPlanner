@@ -6,12 +6,10 @@
     <string name="due_soon">Assignments Due Soon</string>
     <string name="title_activity_class_viewer">Classes</string>
     <string name="noAssignmentsDue">No Assignments Due Soon!</string>
-    <string name="title_activity_login">Sign In</string>
 
     <string name="addAssignment_label">Create An Assignment</string>
     <string name="addClass_label">Create a Class</string>
     <string name="title_activity_assignment_viewer">Assignments</string>
-    <string name="title_activity_test">test</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

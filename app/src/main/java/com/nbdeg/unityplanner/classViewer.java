@@ -20,7 +20,6 @@ import com.nbdeg.unityplanner.data.Classes;
 
 public class classViewer extends AppCompatActivity {
 
-    long classCount;
     private TextView classList;
 
     private final String TAG = "Database";
@@ -37,6 +36,7 @@ public class classViewer extends AppCompatActivity {
 
         // Gets Firebase Information
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        assert user != null;
         DatabaseReference classDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("classes");
 
         classDb.addValueEventListener(new ValueEventListener() {
@@ -64,6 +64,5 @@ public class classViewer extends AppCompatActivity {
                 startActivity(new Intent(classViewer.this, addClass.class));
             }
         });
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 }

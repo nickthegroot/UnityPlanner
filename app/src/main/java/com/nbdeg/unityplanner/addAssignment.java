@@ -45,6 +45,7 @@ public class addAssignment extends AppCompatActivity  {
         // Gets firebase database
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        assert user != null;
         assignmentDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments");
 
         // Find view by ID calls
@@ -54,7 +55,9 @@ public class addAssignment extends AppCompatActivity  {
         mDueClass = (Spinner) findViewById(R.id.class_spinner);
         SeekBar mPercentComplete = (SeekBar) findViewById(R.id.percentComplete);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_layout, classListNames);
+
+        assert classListNames != null;
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_layout, classListNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         mDueClass.setAdapter(adapter);
@@ -95,6 +98,10 @@ public class addAssignment extends AppCompatActivity  {
         String assignmentName = mAssignmentName.getText().toString();
         String extraInfo = mExtraInfo.getText().toString();
         String dueClass = mDueClass.getItemAtPosition(mDueClass.getSelectedItemPosition()).toString();
+
+        if (dueClass.matches("Add a class")) {
+            return super.onOptionsItemSelected(item);
+        }
 
         mFirebaseAnalytics.logEvent("Assignment Created", null);
         Log.i("DB", "Creating assignment named " + assignmentName);
