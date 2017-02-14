@@ -75,7 +75,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     RC_SIGN_IN);
         }
         else {
-            Log.d("HELP", "Huh");
             user = FirebaseAuth.getInstance().getCurrentUser();
             UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         }
@@ -202,7 +201,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.nav_assignments) {
-            startActivity(new Intent(MainActivity.this, assignmentViewer.class));
+            Intent intent = new Intent(MainActivity.this, assignmentViewer.class);
+            intent.putExtra("classListNames", classListNames);
+            startActivity(intent);
         } else if (id == R.id.nav_classes) {
             startActivity(new Intent(MainActivity.this, classViewer.class));
         }

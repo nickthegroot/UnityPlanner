@@ -43,7 +43,14 @@ public class assignmentViewer extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(assignmentViewer.this, addAssignment.class));
+                // Get Classes
+                Bundle extras = getIntent().getExtras();
+                ArrayList<String> classListNames = extras.getStringArrayList("classListNames");
+
+                // Launch Add Homework Activity
+                Intent intent = new Intent(assignmentViewer.this, addAssignment.class);
+                intent.putExtra("classListNames", classListNames);
+                startActivity(intent);
             }
         });
 
