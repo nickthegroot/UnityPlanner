@@ -30,4 +30,8 @@
     <string name="example_email">guest@guest.com</string>
     <string name="share">Share</string>
     <string name="guest_user">Guest User</string>
+    <string name="settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

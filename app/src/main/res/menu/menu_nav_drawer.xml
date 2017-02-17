@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single"
-        android:id="@+id/nav_top">
+    <group
+        android:id="@+id/nav_top"
+        android:checkableBehavior="single">
         <item
             android:icon="@drawable/ic_home"
             android:title="@string/home"
+            android:id="@+id/nav_home"
             />
         <item
             android:id="@+id/nav_assignments"
@@ -19,11 +21,15 @@
     </group>
 
     <group
-        android:id="@+id/nav_bottom" >
+        android:id="@+id/nav_bottom"
+        android:checkableBehavior="single">
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
                 android:title="@string/share" />
+            <item
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/ic_settings"
+                android:title="@string/settings" />
     </group>
-
 </menu>

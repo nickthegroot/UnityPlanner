@@ -54,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private final String TAG = "Database";
     private static final int RC_SIGN_IN = 145;
 
+    private NavigationView navigationView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         dueAssignments = (TextView) findViewById(R.id.assignments_due);
@@ -178,6 +180,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     @Override
+    protected void onResume() {
+        navigationView.setCheckedItem(R.id.nav_home);
+        super.onResume();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -249,7 +257,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             } else {
                                 View view = findViewById(R.id.main_view);
                                 Snackbar snackbar = Snackbar
-                                        .make(view, "Sign Ou t Failed, Please Try Again.", Snackbar.LENGTH_LONG);
+                                        .make(view, "Sign Out Failed, Please Try Again.", Snackbar.LENGTH_LONG);
                                 snackbar.show();
                             }
                         }
