@@ -3,6 +3,7 @@ package com.nbdeg.unityplanner;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -41,20 +42,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 @SuppressWarnings({"CanBeFinal", "MismatchedQueryAndUpdateOfCollection"})
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, homeScreen.OnFragmentInteractionListener{
 
-    private TextView dueAssignments;
-    private FirebaseUser user;
-    private String UID;
-
-    private ArrayList<Assignments> assignmentList = new ArrayList<>();
-    private ArrayList<Classes> classList = new ArrayList<>();
-    private ArrayList<String> classListNames = new ArrayList<>();
-
-    private final String TAG = "Database";
     private static final int RC_SIGN_IN = 145;
-
-    private NavigationView navigationView;
+    private database db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,20 +56,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // Signs in user if not logged in
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-            startActivityForResult(
-                    AuthUI.getInstance()
-                            .createSignInIntentBuilder()
-                            .setProviders(Arrays.asList(
-                                    new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                    new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
-                            .setIsSmartLockEnabled(!BuildConfig.DEBUG)
-                            .build(),
-                    RC_SIGN_IN);
+            signIn();
         }
         else {
-            user = FirebaseAuth.getInstance().getCurrentUser();
-            //noinspection ConstantConditions
-            UID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            db = new database();
         }
 
         // Sets button to send user to add assignment page when clicked
@@ -87,9 +68,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View view) {
                 // Launch Add Homework Activity
-                Intent intent = new Intent(MainActivity.this, addAssignment.class);
-                intent.putExtra("classListNames", classListNames);
-                startActivity(intent);
+                startActivity(new Intent(MainActivity.this, addAssignment.class));
             }
         });
 
@@ -99,69 +78,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        dueAssignments = (TextView) findViewById(R.id.assignments_due);
-
-        // Sets disk persistence
-        try {FirebaseDatabase.getInstance().setPersistenceEnabled(true);}
-        catch (com.google.firebase.database.DatabaseException e){
-            e.printStackTrace();
-        }
-
-        // FirebaseDatabase.getInstance().getReference().setValue(null);   // Use to reset database
-        DatabaseReference assignmentDb = FirebaseDatabase.getInstance().getReference().child("users").child(UID).child("assignments");
-        DatabaseReference classDb = FirebaseDatabase.getInstance().getReference().child("users").child(UID).child("classes");
-
-        // Gets all assignments
-        assignmentDb.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                assignmentList.clear();
-                for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
-                    Assignments assignment = userSnapshot.getValue(Assignments.class);
-                    assignmentList.add(assignment);
-                    Log.i(TAG, "Assignment loaded: " + assignment.getAssignmentName());
-
-                    dueAssignments.setText("");
-                    dueAssignments.append(assignment.getAssignmentName() + "\n\n\n");
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e(TAG, "Error loading assignments: " + databaseError.getMessage());
-            }
-        });
-
-        // Gets all classes
-        classDb.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                classList.clear();
-                for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
-                    Classes mClass = userSnapshot.getValue(Classes.class);
-                    classList.add(mClass);
-                    classListNames.add(mClass.getClassName());
-                    Log.i(TAG, "Class loaded: " + mClass.getClassName());
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e(TAG, "Error getting assignments: " + databaseError.getMessage());
-            }
-        });
+        navigationView.setCheckedItem(R.id.nav_home);
 
         View headerView = navigationView.getHeaderView(0);
         final TextView userName = (TextView) headerView.findViewById(R.id.user_name);
         final TextView userEmail = (TextView) headerView.findViewById(R.id.user_email);
         final ImageView userPhoto = (ImageView) headerView.findViewById(R.id.user_photo);
 
-        userName.setText(user.getDisplayName());
-        userEmail.setText(user.getEmail());
-        Picasso.with(this).load(user.getPhotoUrl())
+        userName.setText(db.user.getDisplayName());
+        userEmail.setText(db.user.getEmail());
+        Picasso.with(this).load(db.user.getPhotoUrl())
                 .resize(150, 150)
                 .into(userPhoto, new Callback() {
                     @Override
@@ -177,12 +105,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         userPhoto.setImageResource(R.mipmap.ic_launcher);
                     }
                 });
-    }
 
-    @Override
-    protected void onResume() {
-        navigationView.setCheckedItem(R.id.nav_home);
-        super.onResume();
+        if (findViewById(R.id.fragment_container) != null) {
+
+            // However, if we're being restored from a previous state,
+            // then we don't need to do anything and should return or else
+            // we could end up with overlapping fragments.
+            if (savedInstanceState != null) {
+                return;
+            }
+
+            // Create a new Fragment to be placed in the activity layout
+            homeScreen firstFragment = new homeScreen();
+
+            // Add the fragment to the 'fragment_container' FrameLayout
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.fragment_container, firstFragment).commit();
+        }
     }
 
     @Override
@@ -209,9 +148,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
 
         if (id == R.id.nav_assignments) {
-            Intent intent = new Intent(MainActivity.this, assignmentViewer.class);
-            intent.putExtra("classListNames", classListNames);
-            startActivity(intent);
+            startActivity(new Intent(MainActivity.this, assignmentViewer.class));
         } else if (id == R.id.nav_classes) {
             startActivity(new Intent(MainActivity.this, classViewer.class));
         }
@@ -245,15 +182,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                         .make(view, "Signed Out Successfully", Snackbar.LENGTH_LONG);
                                 snackbar.show();
 
-                                startActivityForResult(
-                                        AuthUI.getInstance()
-                                                .createSignInIntentBuilder()
-                                                .setProviders(Arrays.asList(
-                                                        new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                                        new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
-                                                .setIsSmartLockEnabled(!BuildConfig.DEBUG)
-                                                .build(),
-                                        RC_SIGN_IN);
+                                signIn();
                             } else {
                                 View view = findViewById(R.id.main_view);
                                 Snackbar snackbar = Snackbar
@@ -266,5 +195,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+    }
+
+    private void signIn() {
+        startActivityForResult(
+                AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setProviders(Arrays.asList(
+                                new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                                new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
+                        .setIsSmartLockEnabled(!BuildConfig.DEBUG)
+                        .build(),
+                RC_SIGN_IN);
     }
 }
