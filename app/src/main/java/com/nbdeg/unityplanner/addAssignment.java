@@ -12,11 +12,11 @@ import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.nbdeg.unityplanner.data.Assignments;
 import com.nbdeg.unityplanner.data.Classes;
 
@@ -29,6 +29,7 @@ public class addAssignment extends AppCompatActivity  {
     private EditText mExtraInfo;
     private Spinner mDueClass;
     private int percentComplete = 0;
+    private ArrayList<String> classListNames = new ArrayList<>();
 
     database db = new database();
 
@@ -37,23 +38,12 @@ public class addAssignment extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_assignment);
 
-        // Gets Class List
-        ArrayList<Classes> classesArrayList = db.getClasses();
-        ArrayList<String> classListNames = new ArrayList<>();
-        for (Classes mClass : classesArrayList) {
-            classListNames.add(mClass.getClassName());
-        }
-
         // Find view by ID calls
         mAssignmentName = (EditText) findViewById(R.id.assignment_name);
         mDueDate = (EditText) findViewById(R.id.due_date_edittext);
         mExtraInfo = (EditText) findViewById(R.id.extra_homework_info);
         mDueClass = (Spinner) findViewById(R.id.class_spinner);
         SeekBar mPercentComplete = (SeekBar) findViewById(R.id.percentComplete);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_layout, classListNames);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mDueClass.setAdapter(adapter);
 
         // Sets DueDate EditText to open a datepicker when clicked
         new EditTextDatePicker(this, R.id.due_date_edittext);
@@ -70,6 +60,27 @@ public class addAssignment extends AppCompatActivity  {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+        DatabaseReference classDb = FirebaseDatabase.getInstance().getReference().child("users").child(db.user.getUid()).child("classes");
+        classDb.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                classListNames.clear();
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    Classes mClass = userSnapshot.getValue(Classes.class);
+                    classListNames.add(mClass.getClassName());
+                    Log.i("Database", "Class loaded: " + mClass.getClassName());
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(addAssignment.this, R.layout.spinner_layout, classListNames);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                mDueClass.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("Database", "Error loading classes: " + databaseError.getMessage());
             }
         });
     }

@@ -16,9 +16,9 @@ import java.util.ArrayList;
 
 public class database {
 
-    String TAG = "Database";
-    ArrayList<Assignments> assignmentList = new ArrayList<>();
-    ArrayList<Classes> classList = new ArrayList<>();
+    private String TAG = "Database";
+    private ArrayList<Assignments> assignmentList = new ArrayList<>();
+    private ArrayList<Classes> classList = new ArrayList<>();
 
     public FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -28,7 +28,7 @@ public class database {
     // Gets all assignments
     public ArrayList<Assignments> getAssignments() {
         assignmentList.clear();
-        assignmentDb.addValueEventListener(new ValueEventListener() {
+        assignmentDb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
@@ -49,7 +49,7 @@ public class database {
     // Gets all classes
     public ArrayList<Classes> getClasses() {
         classList.clear();
-        classDb.addValueEventListener(new ValueEventListener() {
+        classDb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
@@ -75,7 +75,6 @@ public class database {
 
     public void addClass(Classes mClass) {
         Log.i(TAG, "Creating class: " + mClass.getClassName());
-        String key = classDb.push().getKey();
-        assignmentDb.child(key).setValue(mClass);
+        classDb.push().setValue(mClass);
     }
 }

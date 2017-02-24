@@ -28,7 +28,7 @@ public class Classes {
     public String getClassName() {
         return this.className;
     }
-/*    public String getClassTeacher() {
+    public String getClassTeacher() {
         return this.classTeacher;
     }
     public String getClassStartDate() {
@@ -42,7 +42,7 @@ public class Classes {
     }
     public String setClassBuildingName() {
         return this.buildingName;
-    }*/
+    }
 }
 
 

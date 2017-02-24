@@ -7,8 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -31,31 +33,21 @@ public class classViewer extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // Finds views
-        classList = (TextView) findViewById(R.id.class_list);
-
         // Gets Firebase Information
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        assert user != null;
-        DatabaseReference classDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("classes");
+        database db = new database();
+        DatabaseReference classDb = db.classDb;
+        ListView classesView = (ListView) findViewById(R.id.classes_view);
 
-        classDb.addValueEventListener(new ValueEventListener() {
+        FirebaseListAdapter mAdapter = new FirebaseListAdapter<Classes>(this, Classes.class, android.R.layout.two_line_list_item, classDb) {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                    Classes mClass = userSnapshot.getValue(Classes.class);
-                    Log.i(TAG, "Class loaded: " + mClass.getClassName());
+            protected void populateView(View view, Classes mClass, int position) {
+                ((TextView)view.findViewById(android.R.id.text1)).setText(mClass.getClassName());
+                ((TextView)view.findViewById(android.R.id.text2)).setText(mClass.getClassTeacher());
 
-                    classList.setText("");
-                    classList.append(mClass.getClassName() + "\n\n\n");
-                }
             }
+        };
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e(TAG, "Error loading classes: " + databaseError.getMessage());
-            }
-        });
+        classesView.setAdapter(mAdapter);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {

@@ -47,11 +47,6 @@ public class addClass extends AppCompatActivity {
         classEndDate = (EditText) findViewById(R.id.class_end_date);
         classRoomNumber = (EditText) findViewById(R.id.class_room);
         classBuildingName = (EditText) findViewById(R.id.class_building);
-
-        // Setting Firebase Variables
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        assert user != null;
-        classDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("classes");
     }
 
     // Adds a SAVE button to the Action Bar
@@ -73,17 +68,9 @@ public class addClass extends AppCompatActivity {
         }
         String buildingName = classBuildingName.getText().toString();
 
-        Classes newClass = new Classes(name, teacherName, startDate, endDate, roomNumber, buildingName);
-        addClassToDatabase(newClass);
+        database db = new database();
+        db.addClass(new Classes(name, teacherName, startDate, endDate, roomNumber, buildingName));
+        startActivity(new Intent(addClass.this, MainActivity.class));
         return super.onOptionsItemSelected(item);
-    }
-
-    private void addClassToDatabase(Classes mClass) {
-        String TAG = "DB";
-        Log.i(TAG, "Creating class: " + mClass.getClassName() + " in database");
-        String key = classDb.push().getKey();
-        classDb.child(key).setValue(mClass);
-
-        startActivity(new Intent(addClass.this, classViewer.class));
     }
 }

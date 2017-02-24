@@ -59,7 +59,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             signIn();
         }
         else {
-            db = new database();
+            try {
+                db = new database();
+                db.user.getUid();
+            } catch (Throwable e) {
+                e.printStackTrace();
+                signIn();
+            }
         }
 
         // Sets button to send user to add assignment page when clicked
@@ -172,28 +178,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (id == R.id.action_logout) {
             AuthUI.getInstance()
-                    .delete(this)
+                    .signOut(this)
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
                         public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                View view = findViewById(R.id.main_view);
-                                Snackbar snackbar = Snackbar
-                                        .make(view, "Signed Out Successfully", Snackbar.LENGTH_LONG);
-                                snackbar.show();
-
-                                signIn();
-                            } else {
-                                View view = findViewById(R.id.main_view);
-                                Snackbar snackbar = Snackbar
-                                        .make(view, "Sign Out Failed, Please Try Again.", Snackbar.LENGTH_LONG);
-                                snackbar.show();
-                            }
+                            // user is now signed out
+                            signIn();
+                            finish();
                         }
                     });
-            return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -208,6 +201,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .setProviders(Arrays.asList(
                                 new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
                                 new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
+                        .setLogo(R.mipmap.ic_logo_white)
+                        .setTheme(R.style.LoginTheme)
                         .setIsSmartLockEnabled(!BuildConfig.DEBUG)
                         .build(),
                 RC_SIGN_IN);
