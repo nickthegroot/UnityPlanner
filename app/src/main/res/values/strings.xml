@@ -31,7 +31,8 @@
     <string name="share">Share</string>
     <string name="guest_user">Guest User</string>
     <string name="settings">Settings</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="logo">Logo</string>
+    <string name="sign_in_cancelled">Sign in canceled.</string>
+    <string name="no_internet_connection">No internet connection. Please try again later.</string>
+    <string name="unknown_error">An unknown error occurred. Please try again later.</string>
 </resources>

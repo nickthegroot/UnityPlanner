@@ -44,7 +44,6 @@ import java.util.Arrays;
 @SuppressWarnings({"CanBeFinal", "MismatchedQueryAndUpdateOfCollection"})
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, homeScreen.OnFragmentInteractionListener{
 
-    private static final int RC_SIGN_IN = 145;
     private database db;
 
     @Override
@@ -53,20 +52,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        // Signs in user if not logged in
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-            signIn();
-        }
-        else {
-            try {
-                db = new database();
-                db.user.getUid();
-            } catch (Throwable e) {
-                e.printStackTrace();
-                signIn();
-            }
-        }
 
         // Sets button to send user to add assignment page when clicked
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -182,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                         public void onComplete(@NonNull Task<Void> task) {
                             // user is now signed out
-                            signIn();
+                            startActivity(new Intent(MainActivity.this, loginActivity.class));
                             finish();
                         }
                     });
@@ -192,19 +177,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onFragmentInteraction(Uri uri) {
-    }
-
-    private void signIn() {
-        startActivityForResult(
-                AuthUI.getInstance()
-                        .createSignInIntentBuilder()
-                        .setProviders(Arrays.asList(
-                                new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
-                        .setLogo(R.mipmap.ic_logo_white)
-                        .setTheme(R.style.LoginTheme)
-                        .setIsSmartLockEnabled(!BuildConfig.DEBUG)
-                        .build(),
-                RC_SIGN_IN);
     }
 }
