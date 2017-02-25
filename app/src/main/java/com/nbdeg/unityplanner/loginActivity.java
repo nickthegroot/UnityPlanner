@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.firebase.ui.auth.AuthUI;
@@ -25,6 +27,13 @@ public class loginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         loginView = (RelativeLayout) findViewById(R.id.activity_login);
+        Button signInButton = (Button) findViewById(R.id.sign_in_button);
+        signInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signIn();
+            }
+        });
 
         // Checks if user is logged in
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
@@ -52,7 +61,6 @@ public class loginActivity extends AppCompatActivity {
                 // Sign in failed
                 if (response == null) {
                     // User pressed back button
-                    showSnackbar(R.string.sign_in_cancelled);
                     return;
                 }
 

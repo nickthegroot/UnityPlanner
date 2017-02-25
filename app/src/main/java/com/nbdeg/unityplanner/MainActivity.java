@@ -44,7 +44,7 @@ import java.util.Arrays;
 @SuppressWarnings({"CanBeFinal", "MismatchedQueryAndUpdateOfCollection"})
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, homeScreen.OnFragmentInteractionListener{
 
-    private database db;
+    private database db = new database();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

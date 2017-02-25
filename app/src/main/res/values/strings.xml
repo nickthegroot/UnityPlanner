@@ -35,4 +35,5 @@
     <string name="sign_in_cancelled">Sign in canceled.</string>
     <string name="no_internet_connection">No internet connection. Please try again later.</string>
     <string name="unknown_error">An unknown error occurred. Please try again later.</string>
+    <string name="sign_in">Sign In</string>
 </resources>

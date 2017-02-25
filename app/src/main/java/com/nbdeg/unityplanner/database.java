@@ -20,7 +20,7 @@ public class database {
     private ArrayList<Assignments> assignmentList = new ArrayList<>();
     private ArrayList<Classes> classList = new ArrayList<>();
 
-    public FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     DatabaseReference assignmentDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments");
     DatabaseReference classDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("classes");
