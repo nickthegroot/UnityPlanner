@@ -1,5 +1,6 @@
 package com.nbdeg.unityplanner.data;
 
+@SuppressWarnings("unused")
 public class Assignments {
     private String dueDate;
     private String assignmentName;
@@ -18,24 +19,6 @@ public class Assignments {
         this.extraInfo = extraInfo;
         this.percentComplete = percentComplete;
     }
-
-    /* --- Setters --- */
-    public void setAssignmentName(String assignmentName) {
-        this.assignmentName = assignmentName;
-    }
-    public void setAssignmentClass(String dueClass) {
-        this.dueClass = dueClass;
-    }
-    public void setAssignmentDueDate(String dueDate) {
-        this.dueDate = dueDate;
-    }
-    public void setAssignmentExtraInfo(String extraInfo) {
-        this.extraInfo = extraInfo;
-    }
-    public void setAssignmentPercent(int percent) {
-        this.percentComplete = percent;
-    }
-
 
     /* --- Getters --- */
 

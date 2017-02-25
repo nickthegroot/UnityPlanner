@@ -12,9 +12,6 @@ import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -27,47 +24,26 @@ import java.util.ArrayList;
 
 public class addAssignment extends AppCompatActivity  {
 
-    EditText mAssignmentName;
-    EditText mDueDate;
-    EditText mExtraInfo;
-    Spinner mDueClass;
-    SeekBar mPercentComplete;
-    int percentComplete = 0;
+    private EditText mAssignmentName;
+    private EditText mDueDate;
+    private EditText mExtraInfo;
+    private Spinner mDueClass;
+    private int percentComplete = 0;
+    private ArrayList<String> classListNames = new ArrayList<>();
 
-    FirebaseAnalytics mFirebaseAnalytics;
-    DatabaseReference assignmentDb;
-    DatabaseReference classDb;
-    FirebaseUser user;
-
-    ArrayList<String> classListNames;
+    database db = new database();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_assignment);
 
-        // Gets class list
-        Bundle extras = getIntent().getExtras();
-        classListNames = extras.getStringArrayList("classListNames");
-
-
-        // Gets firebase database
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-        assignmentDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments");
-        classDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("classes");
-
         // Find view by ID calls
         mAssignmentName = (EditText) findViewById(R.id.assignment_name);
         mDueDate = (EditText) findViewById(R.id.due_date_edittext);
         mExtraInfo = (EditText) findViewById(R.id.extra_homework_info);
         mDueClass = (Spinner) findViewById(R.id.class_spinner);
-        mPercentComplete = (SeekBar) findViewById(R.id.percentComplete);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_layout, classListNames);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        mDueClass.setAdapter(adapter);
+        SeekBar mPercentComplete = (SeekBar) findViewById(R.id.percentComplete);
 
         // Sets DueDate EditText to open a datepicker when clicked
         new EditTextDatePicker(this, R.id.due_date_edittext);
@@ -84,6 +60,27 @@ public class addAssignment extends AppCompatActivity  {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+        DatabaseReference classDb = FirebaseDatabase.getInstance().getReference().child("users").child(db.user.getUid()).child("classes");
+        classDb.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                classListNames.clear();
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    Classes mClass = userSnapshot.getValue(Classes.class);
+                    classListNames.add(mClass.getClassName());
+                    Log.i("Database", "Class loaded: " + mClass.getClassName());
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(addAssignment.this, R.layout.spinner_layout, classListNames);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                mDueClass.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("Database", "Error loading classes: " + databaseError.getMessage());
             }
         });
     }
@@ -106,19 +103,7 @@ public class addAssignment extends AppCompatActivity  {
         String extraInfo = mExtraInfo.getText().toString();
         String dueClass = mDueClass.getItemAtPosition(mDueClass.getSelectedItemPosition()).toString();
 
-        mFirebaseAnalytics.logEvent("Assignment Created", null);
-        Log.i("DB", "Creating assignment named " + assignmentName);
-        String key = assignmentDb.push().getKey();
-        assignmentDb.child(key).setValue
-                (new Assignments(assignmentName, dueClass, dueDate, extraInfo, percentComplete));
-
-        /*
-        // Test to make sure info is being collected correctly.
-        Log.i("Class", dueClass);
-        Log.i("Due", dueDate);
-        Log.i("Name", homeworkName);
-        Log.i("Extra", extraInfo);
-        */
+        db.addAssignment(new Assignments(assignmentName, dueClass, dueDate, extraInfo, percentComplete));
 
         // Bring user back to MainActivity
         startActivity(new Intent(addAssignment.this, MainActivity.class));

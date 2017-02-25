@@ -7,16 +7,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.animation.Interpolator;
 import android.widget.EditText;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.nbdeg.unityplanner.data.Classes;
 
 public class addClass extends AppCompatActivity {
@@ -24,28 +20,21 @@ public class addClass extends AppCompatActivity {
     // TODO Add A/B Schedule
     // TODO Select which days class occurs on
 
-    FirebaseUser user;
-    DatabaseReference classDb;
-    String TAG = "DB";
+    private DatabaseReference classDb;
 
-    EditText className;
-    EditText classTeacher;
-    EditText classStartDate;
-    EditText classEndDate;
-    EditText classRoomNumber;
-    EditText classBuildingName;
+    private EditText className;
+    private EditText classTeacher;
+    private EditText classStartDate;
+    private EditText classEndDate;
+    private EditText classRoomNumber;
+    private EditText classBuildingName;
 
-    int roomNumber;
+    private int roomNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_class);
-
-        try {getActionBar().setTitle("Add a Class");}
-        catch (NullPointerException e) {
-            getSupportActionBar().setTitle("Add a Class");
-        }
 
         // Setting date pickers to have have pop-up calendars
         new EditTextDatePicker(this, R.id.class_start_date);
@@ -58,10 +47,6 @@ public class addClass extends AppCompatActivity {
         classEndDate = (EditText) findViewById(R.id.class_end_date);
         classRoomNumber = (EditText) findViewById(R.id.class_room);
         classBuildingName = (EditText) findViewById(R.id.class_building);
-
-        // Setting Firebase Variables
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        classDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("classes");
     }
 
     // Adds a SAVE button to the Action Bar
@@ -83,16 +68,9 @@ public class addClass extends AppCompatActivity {
         }
         String buildingName = classBuildingName.getText().toString();
 
-        Classes newClass = new Classes(name, teacherName, startDate, endDate, roomNumber, buildingName);
-        addClassToDatabase(newClass);
+        database db = new database();
+        db.addClass(new Classes(name, teacherName, startDate, endDate, roomNumber, buildingName));
+        startActivity(new Intent(addClass.this, MainActivity.class));
         return super.onOptionsItemSelected(item);
-    }
-
-    private void addClassToDatabase(Classes mClass) {
-        Log.i(TAG, "Creating class: " + mClass.getClassName() + " in database");
-        String key = classDb.push().getKey();
-        classDb.child(key).setValue(mClass);
-
-        startActivity(new Intent(addClass.this, classViewer.class));
     }
 }

@@ -1,5 +1,6 @@
 package com.nbdeg.unityplanner.data;
 
+@SuppressWarnings("ALL")
 public class Classes {
     private String className;
     private String classTeacher;
@@ -22,55 +23,23 @@ public class Classes {
         this.buildingName = buildingName;
     }
 
-    /* --- Setters --- */
-
-    public void setClassName(String className) {
-        this.className = className;
-    }
-
-    public void setClassTeacher(String classTeacher) {
-        this.classTeacher = classTeacher;
-    }
-
-    public void setClassStartDate(String startDate) {
-        this.startDate = startDate;
-    }
-
-    public void setClassEndDate(String endDate) {
-        this.endDate = endDate;
-    }
-
-    public void setClassRoomNumber(int roomNumber) {
-        this.roomNumber = roomNumber;
-    }
-
-    public void setClassBuildingName(String buildingName) {
-        this.buildingName = buildingName;
-    }
-
-
     /* --- Getters --- */
 
     public String getClassName() {
         return this.className;
     }
-
     public String getClassTeacher() {
         return this.classTeacher;
     }
-
     public String getClassStartDate() {
         return this.startDate;
     }
-
-    public String setClassEndDate() {
+    public String getClassEndDate() {
         return this.endDate;
     }
-
-    public int setClassRoomNumber() {
+    public int getClassRoomNumber() {
         return this.roomNumber;
     }
-
     public String setClassBuildingName() {
         return this.buildingName;
     }

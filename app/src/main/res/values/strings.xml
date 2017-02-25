@@ -6,27 +6,34 @@
     <string name="due_soon">Assignments Due Soon</string>
     <string name="title_activity_class_viewer">Classes</string>
     <string name="noAssignmentsDue">No Assignments Due Soon!</string>
-    <string name="title_activity_login">Sign In</string>
-
-    <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="sign_in">Sign in</string>
-    <string name="sign_up">Sign up</string>
-    <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="permission_rationale">"Contacts permissions are needed for providing email
-        completions."
-    </string>
-    <string name="sign_up_google">Sign up with Google</string>
 
     <string name="addAssignment_label">Create An Assignment</string>
     <string name="addClass_label">Create a Class</string>
     <string name="title_activity_assignment_viewer">Assignments</string>
-    <string name="title_activity_test">test</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="user_photo">User Photo</string>
+    <string name="save">Save</string>
+    <string name="home">Home</string>
+    <string name="log_out">Log Out</string>
+    <string name="class_name">Class Name</string>
+    <string name="teacher_name">Teacher Name</string>
+    <string name="start_date">Start Date</string>
+    <string name="end_date">End Date</string>
+    <string name="room_number">Room Number</string>
+    <string name="building_name">Building Name</string>
+    <string name="extra_infomation">Extra Information</string>
+    <string name="assignment_name">Assignment Name</string>
+    <string name="due_date">Due Date</string>
+    <string name="completion">Completion</string>
+    <string name="example_email">guest@guest.com</string>
+    <string name="share">Share</string>
+    <string name="guest_user">Guest User</string>
+    <string name="settings">Settings</string>
+    <string name="logo">Logo</string>
+    <string name="sign_in_cancelled">Sign in canceled.</string>
+    <string name="no_internet_connection">No internet connection. Please try again later.</string>
+    <string name="unknown_error">An unknown error occurred. Please try again later.</string>
+    <string name="sign_in">Sign In</string>
 </resources>
