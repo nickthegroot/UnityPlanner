@@ -63,7 +63,7 @@ public class addAssignment extends AppCompatActivity  {
             }
         });
 
-        DatabaseReference classDb = FirebaseDatabase.getInstance().getReference().child("users").child(db.user.getUid()).child("classes");
+        DatabaseReference classDb = db.classDb;
         classDb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

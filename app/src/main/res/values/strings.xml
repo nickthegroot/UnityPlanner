@@ -7,8 +7,8 @@
     <string name="title_activity_class_viewer">Classes</string>
     <string name="noAssignmentsDue">No Assignments Due Soon!</string>
 
-    <string name="addAssignment_label">Create An Assignment</string>
-    <string name="addClass_label">Create a Class</string>
+    <string name="addAssignment_label">Create an assignment</string>
+    <string name="addClass_label">Create a class</string>
     <string name="title_activity_assignment_viewer">Assignments</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -36,4 +36,7 @@
     <string name="no_internet_connection">No internet connection. Please try again later.</string>
     <string name="unknown_error">An unknown error occurred. Please try again later.</string>
     <string name="sign_in">Sign In</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
