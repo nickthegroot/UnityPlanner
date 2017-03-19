@@ -15,12 +15,15 @@ import android.widget.Spinner;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nbdeg.unityplanner.data.Assignments;
 import com.nbdeg.unityplanner.data.Classes;
+import com.nbdeg.unityplanner.utils.EditTextDatePicker;
+
+import org.joda.time.DateTime;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class addAssignment extends AppCompatActivity  {
 
@@ -30,6 +33,7 @@ public class addAssignment extends AppCompatActivity  {
     private Spinner mDueClass;
     private int percentComplete = 0;
     private ArrayList<String> classListNames = new ArrayList<>();
+    private EditTextDatePicker datePicker;
 
     database db = new database();
 
@@ -46,7 +50,7 @@ public class addAssignment extends AppCompatActivity  {
         SeekBar mPercentComplete = (SeekBar) findViewById(R.id.percentComplete);
 
         // Sets DueDate EditText to open a datepicker when clicked
-        new EditTextDatePicker(this, R.id.due_date_edittext);
+        datePicker = new EditTextDatePicker(this, R.id.due_date_edittext);
 
         mPercentComplete.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -98,7 +102,7 @@ public class addAssignment extends AppCompatActivity  {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Getting information from views
-        String dueDate = mDueDate.getText().toString();
+        Long dueDate = datePicker.date.getTime();
         String assignmentName = mAssignmentName.getText().toString();
         String extraInfo = mExtraInfo.getText().toString();
         String dueClass = mDueClass.getItemAtPosition(mDueClass.getSelectedItemPosition()).toString();

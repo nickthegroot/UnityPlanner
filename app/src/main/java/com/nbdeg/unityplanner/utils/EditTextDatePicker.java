@@ -1,4 +1,4 @@
-package com.nbdeg.unityplanner;
+package com.nbdeg.unityplanner.utils;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -7,16 +7,22 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
+import org.joda.time.DateTime;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.TimeZone;
 
-class EditTextDatePicker implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
+public class EditTextDatePicker implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
 
     private final EditText _editText;
     private int _day;
     private int _month;
     private int _birthYear;
     private final Context _context;
+    public Date date;
 
     public EditTextDatePicker(Context context, int editTextViewID)
     {
@@ -33,6 +39,7 @@ class EditTextDatePicker implements View.OnClickListener, DatePickerDialog.OnDat
         _day = dayOfMonth;
         updateDisplay();
     }
+
     @Override
     public void onClick(View v) {
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
@@ -46,8 +53,14 @@ class EditTextDatePicker implements View.OnClickListener, DatePickerDialog.OnDat
 
     // updates the date in the birth date EditText
     private void updateDisplay() {
-        _editText.setText(new StringBuilder()
-                // Month is 0 based so add 1
-                .append(_month + 1).append("/").append(_day).append("/").append(_birthYear).append(" "));
+        String strDate = // Month is 0 based so add 1
+                String.valueOf(_month + 1) + "/" + _day + "/" + _birthYear + " ";
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+        try {
+            date = formatter.parse(strDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        _editText.setText(strDate);
     }
 }

@@ -1,8 +1,12 @@
 package com.nbdeg.unityplanner.data;
 
+import org.joda.time.DateTime;
+
+import java.util.Date;
+
 @SuppressWarnings("unused")
 public class Assignments {
-    private String dueDate;
+    private Long dueDate;
     private String assignmentName;
     private String extraInfo;
     private String dueClass;
@@ -12,12 +16,30 @@ public class Assignments {
     public Assignments() {}
 
     // Adding info in one call
-    public Assignments(String assignmentName, String dueClass, String dueDate, String extraInfo, int percentComplete) {
+    public Assignments(String assignmentName, String dueClass, Long dueDate, String extraInfo, int percentComplete) {
         this.assignmentName = assignmentName;
         this.dueClass = dueClass;
         this.dueDate = dueDate;
         this.extraInfo = extraInfo;
         this.percentComplete = percentComplete;
+    }
+
+    /* --- Setters --- */
+
+    public void setAssignmentName(String name) {
+        this.assignmentName = name;
+    }
+    public void setAssignmentClassName(String name) {
+        this.dueClass = name;
+    }
+    public void setAssignmentExtra(String extra) {
+        this.extraInfo = extra;
+    }
+    public void setAssignmentDueDate(Long dueDate) {
+        this.dueDate = dueDate;
+    }
+    public void setAssignmentPercent(int percent) {
+        this.percentComplete = percent;
     }
 
     /* --- Getters --- */
@@ -31,7 +53,7 @@ public class Assignments {
     public String getAssignmentExtra() {
         return this.extraInfo;
     }
-    public String getAssignmentDueDate() {
+    public Long getAssignmentDueDate() {
         return this.dueDate;
     }
     public int getAssignmentPercent() {

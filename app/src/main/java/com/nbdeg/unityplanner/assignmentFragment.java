@@ -4,19 +4,23 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.TextView;
 
-import com.firebase.ui.database.FirebaseListAdapter;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.nbdeg.unityplanner.data.Assignments;
-import com.nbdeg.unityplanner.data.Classes;
+import com.nbdeg.unityplanner.utils.AssignmentHolder;
+
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 public class assignmentFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
+    private FirebaseRecyclerAdapter mAdapter;
 
     public assignmentFragment() {
         // Required empty public constructor
@@ -28,21 +32,22 @@ public class assignmentFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_assignment, container, false);
-        // Gets Firebase Information
+
+        // Getting Data
         database db = new database();
-        DatabaseReference assignmentDb = db.assignmentDb;
-        ListView assignmentView = (ListView) view.findViewById(R.id.assignment_list);
+        DatabaseReference assignmentdb = db.assignmentDb;
 
-        FirebaseListAdapter mAdapter = new FirebaseListAdapter<Assignments>(getActivity(), Assignments.class, android.R.layout.two_line_list_item, assignmentDb) {
+        // Displaying Data
+        RecyclerView assignmentView = (RecyclerView) view.findViewById(R.id.assignment_list);
+        assignmentView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        mAdapter = new FirebaseRecyclerAdapter<Assignments, AssignmentHolder>(Assignments.class, R.layout.assignment_layout, AssignmentHolder.class, assignmentdb) {
             @Override
-            protected void populateView(View view, Assignments assignment, int position) {
-                ((TextView)view.findViewById(android.R.id.text1)).setText(assignment.getAssignmentName());
-                ((TextView)view.findViewById(android.R.id.text2)).setText(assignment.getAssignmentClassName());
-
+            protected void populateViewHolder(AssignmentHolder viewHolder, Assignments assignment, int position) {
+                viewHolder.setEverything(assignment);
             }
         };
 
@@ -64,6 +69,7 @@ public class assignmentFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        mAdapter.cleanup();
         mListener = null;
     }
 
