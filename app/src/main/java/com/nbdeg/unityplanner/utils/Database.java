@@ -1,4 +1,4 @@
-package com.nbdeg.unityplanner;
+package com.nbdeg.unityplanner.utils;
 
 import android.util.Log;
 
@@ -14,16 +14,15 @@ import com.nbdeg.unityplanner.data.Classes;
 
 import java.util.ArrayList;
 
-public class database {
+public class Database {
 
     private String TAG = "Database";
     private ArrayList<Assignments> assignmentList = new ArrayList<>();
     private ArrayList<Classes> classList = new ArrayList<>();
 
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-    DatabaseReference assignmentDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments");
-    DatabaseReference classDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("classes");
+    public FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    public DatabaseReference assignmentDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments");
+    public DatabaseReference classDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("classes");
 
     // Gets all assignments
     public ArrayList<Assignments> getAssignments() {

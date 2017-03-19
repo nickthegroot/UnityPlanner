@@ -14,9 +14,7 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.nbdeg.unityplanner.data.Assignments;
 import com.nbdeg.unityplanner.utils.AssignmentHolder;
-
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
+import com.nbdeg.unityplanner.utils.Database;
 
 public class assignmentFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
@@ -37,7 +35,7 @@ public class assignmentFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_assignment, container, false);
 
         // Getting Data
-        database db = new database();
+        Database db = new Database();
         DatabaseReference assignmentdb = db.assignmentDb;
 
         // Displaying Data

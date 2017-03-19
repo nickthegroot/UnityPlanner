@@ -9,11 +9,8 @@ import android.view.MenuItem;
 import android.widget.EditText;
 
 import com.nbdeg.unityplanner.data.Classes;
+import com.nbdeg.unityplanner.utils.Database;
 import com.nbdeg.unityplanner.utils.EditTextDatePicker;
-
-import org.joda.time.DateTime;
-
-import java.util.Date;
 
 public class addClass extends AppCompatActivity {
 
@@ -65,7 +62,7 @@ public class addClass extends AppCompatActivity {
         }
         String buildingName = classBuildingName.getText().toString();
 
-        database db = new database();
+        Database db = new Database();
         db.addClass(new Classes(name, teacherName, startDate, endDate, roomNumber, buildingName));
         startActivity(new Intent(addClass.this, MainActivity.class));
         return super.onOptionsItemSelected(item);

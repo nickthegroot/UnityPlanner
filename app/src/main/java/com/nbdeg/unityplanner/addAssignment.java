@@ -18,12 +18,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.nbdeg.unityplanner.data.Assignments;
 import com.nbdeg.unityplanner.data.Classes;
+import com.nbdeg.unityplanner.utils.Database;
 import com.nbdeg.unityplanner.utils.EditTextDatePicker;
 
-import org.joda.time.DateTime;
-
 import java.util.ArrayList;
-import java.util.Date;
 
 public class addAssignment extends AppCompatActivity  {
 
@@ -35,7 +33,7 @@ public class addAssignment extends AppCompatActivity  {
     private ArrayList<String> classListNames = new ArrayList<>();
     private EditTextDatePicker datePicker;
 
-    database db = new database();
+    Database db = new Database();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

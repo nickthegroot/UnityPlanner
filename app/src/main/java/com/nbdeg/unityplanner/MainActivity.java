@@ -25,13 +25,14 @@ import android.widget.TextView;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.nbdeg.unityplanner.utils.Database;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 @SuppressWarnings({"CanBeFinal", "MismatchedQueryAndUpdateOfCollection"})
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, classFragment.OnFragmentInteractionListener, assignmentFragment.OnFragmentInteractionListener, homeScreen.OnFragmentInteractionListener{
 
-    private database db = new database();
+    private Database db = new Database();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
