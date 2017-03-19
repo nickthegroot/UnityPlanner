@@ -21,7 +21,10 @@
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:id="@+id/view_assignment_class"
-        android:gravity="right"
-        />
+        android:gravity="right" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray" />
 
 </RelativeLayout>
