@@ -113,4 +113,13 @@
         android:padding="5dp"
         android:background="@null" />
 
+    <Button
+        android:id="@+id/delete_assignment"
+        style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:onClick="deleteAssignment"
+        android:text="@string/delete"
+        android:textColor="#FFFF4444" />
 </RelativeLayout>

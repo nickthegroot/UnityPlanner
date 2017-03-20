@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.SeekBar;
@@ -40,6 +41,7 @@ public class editAssignment extends AppCompatActivity  {
     private String assignmentExtra;
     private Date assignmentDueDate;
     private String oldAssignmentID;
+    private DatabaseReference assignmentReference;
 
     Database db = new Database();
 
@@ -104,6 +106,7 @@ public class editAssignment extends AppCompatActivity  {
                         assignmentExtra = assignment.getExtra();
                         assignmentDueDate = new Date(assignment.getDueDate());
                         percentComplete = assignment.getPercent();
+                        assignmentReference = userSnapshot.getRef();
 
                         // Set Existing Data
                         mAssignmentName.setText(assignmentName);
@@ -146,5 +149,10 @@ public class editAssignment extends AppCompatActivity  {
         startActivity(new Intent(editAssignment.this, MainActivity.class));
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void deleteAssignment(View view) {
+        assignmentReference.removeValue();
+        startActivity(new Intent(editAssignment.this, MainActivity.class));
     }
 }
