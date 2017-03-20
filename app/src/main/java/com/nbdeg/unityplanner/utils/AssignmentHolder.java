@@ -19,12 +19,14 @@ public class AssignmentHolder extends RecyclerView.ViewHolder {
     private final TextView mNameField;
     private final TextView mDueField;
     private final TextView mClassField;
+    private final View view;
 
     public AssignmentHolder(View itemView) {
         super(itemView);
         mNameField = (TextView) itemView.findViewById(R.id.view_assignment_name);
         mDueField = (TextView) itemView.findViewById(R.id.view_assignment_due);
         mClassField = (TextView) itemView.findViewById(R.id.view_assignment_class);
+        view = this.itemView;
     }
 
     public void setEverything(Assignments assignment) {
@@ -33,8 +35,6 @@ public class AssignmentHolder extends RecyclerView.ViewHolder {
             Date dueDate = new Date(assignment.getAssignmentDueDate());
             SimpleDateFormat formatter = new SimpleDateFormat("d MMMM, yyyy");
             mDueField.setText(formatter.format(dueDate));
-        } else {
-            Log.i("TAG", "It's fucked mate.");
         }
         mClassField.setText(assignment.getAssignmentClassName());
     }

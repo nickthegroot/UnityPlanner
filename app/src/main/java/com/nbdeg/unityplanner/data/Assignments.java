@@ -1,8 +1,7 @@
 package com.nbdeg.unityplanner.data;
 
-import org.joda.time.DateTime;
-
-import java.util.Date;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 @SuppressWarnings("unused")
 public class Assignments {

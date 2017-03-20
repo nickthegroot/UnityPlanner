@@ -12,6 +12,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.nbdeg.unityplanner.data.Assignments;
 import com.nbdeg.unityplanner.data.Classes;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 
 public class Database {
@@ -75,5 +76,9 @@ public class Database {
     public void addClass(Classes mClass) {
         Log.i(TAG, "Creating class: " + mClass.getClassName());
         classDb.push().setValue(mClass);
+    }
+
+    public void editAssignment(final String oldID, final Assignments newAssignment) {
+        assignmentDb.child(oldID).setValue(newAssignment);
     }
 }
