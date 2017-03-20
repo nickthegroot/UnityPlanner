@@ -1,4 +1,4 @@
-package com.nbdeg.unityplanner;
+package com.nbdeg.unityplanner.utils;
 
 import android.util.Log;
 
@@ -14,16 +14,15 @@ import com.nbdeg.unityplanner.data.Classes;
 
 import java.util.ArrayList;
 
-public class database {
+public class Database {
 
     private String TAG = "Database";
     private ArrayList<Assignments> assignmentList = new ArrayList<>();
     private ArrayList<Classes> classList = new ArrayList<>();
 
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
-    DatabaseReference assignmentDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments");
-    DatabaseReference classDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("classes");
+    public FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    public DatabaseReference assignmentDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments");
+    public DatabaseReference classDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("classes");
 
     // Gets all assignments
     public ArrayList<Assignments> getAssignments() {
@@ -34,7 +33,7 @@ public class database {
                 for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
                     Assignments assignment = userSnapshot.getValue(Assignments.class);
                     assignmentList.add(assignment);
-                    Log.i(TAG, "Assignment loaded: " + assignment.getAssignmentName());
+                    Log.i(TAG, "Assignment loaded: " + assignment.getName());
                 }
             }
 
@@ -55,7 +54,7 @@ public class database {
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     Classes mClass = userSnapshot.getValue(Classes.class);
                     classList.add(mClass);
-                    Log.i(TAG, "Class loaded: " + mClass.getClassName());
+                    Log.i(TAG, "Class loaded: " + mClass.getName());
                 }
             }
 
@@ -68,13 +67,20 @@ public class database {
     }
 
     public void addAssignment(Assignments assignment) {
-        Log.i(TAG, "Creating assignment: " + assignment.getAssignmentName());
+        Log.i(TAG, "Creating assignment: " + assignment.getName());
         String key = assignmentDb.push().getKey();
+        assignment.setID(key);
         assignmentDb.child(key).setValue(assignment);
     }
 
     public void addClass(Classes mClass) {
-        Log.i(TAG, "Creating class: " + mClass.getClassName());
-        classDb.push().setValue(mClass);
+        Log.i(TAG, "Creating class: " + mClass.getName());
+        String key = classDb.push().getKey();
+        mClass.setID(key);
+        classDb.child(key).setValue(mClass);
+    }
+
+    public void editAssignment(final String oldID, final Assignments newAssignment) {
+        assignmentDb.child(oldID).setValue(newAssignment);
     }
 }

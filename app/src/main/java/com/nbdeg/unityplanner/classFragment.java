@@ -4,19 +4,22 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.TextView;
 
-import com.firebase.ui.database.FirebaseListAdapter;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
 import com.nbdeg.unityplanner.data.Classes;
+import com.nbdeg.unityplanner.utils.ClassesHolder;
+import com.nbdeg.unityplanner.utils.Database;
 
 public class classFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
+    private FirebaseRecyclerAdapter mAdapter;
 
     public classFragment() {
         // Required empty public constructor
@@ -34,15 +37,17 @@ public class classFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_class, container, false);
 
         // Gets Firebase Information
-        database db = new database();
+        Database db = new Database();
         DatabaseReference classDb = db.classDb;
-        ListView classesView = (ListView) view.findViewById(R.id.classes_view);
 
-        FirebaseListAdapter mAdapter = new FirebaseListAdapter<Classes>(getActivity(), Classes.class, android.R.layout.two_line_list_item, classDb) {
+        // Displaying Data
+        RecyclerView classesView = (RecyclerView) view.findViewById(R.id.class_list);
+        classesView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        mAdapter = new FirebaseRecyclerAdapter<Classes, ClassesHolder>(Classes.class, R.layout.classes_layout, ClassesHolder.class, classDb) {
             @Override
-            protected void populateView(View view, Classes mClass, int position) {
-                ((TextView)view.findViewById(android.R.id.text1)).setText(mClass.getClassName());
-                ((TextView)view.findViewById(android.R.id.text2)).setText(mClass.getClassTeacher());
+            protected void populateViewHolder(ClassesHolder viewHolder, Classes mClass, int position) {
+                viewHolder.setEverything(mClass);
             }
         };
 
@@ -64,6 +69,7 @@ public class classFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        mAdapter.cleanup();
         mListener = null;
     }
 

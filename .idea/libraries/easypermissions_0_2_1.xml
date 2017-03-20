@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="easypermissions-0.2.1">
     <CLASSES>
-      <root url="file://$PROJECT_DIR$/app/build/intermediates/exploded-aar/pub.devrel/easypermissions/0.2.1/res" />
-      <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/pub.devrel/easypermissions/0.2.1/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.android/build-cache/7b30b508f6abdf9040c8e80fc26bfe06845bc4d5/output/res" />
+      <root url="jar://$USER_HOME$/.android/build-cache/7b30b508f6abdf9040c8e80fc26bfe06845bc4d5/output/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>

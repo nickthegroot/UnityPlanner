@@ -22,34 +22,40 @@ import com.nbdeg.unityplanner.utils.Database;
 import com.nbdeg.unityplanner.utils.EditTextDatePicker;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Objects;
 
-public class addAssignment extends AppCompatActivity  {
+public class editAssignment extends AppCompatActivity  {
 
     private EditText mAssignmentName;
-    private EditText mDueDate;
     private EditText mExtraInfo;
     private Spinner mDueClass;
-    private int percentComplete = 0;
     private ArrayList<String> classListNames = new ArrayList<>();
     private EditTextDatePicker datePicker;
+    private SeekBar mPercentComplete;
+
+    private int percentComplete = 0;
+    private String assignmentName;
+    private String assignmentClass;
+    private String assignmentExtra;
+    private Date assignmentDueDate;
+    private String oldAssignmentID;
 
     Database db = new Database();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_assignment);
+        setContentView(R.layout.activity_edit_assignment);
 
         // Find view by ID calls
-        mAssignmentName = (EditText) findViewById(R.id.assignment_name);
-        mDueDate = (EditText) findViewById(R.id.due_date_edittext);
-        mExtraInfo = (EditText) findViewById(R.id.extra_homework_info);
-        mDueClass = (Spinner) findViewById(R.id.class_spinner);
-        SeekBar mPercentComplete = (SeekBar) findViewById(R.id.percentComplete);
+        mAssignmentName = (EditText) findViewById(R.id.assignment_edit_name);
+        mExtraInfo = (EditText) findViewById(R.id.extra_homework_info_edit);
+        mDueClass = (Spinner) findViewById(R.id.class_edit_spinner);
+        mPercentComplete = (SeekBar) findViewById(R.id.percent_complete_edit);
 
         // Sets DueDate EditText to open a datepicker when clicked
-        datePicker = new EditTextDatePicker(this, R.id.due_date_edittext);
-
+        datePicker = new EditTextDatePicker(this, R.id.due_date_edit_edittext);
         mPercentComplete.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
@@ -75,7 +81,7 @@ public class addAssignment extends AppCompatActivity  {
                     classListNames.add(mClass.getName());
                     Log.i("Database", "Class loaded: " + mClass.getName());
                 }
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(addAssignment.this, R.layout.spinner_layout, classListNames);
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(editAssignment.this, R.layout.spinner_layout, classListNames);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 mDueClass.setAdapter(adapter);
             }
@@ -83,6 +89,35 @@ public class addAssignment extends AppCompatActivity  {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.e("Database", "Error loading classes: " + databaseError.getMessage());
+            }
+        });
+
+        oldAssignmentID = getIntent().getStringExtra("ID");
+        db.assignmentDb.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    if (Objects.equals(userSnapshot.getKey(), oldAssignmentID)) {
+                        Assignments assignment = userSnapshot.getValue(Assignments.class);
+                        assignmentName = assignment.getName();
+                        assignmentClass = assignment.getClassName();
+                        assignmentExtra = assignment.getExtra();
+                        assignmentDueDate = new Date(assignment.getDueDate());
+                        percentComplete = assignment.getPercent();
+
+                        // Set Existing Data
+                        mAssignmentName.setText(assignmentName);
+                        mExtraInfo.setText(assignmentExtra);
+                        datePicker.setDisplay(assignmentDueDate);
+                        mDueClass.setSelection(classListNames.indexOf(assignmentClass));
+                        mPercentComplete.setProgress(percentComplete);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e("Database", databaseError.getMessage());
             }
         });
     }
@@ -105,10 +140,10 @@ public class addAssignment extends AppCompatActivity  {
         String extraInfo = mExtraInfo.getText().toString();
         String dueClass = mDueClass.getItemAtPosition(mDueClass.getSelectedItemPosition()).toString();
 
-        db.addAssignment(new Assignments(assignmentName, dueClass, dueDate, extraInfo, percentComplete));
+        db.editAssignment(oldAssignmentID, new Assignments(assignmentName, dueClass, dueDate, extraInfo, percentComplete));
 
         // Bring user back to MainActivity
-        startActivity(new Intent(addAssignment.this, MainActivity.class));
+        startActivity(new Intent(editAssignment.this, MainActivity.class));
 
         return super.onOptionsItemSelected(item);
     }

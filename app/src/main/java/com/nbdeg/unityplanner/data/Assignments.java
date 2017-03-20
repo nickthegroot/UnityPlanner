@@ -2,17 +2,18 @@ package com.nbdeg.unityplanner.data;
 
 @SuppressWarnings("unused")
 public class Assignments {
-    private String dueDate;
+    private Long dueDate;
     private String assignmentName;
     private String extraInfo;
     private String dueClass;
     private int percentComplete;
+    private String ID;
 
     // Empty Constructor
     public Assignments() {}
 
-    // Adding info in one call
-    public Assignments(String assignmentName, String dueClass, String dueDate, String extraInfo, int percentComplete) {
+    // Adding common info
+    public Assignments(String assignmentName, String dueClass, Long dueDate, String extraInfo, int percentComplete) {
         this.assignmentName = assignmentName;
         this.dueClass = dueClass;
         this.dueDate = dueDate;
@@ -20,22 +21,56 @@ public class Assignments {
         this.percentComplete = percentComplete;
     }
 
+    // Adding all info
+    public Assignments(String assignmentName, String dueClass, Long dueDate, String extraInfo, int percentComplete, String ID) {
+        this.assignmentName = assignmentName;
+        this.dueClass = dueClass;
+        this.dueDate = dueDate;
+        this.extraInfo = extraInfo;
+        this.percentComplete = percentComplete;
+        this.ID = ID;
+    }
+
+    /* --- Setters --- */
+
+    public void setName(String name) {
+        this.assignmentName = name;
+    }
+    public void setClassName(String name) {
+        this.dueClass = name;
+    }
+    public void setExtra(String extra) {
+        this.extraInfo = extra;
+    }
+    public void setDueDate(Long dueDate) {
+        this.dueDate = dueDate;
+    }
+    public void setPercent(int percent) {
+        this.percentComplete = percent;
+    }
+    public void setID(String ID) {
+        this.ID = ID;
+    }
+
     /* --- Getters --- */
 
-    public String getAssignmentName() {
-        return this.assignmentName;
+    public String getName() {
+        return assignmentName;
     }
-    public String getAssignmentClassName() {
-        return this.dueClass;
+    public String getClassName() {
+        return dueClass;
     }
-    public String getAssignmentExtra() {
-        return this.extraInfo;
+    public String getExtra() {
+        return extraInfo;
     }
-    public String getAssignmentDueDate() {
-        return this.dueDate;
+    public Long getDueDate() {
+        return dueDate;
     }
-    public int getAssignmentPercent() {
-        return this.percentComplete;
+    public int getPercent() {
+        return percentComplete;
+    }
+    public String getID() {
+        return ID;
     }
 }
 

@@ -14,6 +14,25 @@
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
 
+        <service android:name=".utils.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <service android:name=".utils.FirebaseIDService">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_notification" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent" />
+
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
@@ -28,24 +47,24 @@
                     android:host="https://www.nbdeg.com"
                     android:pathPrefix="/unityplanner"
                     android:scheme="http" />
+
             </intent-filter>
         </activity>
-
         <activity
             android:name=".addClass"
             android:label="@string/addClass_label" />
-
         <activity
             android:name=".addAssignment"
             android:label="@string/addAssignment_label" />
-
-        <activity android:name=".loginActivity"
+        <activity
+            android:name=".loginActivity"
             android:theme="@style/LoginTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".editAssignment">
         </activity>
     </application>
 
