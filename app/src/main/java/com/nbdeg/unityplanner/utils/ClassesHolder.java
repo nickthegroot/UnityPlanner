@@ -1,20 +1,11 @@
 package com.nbdeg.unityplanner.utils;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.nbdeg.unityplanner.R;
-import com.nbdeg.unityplanner.data.Assignments;
 import com.nbdeg.unityplanner.data.Classes;
-
-import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class ClassesHolder extends RecyclerView.ViewHolder {
     private final TextView mNameField;

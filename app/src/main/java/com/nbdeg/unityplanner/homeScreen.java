@@ -4,7 +4,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +15,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.nbdeg.unityplanner.data.Assignments;
 import com.nbdeg.unityplanner.utils.Database;
-
-import java.util.ArrayList;
 
 public class homeScreen extends Fragment {
     private OnFragmentInteractionListener mListener;

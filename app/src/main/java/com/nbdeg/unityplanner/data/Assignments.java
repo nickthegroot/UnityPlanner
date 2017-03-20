@@ -1,8 +1,5 @@
 package com.nbdeg.unityplanner.data;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 @SuppressWarnings("unused")
 public class Assignments {
     private Long dueDate;

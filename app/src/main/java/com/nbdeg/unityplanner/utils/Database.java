@@ -12,7 +12,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.nbdeg.unityplanner.data.Assignments;
 import com.nbdeg.unityplanner.data.Classes;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 
 public class Database {

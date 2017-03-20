@@ -7,8 +7,6 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
-import org.joda.time.DateTime;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
