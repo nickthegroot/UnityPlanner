@@ -64,13 +64,13 @@ public class homeScreen extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
                     Assignments assignment = userSnapshot.getValue(Assignments.class);
-                    if (assignment.getAssignmentPercent() != 100) {
+                    if (assignment.getPercent() != 100) {
                         if (haveAssignmentsDue) {
-                            assignmentsDue.append(assignment.getAssignmentName() + "\n");
+                            assignmentsDue.append(assignment.getName() + "\n");
                         } else {
                             haveAssignmentsDue = true;
                             assignmentsDue.setText("");
-                            assignmentsDue.append(assignment.getAssignmentName() + "\n");
+                            assignmentsDue.append(assignment.getName() + "\n");
                         }
                     }
                 }

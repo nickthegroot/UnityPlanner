@@ -26,7 +26,7 @@ public class EditTextDatePicker implements View.OnClickListener, DatePickerDialo
 
     public EditTextDatePicker(Context context, int editTextViewID)
     {
-        Activity act = (Activity)context;
+        Activity act = (Activity) context;
         this._editText = (EditText)act.findViewById(editTextViewID);
         this._editText.setOnClickListener(this);
         this._context = context;
@@ -62,5 +62,15 @@ public class EditTextDatePicker implements View.OnClickListener, DatePickerDialo
             e.printStackTrace();
         }
         _editText.setText(strDate);
+    }
+
+    public void setDisplay(Date date) {
+        this.date = date;
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        _month = cal.get(Calendar.MONTH);
+        _day = cal.get(Calendar.DAY_OF_MONTH);
+        _birthYear = cal.get(Calendar.YEAR);
+        updateDisplay();
     }
 }

@@ -72,8 +72,8 @@ public class addAssignment extends AppCompatActivity  {
                 classListNames.clear();
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     Classes mClass = userSnapshot.getValue(Classes.class);
-                    classListNames.add(mClass.getClassName());
-                    Log.i("Database", "Class loaded: " + mClass.getClassName());
+                    classListNames.add(mClass.getName());
+                    Log.i("Database", "Class loaded: " + mClass.getName());
                 }
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(addAssignment.this, R.layout.spinner_layout, classListNames);
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

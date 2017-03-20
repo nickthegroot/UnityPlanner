@@ -29,9 +29,9 @@ public class ClassesHolder extends RecyclerView.ViewHolder {
     }
 
     public void setEverything(Classes mClass) {
-        mNameField.setText(mClass.getClassName());
-        mTeacherField.setText(mClass.getClassTeacher());
-        mRoomNumField.setText(String.valueOf(mClass.getClassRoomNumber()));
+        mNameField.setText(mClass.getName());
+        mTeacherField.setText(mClass.getTeacher());
+        mRoomNumField.setText(String.valueOf(mClass.getRoomNumber()));
     }
 
     public void setName(String name) {

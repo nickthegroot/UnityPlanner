@@ -34,7 +34,7 @@ public class Database {
                 for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
                     Assignments assignment = userSnapshot.getValue(Assignments.class);
                     assignmentList.add(assignment);
-                    Log.i(TAG, "Assignment loaded: " + assignment.getAssignmentName());
+                    Log.i(TAG, "Assignment loaded: " + assignment.getName());
                 }
             }
 
@@ -55,7 +55,7 @@ public class Database {
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     Classes mClass = userSnapshot.getValue(Classes.class);
                     classList.add(mClass);
-                    Log.i(TAG, "Class loaded: " + mClass.getClassName());
+                    Log.i(TAG, "Class loaded: " + mClass.getName());
                 }
             }
 
@@ -68,14 +68,17 @@ public class Database {
     }
 
     public void addAssignment(Assignments assignment) {
-        Log.i(TAG, "Creating assignment: " + assignment.getAssignmentName());
+        Log.i(TAG, "Creating assignment: " + assignment.getName());
         String key = assignmentDb.push().getKey();
+        assignment.setID(key);
         assignmentDb.child(key).setValue(assignment);
     }
 
     public void addClass(Classes mClass) {
-        Log.i(TAG, "Creating class: " + mClass.getClassName());
-        classDb.push().setValue(mClass);
+        Log.i(TAG, "Creating class: " + mClass.getName());
+        String key = classDb.push().getKey();
+        mClass.setID(key);
+        classDb.child(key).setValue(mClass);
     }
 
     public void editAssignment(final String oldID, final Assignments newAssignment) {

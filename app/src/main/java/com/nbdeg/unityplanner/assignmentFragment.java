@@ -13,10 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 import com.nbdeg.unityplanner.data.Assignments;
 import com.nbdeg.unityplanner.utils.AssignmentHolder;
 import com.nbdeg.unityplanner.utils.Database;
@@ -51,28 +48,13 @@ public class assignmentFragment extends Fragment {
             @Override
             protected void populateViewHolder(AssignmentHolder viewHolder, final Assignments assignment, final int position) {
                 viewHolder.setEverything(assignment);
-                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View v) {
-                        // TODO Launch assignment editor
-                        assignmentDb.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                                    Assignments oldAssignment = userSnapshot.getValue(Assignments.class);
-                                    if (assignment == oldAssignment) {
-                                        Intent intent = new Intent(getContext(), editAssignment.class);
-                                        intent.putExtra("OldAssignmentID", userSnapshot.getKey());
-                                        startActivity(intent);
-                                    }
-                                }
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-                                Log.e("Database", databaseError.getMessage());
-                            }
-                        });
+                    public void onClick(View view) {
+                        Log.i("Test", "You clicked on "+ position);
+                        Intent intent = new Intent(getContext(), editAssignment.class);
+                        intent.putExtra("ID", mAdapter.getRef(position).getKey());
+                        startActivity(intent);
                     }
                 });
             }

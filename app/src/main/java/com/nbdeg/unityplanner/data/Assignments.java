@@ -10,11 +10,12 @@ public class Assignments {
     private String extraInfo;
     private String dueClass;
     private int percentComplete;
+    private String ID;
 
     // Empty Constructor
     public Assignments() {}
 
-    // Adding info in one call
+    // Adding common info
     public Assignments(String assignmentName, String dueClass, Long dueDate, String extraInfo, int percentComplete) {
         this.assignmentName = assignmentName;
         this.dueClass = dueClass;
@@ -23,40 +24,56 @@ public class Assignments {
         this.percentComplete = percentComplete;
     }
 
+    // Adding all info
+    public Assignments(String assignmentName, String dueClass, Long dueDate, String extraInfo, int percentComplete, String ID) {
+        this.assignmentName = assignmentName;
+        this.dueClass = dueClass;
+        this.dueDate = dueDate;
+        this.extraInfo = extraInfo;
+        this.percentComplete = percentComplete;
+        this.ID = ID;
+    }
+
     /* --- Setters --- */
 
-    public void setAssignmentName(String name) {
+    public void setName(String name) {
         this.assignmentName = name;
     }
-    public void setAssignmentClassName(String name) {
+    public void setClassName(String name) {
         this.dueClass = name;
     }
-    public void setAssignmentExtra(String extra) {
+    public void setExtra(String extra) {
         this.extraInfo = extra;
     }
-    public void setAssignmentDueDate(Long dueDate) {
+    public void setDueDate(Long dueDate) {
         this.dueDate = dueDate;
     }
-    public void setAssignmentPercent(int percent) {
+    public void setPercent(int percent) {
         this.percentComplete = percent;
+    }
+    public void setID(String ID) {
+        this.ID = ID;
     }
 
     /* --- Getters --- */
 
-    public String getAssignmentName() {
-        return this.assignmentName;
+    public String getName() {
+        return assignmentName;
     }
-    public String getAssignmentClassName() {
-        return this.dueClass;
+    public String getClassName() {
+        return dueClass;
     }
-    public String getAssignmentExtra() {
-        return this.extraInfo;
+    public String getExtra() {
+        return extraInfo;
     }
-    public Long getAssignmentDueDate() {
-        return this.dueDate;
+    public Long getDueDate() {
+        return dueDate;
     }
-    public int getAssignmentPercent() {
-        return this.percentComplete;
+    public int getPercent() {
+        return percentComplete;
+    }
+    public String getID() {
+        return ID;
     }
 }
 
