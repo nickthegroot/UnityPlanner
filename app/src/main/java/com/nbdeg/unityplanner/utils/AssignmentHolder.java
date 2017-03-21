@@ -14,7 +14,7 @@ public class AssignmentHolder extends RecyclerView.ViewHolder {
     private final TextView mNameField;
     private final TextView mDueField;
     private final TextView mClassField;
-    public  final View mView;
+    public final View mView;
 
     public AssignmentHolder(View itemView) {
         super(itemView);

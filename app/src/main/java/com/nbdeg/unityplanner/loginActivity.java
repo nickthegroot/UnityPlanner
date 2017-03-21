@@ -88,7 +88,6 @@ public class loginActivity extends AppCompatActivity {
                                 new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build()))
                         .setLogo(R.mipmap.ic_logo_white)
                         .setTheme(R.style.LoginTheme)
-                        .setIsSmartLockEnabled(!BuildConfig.DEBUG)
                         .build(),
                 RC_SIGN_IN);
     }

@@ -11,12 +11,14 @@ public class ClassesHolder extends RecyclerView.ViewHolder {
     private final TextView mNameField;
     private final TextView mTeacherField;
     private final TextView mRoomNumField;
+    public final View mView;
 
     public ClassesHolder(View itemView) {
         super(itemView);
         mNameField = (TextView) itemView.findViewById(R.id.view_class_name);
         mTeacherField = (TextView) itemView.findViewById(R.id.view_class_teacher);
         mRoomNumField = (TextView) itemView.findViewById(R.id.view_class_room);
+        mView = itemView;
     }
 
     public void setEverything(Classes mClass) {

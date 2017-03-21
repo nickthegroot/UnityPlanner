@@ -143,7 +143,7 @@ public class editAssignment extends AppCompatActivity  {
         String extraInfo = mExtraInfo.getText().toString();
         String dueClass = mDueClass.getItemAtPosition(mDueClass.getSelectedItemPosition()).toString();
 
-        db.editAssignment(oldAssignmentID, new Assignments(assignmentName, dueClass, dueDate, extraInfo, percentComplete));
+        db.editAssignment(oldAssignmentID, new Assignments(assignmentName, dueClass, dueDate, extraInfo, percentComplete, oldAssignmentID));
 
         // Bring user back to MainActivity
         startActivity(new Intent(editAssignment.this, MainActivity.class));

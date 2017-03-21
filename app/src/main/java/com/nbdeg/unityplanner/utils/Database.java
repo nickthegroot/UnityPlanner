@@ -66,13 +66,14 @@ public class Database {
         return classList;
     }
 
+
+    // Adding objects to database
     public void addAssignment(Assignments assignment) {
         Log.i(TAG, "Creating assignment: " + assignment.getName());
         String key = assignmentDb.push().getKey();
         assignment.setID(key);
         assignmentDb.child(key).setValue(assignment);
     }
-
     public void addClass(Classes mClass) {
         Log.i(TAG, "Creating class: " + mClass.getName());
         String key = classDb.push().getKey();
@@ -80,6 +81,10 @@ public class Database {
         classDb.child(key).setValue(mClass);
     }
 
+    // Editing existing objects in database
+    public void editClass(final String oldID, final Classes newClass) {
+        classDb.child(oldID).setValue(newClass);
+    }
     public void editAssignment(final String oldID, final Assignments newAssignment) {
         assignmentDb.child(oldID).setValue(newAssignment);
     }
