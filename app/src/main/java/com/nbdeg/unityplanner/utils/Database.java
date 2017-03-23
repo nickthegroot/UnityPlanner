@@ -96,7 +96,6 @@ public class Database {
     }
 
     public void editAssignment(final String oldID, final Assignments newAssignment) {
-
         assignmentDb.child(oldID).setValue(newAssignment);
     }
 
