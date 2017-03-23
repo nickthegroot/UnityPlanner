@@ -1,5 +1,10 @@
 package com.nbdeg.unityplanner.utils;
 
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -9,6 +14,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.nbdeg.unityplanner.R;
 import com.nbdeg.unityplanner.data.Assignments;
 import com.nbdeg.unityplanner.data.Classes;
 
@@ -68,11 +74,14 @@ public class Database {
 
 
     // Adding objects to database
-    public void addAssignment(Assignments assignment) {
+    public void addAssignment(Assignments assignment, Context context) {
         Log.i(TAG, "Creating assignment: " + assignment.getName());
         String key = assignmentDb.push().getKey();
         assignment.setID(key);
         assignmentDb.child(key).setValue(assignment);
+
+        // Notification
+        scheduleNotification(getNotification(assignment, context), assignment.getDueDate(), context);
     }
     public void addClass(Classes mClass) {
         Log.i(TAG, "Creating class: " + mClass.getName());
@@ -85,7 +94,28 @@ public class Database {
     public void editClass(final String oldID, final Classes newClass) {
         classDb.child(oldID).setValue(newClass);
     }
+
     public void editAssignment(final String oldID, final Assignments newAssignment) {
+
         assignmentDb.child(oldID).setValue(newAssignment);
+    }
+
+    // TODO Edit existing notifications
+    private void scheduleNotification(Notification notification, long notifyTime, Context context) {
+        Intent notificationIntent = new Intent(context, NotificationPublisher.class);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, notifyTime, pendingIntent);
+    }
+
+    private Notification getNotification(Assignments assignment, Context context) {
+        Notification.Builder builder = new Notification.Builder(context);
+        builder.setContentTitle("Assignment Due Tomorrow");
+        builder.setContentText(assignment.getName());
+        builder.setSmallIcon(R.drawable.ic_notification);
+        return builder.build();
     }
 }
