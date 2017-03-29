@@ -26,7 +26,6 @@ import java.util.ArrayList;
 public class addAssignment extends AppCompatActivity  {
 
     private EditText mAssignmentName;
-    private EditText mDueDate;
     private EditText mExtraInfo;
     private Spinner mDueClass;
     private int percentComplete = 0;
@@ -42,7 +41,6 @@ public class addAssignment extends AppCompatActivity  {
 
         // Find view by ID calls
         mAssignmentName = (EditText) findViewById(R.id.assignment_name);
-        mDueDate = (EditText) findViewById(R.id.due_date_edittext);
         mExtraInfo = (EditText) findViewById(R.id.extra_homework_info);
         mDueClass = (Spinner) findViewById(R.id.class_spinner);
         SeekBar mPercentComplete = (SeekBar) findViewById(R.id.percentComplete);
@@ -65,7 +63,7 @@ public class addAssignment extends AppCompatActivity  {
             }
         });
 
-        DatabaseReference classDb = db.classDb;
+        DatabaseReference classDb = Database.classDb;
         classDb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -105,7 +103,7 @@ public class addAssignment extends AppCompatActivity  {
         String extraInfo = mExtraInfo.getText().toString();
         String dueClass = mDueClass.getItemAtPosition(mDueClass.getSelectedItemPosition()).toString();
 
-        db.addAssignment(new Assignments(assignmentName, dueClass, dueDate, extraInfo, percentComplete), this);
+        Database.addAssignment(new Assignments(assignmentName, dueClass, dueDate, extraInfo, percentComplete), this);
 
         // Bring user back to MainActivity
         startActivity(new Intent(addAssignment.this, MainActivity.class));

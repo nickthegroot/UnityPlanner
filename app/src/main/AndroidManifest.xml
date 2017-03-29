@@ -23,10 +23,12 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-        <receiver android:name=".utils.NotificationPublisher"   />
+
+        <receiver android:name=".utils.NotificationPublisher" />
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/ic_notification" />
+            android:resource="@drawable/ic_logo" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorAccent" />
@@ -62,8 +64,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".editAssignment"></activity>
-        <activity android:name=".editClass"></activity>
+        <activity android:name=".editAssignment" />
+        <activity android:name=".editClass" />
+        <activity android:name=".IntroActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

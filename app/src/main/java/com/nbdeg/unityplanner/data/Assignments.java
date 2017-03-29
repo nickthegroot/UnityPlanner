@@ -1,5 +1,7 @@
 package com.nbdeg.unityplanner.data;
 
+import android.app.PendingIntent;
+
 @SuppressWarnings("unused")
 public class Assignments {
     private Long dueDate;
@@ -8,6 +10,7 @@ public class Assignments {
     private String dueClass;
     private int percentComplete;
     private String ID;
+    private PendingIntent notificationIntent;
 
     // Empty Constructor
     public Assignments() {}
@@ -51,6 +54,9 @@ public class Assignments {
     public void setID(String ID) {
         this.ID = ID;
     }
+    public void setNotificationIntent(PendingIntent notificationIntent) {
+        this.notificationIntent = notificationIntent;
+    }
 
     /* --- Getters --- */
 
@@ -71,6 +77,9 @@ public class Assignments {
     }
     public String getID() {
         return ID;
+    }
+    public PendingIntent getNotificationIntent() {
+        return notificationIntent;
     }
 }
 

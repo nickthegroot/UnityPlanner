@@ -9,6 +9,8 @@ public class Classes {
     private int roomNumber;
     private String buildingName;
     private String ID;
+    private String description;
+    private String section;
 
     // Empty Constructor
     public Classes() {
@@ -33,6 +35,16 @@ public class Classes {
         this.endDate = endDate;
         this.roomNumber = roomNumber;
         this.buildingName = buildingName;
+    }
+
+    // Google Classroom intergration
+    public Classes(String name, String teacher, Long startDate, int roomNumber, String description, String section) {
+        this.name = name;
+        this.teacher = teacher;
+        this.startDate = startDate;
+        this.roomNumber = roomNumber;
+        this.description = description;
+        this.section = section;
     }
 
     /* -- Getters and Setters -- */
@@ -84,6 +96,20 @@ public class Classes {
     }
     public void setID(String ID) {
         this.ID = ID;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getSection() {
+        return section;
+    }
+    public void setSection(String section) {
+        this.section = section;
     }
 }
 

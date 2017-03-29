@@ -22,13 +22,13 @@ import java.util.ArrayList;
 
 public class Database {
 
-    private String TAG = "Database";
+    private static final String TAG = "Database";
     private ArrayList<Assignments> assignmentList = new ArrayList<>();
     private ArrayList<Classes> classList = new ArrayList<>();
 
-    public FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    public DatabaseReference assignmentDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments");
-    public DatabaseReference classDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("classes");
+    public static FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    public static DatabaseReference assignmentDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments");
+    public static DatabaseReference classDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("classes");
 
     // Gets all assignments
     public ArrayList<Assignments> getAssignments() {
@@ -74,16 +74,18 @@ public class Database {
 
 
     // Adding objects to database
-    public void addAssignment(Assignments assignment, Context context) {
+    public static void addAssignment(Assignments assignment, Context context) {
         Log.i(TAG, "Creating assignment: " + assignment.getName());
+
+        // Notification
+        scheduleNotification(getNotification(assignment, context), assignment.getDueDate(), context, assignment);
+
+        // Database
         String key = assignmentDb.push().getKey();
         assignment.setID(key);
         assignmentDb.child(key).setValue(assignment);
-
-        // Notification
-        scheduleNotification(getNotification(assignment, context), assignment.getDueDate(), context);
     }
-    public void addClass(Classes mClass) {
+    public static void addClass(Classes mClass) {
         Log.i(TAG, "Creating class: " + mClass.getName());
         String key = classDb.push().getKey();
         mClass.setID(key);
@@ -91,30 +93,37 @@ public class Database {
     }
 
     // Editing existing objects in database
-    public void editClass(final String oldID, final Classes newClass) {
+    public static void editClass(final String oldID, final Classes newClass) {
         classDb.child(oldID).setValue(newClass);
     }
 
-    public void editAssignment(final String oldID, final Assignments newAssignment) {
+    public static void editAssignment(final String oldID, final Assignments newAssignment, Context context) {
+        editNotification(context, newAssignment);
         assignmentDb.child(oldID).setValue(newAssignment);
     }
 
-    // TODO Edit existing notifications
-    private void scheduleNotification(Notification notification, long notifyTime, Context context) {
+    private static void editNotification(Context context, Assignments assignments) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(assignments.getNotificationIntent());
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, assignments.getDueDate(), assignments.getNotificationIntent());
+    }
+
+    private static void scheduleNotification(Notification notification, long notifyTime, Context context, Assignments assignment) {
         Intent notificationIntent = new Intent(context, NotificationPublisher.class);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        assignment.setNotificationIntent(pendingIntent);
 
         AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, notifyTime, pendingIntent);
     }
 
-    private Notification getNotification(Assignments assignment, Context context) {
+    private static Notification getNotification(Assignments assignment, Context context) {
         Notification.Builder builder = new Notification.Builder(context);
         builder.setContentTitle("Assignment Due Tomorrow");
         builder.setContentText(assignment.getName());
-        builder.setSmallIcon(R.drawable.ic_notification);
+        builder.setSmallIcon(R.drawable.ic_assignments_due);
         return builder.build();
     }
 }
