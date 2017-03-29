@@ -74,18 +74,18 @@ public class Database {
 
 
     // Adding objects to database
-    public static void addAssignment(Assignments assignment, Context context) {
+    public void addAssignment(Assignments assignment, Context context) {
         Log.i(TAG, "Creating assignment: " + assignment.getName());
 
         // Notification
-        scheduleNotification(getNotification(assignment, context), assignment.getDueDate(), context, assignment);
+        // scheduleNotification(getNotification(assignment, context), assignment.getDueDate(), context, assignment);
 
         // Database
         String key = assignmentDb.push().getKey();
         assignment.setID(key);
         assignmentDb.child(key).setValue(assignment);
     }
-    public static void addClass(Classes mClass) {
+    public void addClass(Classes mClass) {
         Log.i(TAG, "Creating class: " + mClass.getName());
         String key = classDb.push().getKey();
         mClass.setID(key);
@@ -93,24 +93,24 @@ public class Database {
     }
 
     // Editing existing objects in database
-    public static void editClass(final String oldID, final Classes newClass) {
+    public void editClass(final String oldID, final Classes newClass) {
         classDb.child(oldID).setValue(newClass);
     }
 
-    public static void editAssignment(final String oldID, final Assignments newAssignment, Context context) {
+    public void editAssignment(final String oldID, final Assignments newAssignment, Context context) {
         editNotification(context, newAssignment);
         assignmentDb.child(oldID).setValue(newAssignment);
     }
 
-    private static void editNotification(Context context, Assignments assignments) {
+    private void editNotification(Context context, Assignments assignments) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(assignments.getNotificationIntent());
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, assignments.getDueDate(), assignments.getNotificationIntent());
     }
 
-    private static void scheduleNotification(Notification notification, long notifyTime, Context context, Assignments assignment) {
+    private void scheduleNotification(Notification notification, long notifyTime, Context context, Assignments assignment) {
         Intent notificationIntent = new Intent(context, NotificationPublisher.class);
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, 1);
+        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, assignment.getID());
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         assignment.setNotificationIntent(pendingIntent);
@@ -119,7 +119,7 @@ public class Database {
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, notifyTime, pendingIntent);
     }
 
-    private static Notification getNotification(Assignments assignment, Context context) {
+    private Notification getNotification(Assignments assignment, Context context) {
         Notification.Builder builder = new Notification.Builder(context);
         builder.setContentTitle("Assignment Due Tomorrow");
         builder.setContentText(assignment.getName());

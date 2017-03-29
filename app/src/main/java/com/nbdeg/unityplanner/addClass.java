@@ -25,8 +25,6 @@ public class addClass extends AppCompatActivity {
     private EditTextDatePicker mStartDate;
     private EditTextDatePicker mEndDate;
 
-    private int roomNumber;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,13 +55,11 @@ public class addClass extends AppCompatActivity {
         String teacherName = classTeacher.getText().toString();
         Long startDate = mStartDate.date.getTime();
         Long endDate = mEndDate.date.getTime();
-        if (!classRoomNumber.getText().toString().isEmpty()) {
-            roomNumber = Integer.parseInt(classRoomNumber.getText().toString());
-        }
+        String roomNumber = classRoomNumber.getText().toString();
         String buildingName = classBuildingName.getText().toString();
 
-        Database db = new Database();
-        db.addClass(new Classes(name, teacherName, startDate, endDate, roomNumber, buildingName));
+        Database database = new Database();
+        database.addClass(new Classes(name, teacherName, startDate, endDate, roomNumber, buildingName));
         startActivity(new Intent(addClass.this, MainActivity.class));
         return super.onOptionsItemSelected(item);
     }

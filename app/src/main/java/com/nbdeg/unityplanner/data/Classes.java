@@ -6,7 +6,7 @@ public class Classes {
     private String teacher;
     private Long startDate;
     private Long endDate;
-    private int roomNumber;
+    private String roomNumber;
     private String buildingName;
     private String ID;
     private String description;
@@ -17,7 +17,7 @@ public class Classes {
     }
 
     // Adding all info in one call
-    public Classes(String name, String teacher, Long startDate, Long endDate, int roomNumber, String buildingName, String ID) {
+    public Classes(String name, String teacher, Long startDate, Long endDate, String roomNumber, String buildingName, String ID) {
         this.name = name;
         this.teacher = teacher;
         this.startDate = startDate;
@@ -28,7 +28,7 @@ public class Classes {
     }
 
     // Adding all common info in one call
-    public Classes(String name, String teacher, Long startDate, Long endDate, int roomNumber, String buildingName) {
+    public Classes(String name, String teacher, Long startDate, Long endDate, String roomNumber, String buildingName) {
         this.name = name;
         this.teacher = teacher;
         this.startDate = startDate;
@@ -38,7 +38,7 @@ public class Classes {
     }
 
     // Google Classroom intergration
-    public Classes(String name, String teacher, Long startDate, int roomNumber, String description, String section) {
+    public Classes(String name, String teacher, Long startDate, String roomNumber, String description, String section) {
         this.name = name;
         this.teacher = teacher;
         this.startDate = startDate;
@@ -77,10 +77,10 @@ public class Classes {
         this.endDate = endDate;
     }
 
-    public int getRoomNumber() {
+    public String getRoomNumber() {
         return roomNumber;
     }
-    public void setRoomNumber(int roomNumber) {
+    public void setRoomNumber(String roomNumber) {
         this.roomNumber = roomNumber;
     }
 

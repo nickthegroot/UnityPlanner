@@ -21,12 +21,14 @@ public class IntroActivity extends AppIntro {
         addSlide(AppIntroFragment.newInstance("Welcome to Unity Planner", "The planner to unify your school life", R.mipmap.ic_logo_white, ContextCompat.getColor(this, R.color.colorPrimary)));
         addSlide(AppIntroFragment.newInstance("Unify your school life", "Unity Planner helps students stay organized by bringing common tools together in one place", R.drawable.ic_assignment_white, Color.RED));
         addSlide(new classroomSignIn());
+
+        setColorTransitionsEnabled(true);
     }
 
     @Override
     public void onSkipPressed(Fragment currentFragment) {
         super.onSkipPressed(currentFragment);
-        // Do something when users tap on Skip button.
+        startActivity(new Intent(IntroActivity.this, loginActivity.class));
     }
 
     @Override

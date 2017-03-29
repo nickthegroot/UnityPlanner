@@ -103,7 +103,8 @@ public class addAssignment extends AppCompatActivity  {
         String extraInfo = mExtraInfo.getText().toString();
         String dueClass = mDueClass.getItemAtPosition(mDueClass.getSelectedItemPosition()).toString();
 
-        Database.addAssignment(new Assignments(assignmentName, dueClass, dueDate, extraInfo, percentComplete), this);
+        Database database = new Database();
+        database.addAssignment(new Assignments(assignmentName, dueClass, dueDate, extraInfo, percentComplete), this);
 
         // Bring user back to MainActivity
         startActivity(new Intent(addAssignment.this, MainActivity.class));

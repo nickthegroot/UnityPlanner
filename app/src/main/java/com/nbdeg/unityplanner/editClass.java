@@ -39,7 +39,7 @@ public class editClass extends AppCompatActivity {
     private String teacher;
     private Date startDate;
     private Date endDate;
-    private int roomNumber;
+    private String roomNumber;
     private String buildingName;
     private DatabaseReference classRef;
 
@@ -61,7 +61,7 @@ public class editClass extends AppCompatActivity {
         classBuildingName = (EditText) findViewById(R.id.class_edit_building);
 
         oldClassID = getIntent().getStringExtra("ID");
-        db.classDb.addListenerForSingleValueEvent(new ValueEventListener() {
+        Database.classDb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
@@ -71,8 +71,11 @@ public class editClass extends AppCompatActivity {
                         Classes mClass = userSnapshot.getValue(Classes.class);
                         name = mClass.getName();
                         teacher = mClass.getTeacher();
-                        startDate = new Date(mClass.getStartDate());
-                        endDate = new Date(mClass.getEndDate());
+                        if (mClass.getStartDate() != null) {
+                            startDate = new Date(mClass.getStartDate());
+                        } if (mClass.getEndDate() != null) {
+                            endDate = new Date(mClass.getEndDate());
+                        }
                         roomNumber = mClass.getRoomNumber();
                         buildingName = mClass.getBuildingName();
                         classRef = userSnapshot.getRef();
@@ -80,9 +83,12 @@ public class editClass extends AppCompatActivity {
                         // Set data from class
                         className.setText(name);
                         classTeacher.setText(teacher);
-                        mStartDate.setDisplay(startDate);
-                        mEndDate.setDisplay(endDate);
-                        classRoomNumber.setText(Integer.toString(roomNumber));
+                        if (startDate != null) {
+                            mStartDate.setDisplay(startDate);
+                        } if (endDate != null) {
+                            mEndDate.setDisplay(endDate);
+                        }
+                        classRoomNumber.setText(roomNumber);
                         classBuildingName.setText(buildingName);
                     }
                 }
@@ -109,12 +115,11 @@ public class editClass extends AppCompatActivity {
         String teacherName = classTeacher.getText().toString();
         Long startDate = mStartDate.date.getTime();
         Long endDate = mEndDate.date.getTime();
-        if (!classRoomNumber.getText().toString().isEmpty()) {
-            roomNumber = Integer.parseInt(classRoomNumber.getText().toString());
-        }
+        String roomNumber = classRoomNumber.getText().toString();
         String buildingName = classBuildingName.getText().toString();
 
-        db.editClass(oldClassID, new Classes(name, teacherName, startDate, endDate, roomNumber, buildingName, oldClassID));
+        Database database = new Database();
+        database.editClass(oldClassID, new Classes(name, teacherName, startDate, endDate, roomNumber, buildingName, oldClassID));
         startActivity(new Intent(editClass.this, MainActivity.class));
         return super.onOptionsItemSelected(item);
     }
