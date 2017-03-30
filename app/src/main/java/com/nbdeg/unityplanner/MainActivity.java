@@ -177,21 +177,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        if (id == R.id.action_logout) {
-            AuthUI.getInstance()
-                    .signOut(this)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        public void onComplete(@NonNull Task<Void> task) {
-                            // user is now signed out
-                            startActivity(new Intent(MainActivity.this, loginActivity.class));
-                            finish();
-                        }
-                    });
+        switch (id) {
+            case R.id.action_settings:
+                return true;
+            case R.id.action_logout:
+                AuthUI.getInstance()
+                        .signOut(this)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            public void onComplete(@NonNull Task<Void> task) {
+                                // user is now signed out
+                                startActivity(new Intent(MainActivity.this, loginActivity.class));
+                                finish();
+                            }
+                        });
+            case R.id.action_tutorial:
+                startActivity(new Intent(MainActivity.this, IntroActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }
