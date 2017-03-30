@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.firebase.database.DatabaseReference;
 import com.nbdeg.unityplanner.data.Assignments;
 import com.nbdeg.unityplanner.utils.AssignmentHolder;
 import com.nbdeg.unityplanner.utils.Database;
@@ -22,8 +21,10 @@ public class homeScreen extends Fragment {
     private OnFragmentInteractionListener mListener;
     private FirebaseRecyclerAdapter mAdapter;
 
-    private boolean haveAssignmentsDue = false;
-    private Database db = new Database();
+    TextView haveAssignmentsDueView;
+    RecyclerView assignmentsDue;
+
+    boolean haveAssignmentsDue = false;
 
     public homeScreen() {
         // Required empty public constructor
@@ -38,22 +39,20 @@ public class homeScreen extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home_screen, container, false);
 
-        final TextView haveAssignmentsDueView = (TextView) view.findViewById(R.id.assignments_due);
-        final RecyclerView assignmentsDue = (RecyclerView) view.findViewById(R.id.home_assignment_list);
-
-        DatabaseReference assignmentDb = db.assignmentDb;
+        haveAssignmentsDueView = (TextView) view.findViewById(R.id.assignments_due);
+        assignmentsDue = (RecyclerView) view.findViewById(R.id.home_assignment_list);
         assignmentsDue.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        mAdapter = new FirebaseRecyclerAdapter<Assignments, AssignmentHolder>(Assignments.class, R.layout.assignment_layout, AssignmentHolder.class, assignmentDb) {
+        mAdapter = new FirebaseRecyclerAdapter<Assignments, AssignmentHolder>(Assignments.class, R.layout.assignment_layout, AssignmentHolder.class, Database.dueAssignmentsDb.orderByChild("dueDate").limitToFirst(5)) {
             @Override
             protected void populateViewHolder(AssignmentHolder viewHolder, final Assignments assignment, final int position) {
+                // Have assignments due - set haveAssignmentsDue to true
+                if (!haveAssignmentsDue && assignment.getPercent() != 100) {
+                    haveAssignmentsDue = true;
+                    haveAssignmentsDueView.setVisibility(View.INVISIBLE);
+                    assignmentsDue.setVisibility(View.VISIBLE);
+                }
                 if (assignment.getPercent() != 100) {
-                    // Have assignments due - set haveAssignmentsDue to true
-                    if (!haveAssignmentsDue) {
-                        haveAssignmentsDue = true;
-                        haveAssignmentsDueView.setVisibility(View.INVISIBLE);
-                        assignmentsDue.setVisibility(View.VISIBLE);
-                    }
                     viewHolder.setEverything(assignment);
                     viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                         @Override

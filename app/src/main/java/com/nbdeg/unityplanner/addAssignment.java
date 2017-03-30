@@ -104,7 +104,12 @@ public class addAssignment extends AppCompatActivity  {
         String dueClass = mDueClass.getItemAtPosition(mDueClass.getSelectedItemPosition()).toString();
 
         Database database = new Database();
-        database.addAssignment(new Assignments(assignmentName, dueClass, dueDate, extraInfo, percentComplete), this);
+
+        if (percentComplete == 100) {
+            database.finishAssignment(new Assignments(assignmentName, dueClass, dueDate, extraInfo, percentComplete), false, this);
+        } else {
+            database.addAssignment(new Assignments(assignmentName, dueClass, dueDate, extraInfo, percentComplete), this);
+        }
 
         // Bring user back to MainActivity
         startActivity(new Intent(addAssignment.this, MainActivity.class));

@@ -366,13 +366,23 @@ public class classroomLogin extends AppCompatActivity implements EasyPermissions
                             cal.setTimeInMillis(System.currentTimeMillis());
                         }
 
-                        database.addAssignment(new Assignments(
-                                courseWork.getTitle(),
-                                course.getName(),
-                                cal.getTimeInMillis(),
-                                courseWork.getDescription(),
-                                assignmentPercentDone
-                        ), getApplicationContext());
+                        if (assignmentPercentDone == 100) {
+                            database.finishAssignment(new Assignments(
+                                    courseWork.getTitle(),
+                                    course.getName(),
+                                    cal.getTimeInMillis(),
+                                    courseWork.getDescription(),
+                                    assignmentPercentDone
+                            ), false, getApplicationContext());
+                        } else {
+                            database.addAssignment(new Assignments(
+                                    courseWork.getTitle(),
+                                    course.getName(),
+                                    cal.getTimeInMillis(),
+                                    courseWork.getDescription(),
+                                    assignmentPercentDone
+                            ), getApplicationContext());
+                        }
                     }
                 }
 

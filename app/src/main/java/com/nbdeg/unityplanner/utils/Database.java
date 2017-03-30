@@ -27,13 +27,14 @@ public class Database {
     private ArrayList<Classes> classList = new ArrayList<>();
 
     public static FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    public static DatabaseReference assignmentDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments");
+    public static DatabaseReference doneAssignmentsDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments").child("done");
     public static DatabaseReference classDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("classes");
+    public static DatabaseReference dueAssignmentsDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments").child("due");
 
     // Gets all assignments
     public ArrayList<Assignments> getAssignments() {
         assignmentList.clear();
-        assignmentDb.addListenerForSingleValueEvent(new ValueEventListener() {
+        doneAssignmentsDb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
@@ -81,10 +82,11 @@ public class Database {
         // scheduleNotification(getNotification(assignment, context), assignment.getDueDate(), context, assignment);
 
         // Database
-        String key = assignmentDb.push().getKey();
+        String key = dueAssignmentsDb.push().getKey();
         assignment.setID(key);
-        assignmentDb.child(key).setValue(assignment);
+        dueAssignmentsDb.child(key).setValue(assignment);
     }
+
     public void addClass(Classes mClass) {
         Log.i(TAG, "Creating class: " + mClass.getName());
         String key = classDb.push().getKey();
@@ -92,14 +94,34 @@ public class Database {
         classDb.child(key).setValue(mClass);
     }
 
+    public void finishAssignment(Assignments finishedAssignment, boolean isExisting, Context context) {
+        if (isExisting) {
+            // cancelNotification(context, finishedAssignment);
+            dueAssignmentsDb.child(finishedAssignment.getID()).removeValue();
+            doneAssignmentsDb.child(finishedAssignment.getID()).setValue(finishedAssignment);
+        } else {
+            Log.i(TAG, "Creating finished assignment: " + finishedAssignment.getName());
+            doneAssignmentsDb.push().setValue(finishedAssignment);
+        }
+    }
+
     // Editing existing objects in database
     public void editClass(final String oldID, final Classes newClass) {
         classDb.child(oldID).setValue(newClass);
     }
 
-    public void editAssignment(final String oldID, final Assignments newAssignment, Context context) {
-        editNotification(context, newAssignment);
-        assignmentDb.child(oldID).setValue(newAssignment);
+    public void editAssignment(final Assignments newAssignment, Context context) {
+        if (newAssignment.getPercent() == 100) {
+            finishAssignment(newAssignment, true, context);
+        } else {
+            // editNotification(context, newAssignment);
+            dueAssignmentsDb.child(newAssignment.getID()).setValue(newAssignment);
+        }
+    }
+
+    private void cancelNotification(Context context, Assignments assignments) {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        alarmManager.cancel(assignments.getNotificationIntent());
     }
 
     private void editNotification(Context context, Assignments assignments) {

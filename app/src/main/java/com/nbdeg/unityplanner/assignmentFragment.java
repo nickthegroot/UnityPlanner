@@ -2,7 +2,6 @@ package com.nbdeg.unityplanner;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,13 +12,13 @@ import android.view.ViewGroup;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
 import com.nbdeg.unityplanner.data.Assignments;
 import com.nbdeg.unityplanner.utils.AssignmentHolder;
 import com.nbdeg.unityplanner.utils.Database;
 
 public class assignmentFragment extends Fragment {
-    private OnFragmentInteractionListener mListener;
-    private FirebaseRecyclerAdapter mAdapter;
+    private FirebaseRecyclerAdapter mDueAdapter;
 
     public assignmentFragment() {
         // Required empty public constructor
@@ -36,14 +35,14 @@ public class assignmentFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_assignment, container, false);
 
         // Getting Data
-        Database db = new Database();
-        final DatabaseReference assignmentDb = db.assignmentDb;
+        final DatabaseReference dueDb = Database.dueAssignmentsDb;
+        Query dueQuery = dueDb.orderByChild("dueDate");
 
         // Displaying Data
         final RecyclerView assignmentView = (RecyclerView) view.findViewById(R.id.assignment_list);
         assignmentView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        mAdapter = new FirebaseRecyclerAdapter<Assignments, AssignmentHolder>(Assignments.class, R.layout.assignment_layout, AssignmentHolder.class, assignmentDb) {
+        mDueAdapter = new FirebaseRecyclerAdapter<Assignments, AssignmentHolder>(Assignments.class, R.layout.assignment_layout, AssignmentHolder.class, dueQuery) {
             @Override
             protected void populateViewHolder(AssignmentHolder viewHolder, final Assignments assignment, final int position) {
                 viewHolder.setEverything(assignment);
@@ -51,34 +50,25 @@ public class assignmentFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         Intent intent = new Intent(getContext(), editAssignment.class);
-                        intent.putExtra("ID", mAdapter.getRef(position).getKey());
+                        intent.putExtra("ID", mDueAdapter.getRef(position).getKey());
                         startActivity(intent);
                     }
                 });
             }
         };
-        assignmentView.setAdapter(mAdapter);
+
+        assignmentView.setAdapter(mDueAdapter);
         return view;
     }
 
-            @Override
-            public void onAttach(Context context) {
-                super.onAttach(context);
-                if (context instanceof OnFragmentInteractionListener) {
-                    mListener = (OnFragmentInteractionListener) context;
-                } else {
-                    throw new RuntimeException(context.toString()
-                            + " must implement OnFragmentInteractionListener");
-                }
-            }
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
 
-            @Override
-            public void onDetach() {
-                super.onDetach();
-                mAdapter.cleanup();
-                mListener = null;
-            }
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mDueAdapter.cleanup();
     }
 }

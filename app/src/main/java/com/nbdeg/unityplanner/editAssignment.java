@@ -95,7 +95,7 @@ public class editAssignment extends AppCompatActivity  {
         });
 
         oldAssignmentID = getIntent().getStringExtra("ID");
-        Database.assignmentDb.addListenerForSingleValueEvent(new ValueEventListener() {
+        Database.dueAssignmentsDb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
@@ -143,7 +143,11 @@ public class editAssignment extends AppCompatActivity  {
         String extraInfo = mExtraInfo.getText().toString();
         String dueClass = mDueClass.getItemAtPosition(mDueClass.getSelectedItemPosition()).toString();
 
-        db.editAssignment(oldAssignmentID, new Assignments(assignmentName, dueClass, dueDate, extraInfo, percentComplete, oldAssignmentID), this);
+        if (percentComplete == 100) {
+            db.finishAssignment(new Assignments(assignmentName, dueClass, dueDate, extraInfo, percentComplete, oldAssignmentID), true, this);
+        } else {
+            db.editAssignment(new Assignments(assignmentName, dueClass, dueDate, extraInfo, percentComplete, oldAssignmentID), this);
+        }
 
         // Bring user back to MainActivity
         startActivity(new Intent(editAssignment.this, MainActivity.class));
