@@ -1,6 +1,7 @@
 package com.nbdeg.unityplanner;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -46,8 +47,16 @@ public class classFragment extends Fragment {
 
         mAdapter = new FirebaseRecyclerAdapter<Classes, ClassesHolder>(Classes.class, R.layout.classes_layout, ClassesHolder.class, classDb) {
             @Override
-            protected void populateViewHolder(ClassesHolder viewHolder, Classes mClass, int position) {
+            protected void populateViewHolder(ClassesHolder viewHolder, final Classes mClass, final int position) {
                 viewHolder.setEverything(mClass);
+                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getContext(), editClass.class);
+                        intent.putExtra("ID", mAdapter.getRef(position).getKey());
+                        startActivity(intent);
+                    }
+                });
             }
         };
 

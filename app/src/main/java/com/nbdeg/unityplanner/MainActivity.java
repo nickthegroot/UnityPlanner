@@ -30,7 +30,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 @SuppressWarnings({"CanBeFinal", "MismatchedQueryAndUpdateOfCollection"})
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, classFragment.OnFragmentInteractionListener, assignmentFragment.OnFragmentInteractionListener, homeScreen.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, classFragment.OnFragmentInteractionListener, homeScreen.OnFragmentInteractionListener{
 
     private Database db = new Database();
 
@@ -70,9 +70,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         final TextView userEmail = (TextView) headerView.findViewById(R.id.user_email);
         final ImageView userPhoto = (ImageView) headerView.findViewById(R.id.user_photo);
 
-        userName.setText(db.user.getDisplayName());
-        userEmail.setText(db.user.getEmail());
-        Picasso.with(this).load(db.user.getPhotoUrl())
+        userName.setText(Database.user.getDisplayName());
+        userEmail.setText(Database.user.getEmail());
+        Picasso.with(this).load(Database.user.getPhotoUrl())
                 .resize(150, 150)
                 .into(userPhoto, new Callback() {
                     @Override
@@ -177,21 +177,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        if (id == R.id.action_logout) {
-            AuthUI.getInstance()
-                    .signOut(this)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        public void onComplete(@NonNull Task<Void> task) {
-                            // user is now signed out
-                            startActivity(new Intent(MainActivity.this, loginActivity.class));
-                            finish();
-                        }
-                    });
+        switch (id) {
+            case R.id.action_settings:
+                return true;
+            case R.id.action_logout:
+                AuthUI.getInstance()
+                        .signOut(this)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            public void onComplete(@NonNull Task<Void> task) {
+                                // user is now signed out
+                                startActivity(new Intent(MainActivity.this, loginActivity.class));
+                                finish();
+                            }
+                        });
+            case R.id.action_tutorial:
+                startActivity(new Intent(MainActivity.this, IntroActivity.class));
         }
         return super.onOptionsItemSelected(item);
     }

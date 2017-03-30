@@ -13,12 +13,12 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        android:inputType="textCapSentences"
+        android:inputType="textCapWords"
         android:ems="10"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:id="@+id/assignment_edit_name"
-        android:hint="@string/assignment_name"
+        android:id="@+id/class_edit_name"
+        android:hint="@string/class_name"
         android:padding="5dp"
         android:textSize="18sp"
         android:background="@null" />
@@ -27,24 +27,48 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#c0c0c0"
-        android:layout_below="@id/assignment_edit_name"/>
+        android:layout_below="@id/class_edit_name"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="43dp"
+        android:inputType="textCapWords"
+        android:ems="10"
+        android:id="@+id/class_edit_teacher"
+        android:hint="@string/teacher_name"
+        android:textSize="16sp"
+        android:layout_below="@id/class_edit_name"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="2dp"
+        android:padding="5dp"
+        android:background="@null" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#c0c0c0"
+        android:layout_below="@id/class_edit_teacher"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="43dp"
         android:orientation="horizontal"
-        android:layout_below="@id/assignment_edit_name"
+        android:layout_below="@id/class_edit_teacher"
         android:layout_alignParentStart="true"
         android:id="@+id/linearLayout">
 
-        <Spinner
+        <EditText
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:id="@+id/class_edit_spinner"
-            android:theme="@android:style/Theme.Holo.Light.DarkActionBar"
             android:layout_weight="1"
-            android:background="@null"/>
-        <!--android:layout_marginBottom="3dp"/>-->
+            android:id="@+id/class_edit_start_date"
+            android:padding="5dp"
+            android:focusable="false"
+            android:hint="@string/start_date"
+            android:textSize="16sp"
+            android:background="@null"
+            android:gravity="center"
+            android:inputType="date"/>
 
         <View
             android:layout_width="1dp"
@@ -55,13 +79,14 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:id="@+id/due_date_edit_edittext"
+            android:id="@+id/class_edit_end_date"
             android:padding="5dp"
             android:focusable="false"
-            android:hint="@string/due_date"
+            android:hint="@string/end_date"
             android:textSize="16sp"
             android:background="@null"
-            tools:ignore="TextFields" />
+            android:gravity="center"
+            android:inputType="date"/>
     </LinearLayout>
 
     <View
@@ -70,56 +95,41 @@
         android:background="#c0c0c0"
         android:layout_below="@id/linearLayout"/>
 
-    <LinearLayout
+    <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_below="@+id/linearLayout"
-        android:layout_alignParentStart="true"
-        android:id="@+id/percent_complete"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="2dp">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/completion"
-            android:padding="5dp"
-            android:textColor="@color/black"
-            android:textSize="15sp"/>
-        <SeekBar
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/percent_complete_edit"
-            android:layout_marginBottom="1dp"/>
-    </LinearLayout>
+        android:layout_height="43dp"
+        android:inputType="number"
+        android:id="@+id/class_edit_room"
+        android:padding="5dp"
+        android:hint="@string/room_number"
+        android:textSize="16sp"
+        android:background="@null"
+        android:layout_below="@id/linearLayout"/>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#c0c0c0"
-        android:layout_below="@id/percent_complete"/>
+        android:layout_below="@id/class_edit_room"/>
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textMultiLine"
-        android:ems="10"
-        android:id="@+id/extra_homework_info_edit"
-        android:hint="@string/extra_infomation"
-        android:textSize="16sp"
-        android:layout_below="@id/percent_complete"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="2dp"
+        android:layout_height="43dp"
+        android:inputType="textCapWords"
+        android:id="@+id/class_edit_building"
         android:padding="5dp"
-        android:background="@null" />
+        android:hint="@string/building_name"
+        android:textSize="16sp"
+        android:background="@null"
+        android:layout_below="@id/class_edit_room"/>
 
     <Button
-        android:id="@+id/delete_assignment"
+        android:id="@+id/delete_class"
         style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:onClick="deleteAssignment"
+        android:onClick="deleteClass"
         android:text="@string/delete"
         android:textColor="#FFFF4444" />
 </RelativeLayout>

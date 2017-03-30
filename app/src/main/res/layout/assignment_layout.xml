@@ -29,6 +29,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="16sp"
                     android:id="@+id/view_assignment_class"
+                    android:layout_below="@id/view_assignment_name"
                     android:gravity="right" />
         </RelativeLayout>
     </android.support.v7.widget.CardView>

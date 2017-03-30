@@ -12,4 +12,9 @@
         android:orderInCategory="150"
         android:title="@string/log_out"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_tutorial"
+        android:orderInCategory="50"
+        android:title="App Introduction"
+        app:showAsAction="never" />
 </menu>
