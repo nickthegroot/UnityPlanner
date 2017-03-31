@@ -15,6 +15,7 @@ import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
 import com.google.firebase.auth.FirebaseAuth;
+import com.nbdeg.unityplanner.utils.Database;
 
 import java.util.Arrays;
 
@@ -56,6 +57,8 @@ public class loginActivity extends AppCompatActivity {
 
             // Successfully signed in
             if (resultCode == ResultCodes.OK) {
+
+                Database.refreshDatabase();
 
                 //  Declare a new thread to do a preference check
                 Thread t = new Thread(new Runnable() {

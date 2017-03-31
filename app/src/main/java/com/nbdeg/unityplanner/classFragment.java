@@ -2,7 +2,6 @@ package com.nbdeg.unityplanner;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,7 +18,6 @@ import com.nbdeg.unityplanner.utils.Database;
 
 public class classFragment extends Fragment {
 
-    private OnFragmentInteractionListener mListener;
     private FirebaseRecyclerAdapter mAdapter;
 
     public classFragment() {
@@ -39,7 +37,7 @@ public class classFragment extends Fragment {
 
         // Gets Firebase Information
         Database db = new Database();
-        DatabaseReference classDb = db.classDb;
+        DatabaseReference classDb = Database.classDb;
 
         // Displaying Data
         RecyclerView classesView = (RecyclerView) view.findViewById(R.id.class_list);
@@ -67,22 +65,11 @@ public class classFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         mAdapter.cleanup();
-        mListener = null;
-    }
-
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
     }
 }

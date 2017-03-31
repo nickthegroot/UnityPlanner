@@ -3,7 +3,6 @@ package com.nbdeg.unityplanner;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -30,7 +29,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 @SuppressWarnings({"CanBeFinal", "MismatchedQueryAndUpdateOfCollection"})
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, classFragment.OnFragmentInteractionListener, homeScreen.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private Database db = new Database();
 
@@ -90,10 +89,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 });
 
         if (findViewById(R.id.fragment_container) != null) {
-
-            // However, if we're being restored from a previous state,
-            // then we don't need to do anything and should return or else
-            // we could end up with overlapping fragments.
             if (savedInstanceState != null) {
                 return;
             }
@@ -124,7 +119,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
+    /**
+     * Changes fragment based on user selected choice from Navigation Bar.
+     * @param item ID of selected item
+     */
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
@@ -134,34 +132,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             assignmentFragment newFragment = new assignmentFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-            // Replace whatever is in the fragment_container view with this fragment,
-            // and add the transaction to the back stack so the user can navigate back
             transaction.replace(R.id.fragment_container, newFragment);
             transaction.addToBackStack(null);
-
-            // Commit the transaction
             transaction.commit();
         } else if (id == R.id.nav_classes) {
             classFragment newFragment = new classFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-            // Replace whatever is in the fragment_container view with this fragment,
-            // and add the transaction to the back stack so the user can navigate back
             transaction.replace(R.id.fragment_container, newFragment);
             transaction.addToBackStack(null);
-
-            // Commit the transaction
             transaction.commit();
         } else if (id == R.id.nav_home) {
             homeScreen newFragment = new homeScreen();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-            // Replace whatever is in the fragment_container view with this fragment,
-            // and add the transaction to the back stack so the user can navigate back
             transaction.replace(R.id.fragment_container, newFragment);
             transaction.addToBackStack(null);
-
-            // Commit the transaction
             transaction.commit();
         }
 
@@ -170,33 +156,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
+    /**
+     * Adds functions to three dot menu on Main Screens
+     * @param item ID of the selected item
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        switch (id) {
-            case R.id.action_settings:
-                return true;
-            case R.id.action_logout:
-                AuthUI.getInstance()
-                        .signOut(this)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            public void onComplete(@NonNull Task<Void> task) {
-                                // user is now signed out
-                                startActivity(new Intent(MainActivity.this, loginActivity.class));
-                                finish();
-                            }
-                        });
-            case R.id.action_tutorial:
-                startActivity(new Intent(MainActivity.this, IntroActivity.class));
+        if (id == R.id.action_logout) {
+            AuthUI.getInstance()
+                    .signOut(this)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        public void onComplete(@NonNull Task<Void> task) {
+                            // user is now signed out
+                            startActivity(new Intent(MainActivity.this, loginActivity.class));
+                            finish();
+                        }
+                    });
+        } else if (id == R.id.action_settings) {
+            return true;
+        } else if (id == R.id.action_tutorial) {
+            startActivity(new Intent(MainActivity.this, IntroActivity.class));
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
     }
 }

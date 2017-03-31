@@ -2,7 +2,6 @@ package com.nbdeg.unityplanner;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,7 +17,6 @@ import com.nbdeg.unityplanner.utils.AssignmentHolder;
 import com.nbdeg.unityplanner.utils.Database;
 
 public class homeScreen extends Fragment {
-    private OnFragmentInteractionListener mListener;
     private FirebaseRecyclerAdapter mAdapter;
 
     TextView haveAssignmentsDueView;
@@ -70,33 +68,14 @@ public class homeScreen extends Fragment {
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         mAdapter.cleanup();
-        mListener = null;
-    }
-
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
     }
 }
