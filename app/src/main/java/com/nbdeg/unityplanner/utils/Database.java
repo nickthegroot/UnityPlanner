@@ -31,6 +31,13 @@ public class Database {
     public static DatabaseReference classDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("classes");
     public static DatabaseReference dueAssignmentsDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments").child("due");
 
+    public static void refreshDatabase() {
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        doneAssignmentsDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments").child("done");
+        classDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("classes");
+        dueAssignmentsDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments").child("due");
+    }
+
     // Gets all assignments
     public ArrayList<Assignments> getAssignments() {
         assignmentList.clear();
