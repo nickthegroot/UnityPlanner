@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1084759978628-qu0fcoads4anhekqgvqkifo8sd368j9g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nbdeg.unityplanner",
+            "certificate_hash": "277f623468bfd04cf46a455fa4f6350f58a2a471"
+          }
+        },
+        {
           "client_id": "1084759978628-eniqmdpr4a7ud6vdgdq8m2d3p5hm6nc1.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
