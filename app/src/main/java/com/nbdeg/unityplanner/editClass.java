@@ -14,6 +14,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.nbdeg.unityplanner.data.Assignments;
 import com.nbdeg.unityplanner.data.Classes;
 import com.nbdeg.unityplanner.utils.Database;
 import com.nbdeg.unityplanner.utils.EditTextDatePicker;
@@ -43,7 +44,7 @@ public class editClass extends AppCompatActivity {
     private String buildingName;
     private DatabaseReference classRef;
 
-    Database db = new Database();
+    private Classes oldClass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,16 +69,16 @@ public class editClass extends AppCompatActivity {
                     if (Objects.equals(userSnapshot.getKey(), oldClassID)) {
 
                         // Get data from class
-                        Classes mClass = userSnapshot.getValue(Classes.class);
-                        name = mClass.getName();
-                        teacher = mClass.getTeacher();
-                        if (mClass.getStartDate() != null) {
-                            startDate = new Date(mClass.getStartDate());
-                        } if (mClass.getEndDate() != null) {
-                            endDate = new Date(mClass.getEndDate());
+                        oldClass = userSnapshot.getValue(Classes.class);
+                        name = oldClass.getName();
+                        teacher = oldClass.getTeacher();
+                        if (oldClass.getStartDate() != null) {
+                            startDate = new Date(oldClass.getStartDate());
+                        } if (oldClass.getEndDate() != null) {
+                            endDate = new Date(oldClass.getEndDate());
                         }
-                        roomNumber = mClass.getRoomNumber();
-                        buildingName = mClass.getBuildingName();
+                        roomNumber = oldClass.getRoomNumber();
+                        buildingName = oldClass.getBuildingName();
                         classRef = userSnapshot.getRef();
 
                         // Set data from class
@@ -118,14 +119,38 @@ public class editClass extends AppCompatActivity {
         String roomNumber = classRoomNumber.getText().toString();
         String buildingName = classBuildingName.getText().toString();
 
-        Database database = new Database();
-        database.editClass(oldClassID, new Classes(name, teacherName, startDate, endDate, roomNumber, buildingName, oldClassID));
+        Database.editClass(oldClassID, new Classes(name, teacherName, startDate, endDate, roomNumber, buildingName, oldClassID));
         startActivity(new Intent(editClass.this, MainActivity.class));
         return super.onOptionsItemSelected(item);
     }
 
     public void deleteClass(View view) {
         classRef.removeValue();
-        startActivity(new Intent(editClass.this, MainActivity.class));
+        final DatabaseReference allAssignments = Database.allAssignmentsDb;
+        final DatabaseReference dueAssignments = Database.dueAssignmentsDb;
+        final DatabaseReference doneAssignments = Database.doneAssignmentsDb;
+        allAssignments.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    Assignments assignment = userSnapshot.getValue(Assignments.class);
+                        if (assignment.getPercent() == 100) {
+                            doneAssignments.child(assignment.getID()).removeValue();
+                            allAssignments.child(assignment.getID()).removeValue();
+                        } else {
+                            dueAssignments.child(assignment.getID()).removeValue();
+                            allAssignments.child(assignment.getID()).removeValue();
+                    }
+                }
+
+                startActivity(new Intent(editClass.this, MainActivity.class));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                startActivity(new Intent(editClass.this, MainActivity.class));
+            }
+        });
+
     }
 }

@@ -106,9 +106,19 @@ public class addAssignment extends AppCompatActivity  {
         Database database = new Database();
 
         if (percentComplete == 100) {
-            database.finishAssignment(new Assignments(assignmentName, dueClass, dueDate, extraInfo, percentComplete), false, this);
+            Database.addFinishedAssignment(new Assignments(
+                    assignmentName,
+                    dueClass,
+                    dueDate,
+                    extraInfo,
+                    percentComplete));
         } else {
-            database.addAssignment(new Assignments(assignmentName, dueClass, dueDate, extraInfo, percentComplete), this);
+            Database.addDueAssignment(new Assignments(
+                    assignmentName,
+                    dueClass,
+                    dueDate,
+                    extraInfo,
+                    percentComplete));
         }
 
         // Bring user back to MainActivity

@@ -1,10 +1,5 @@
 package com.nbdeg.unityplanner.utils;
 
-import android.app.AlarmManager;
-import android.app.Notification;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -14,7 +9,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.nbdeg.unityplanner.R;
 import com.nbdeg.unityplanner.data.Assignments;
 import com.nbdeg.unityplanner.data.Classes;
 
@@ -23,23 +17,25 @@ import java.util.ArrayList;
 public class Database {
 
     private static final String TAG = "Database";
-    private ArrayList<Assignments> assignmentList = new ArrayList<>();
-    private ArrayList<Classes> classList = new ArrayList<>();
+    private static ArrayList<Assignments> assignmentList = new ArrayList<>();
+    private static ArrayList<Classes> classList = new ArrayList<>();
 
     public static FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    public static DatabaseReference doneAssignmentsDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments").child("done");
     public static DatabaseReference classDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("classes");
+    public static DatabaseReference doneAssignmentsDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments").child("done");
     public static DatabaseReference dueAssignmentsDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments").child("due");
+    public static DatabaseReference allAssignmentsDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments").child("all");
 
     public static void refreshDatabase() {
         user = FirebaseAuth.getInstance().getCurrentUser();
-        doneAssignmentsDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments").child("done");
         classDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("classes");
+        doneAssignmentsDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments").child("done");
         dueAssignmentsDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments").child("due");
+        allAssignmentsDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments").child("all");
     }
 
     // Gets all assignments
-    public ArrayList<Assignments> getAssignments() {
+    public static ArrayList<Assignments> getAssignments() {
         assignmentList.clear();
         doneAssignmentsDb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -60,7 +56,7 @@ public class Database {
     }
 
     // Gets all classes
-    public ArrayList<Classes> getClasses() {
+    public static ArrayList<Classes> getClasses() {
         classList.clear();
         classDb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -81,63 +77,90 @@ public class Database {
     }
 
 
-    // Adding objects to database
-    public void addAssignment(Assignments assignment, Context context) {
-        Log.i(TAG, "Creating assignment: " + assignment.getName());
+    public static void addDueAssignment(Assignments assignment) {
+        Log.i(TAG, "Creating due assignment: " + assignment.getName());
 
-        // Notification
-        // scheduleNotification(getNotification(assignment, context), assignment.getDueDate(), context, assignment);
-
-        // Database
         String key = dueAssignmentsDb.push().getKey();
         assignment.setID(key);
+        allAssignmentsDb.child(key).setValue(assignment);
         dueAssignmentsDb.child(key).setValue(assignment);
     }
 
-    public void addClass(Classes mClass) {
+    public static void addFinishedAssignment(Assignments assignment) {
+        Log.i(TAG, "Creating finished assignment: " + assignment.getName());
+
+        String key = doneAssignmentsDb.push().getKey();
+        assignment.setID(key);
+        allAssignmentsDb.child(key).setValue(assignment);
+        doneAssignmentsDb.child(key).setValue(assignment);
+    }
+
+    public static void addClass(Classes mClass) {
         Log.i(TAG, "Creating class: " + mClass.getName());
         String key = classDb.push().getKey();
         mClass.setID(key);
         classDb.child(key).setValue(mClass);
     }
 
-    public void finishAssignment(Assignments finishedAssignment, boolean isExisting, Context context) {
-        if (isExisting) {
-            // cancelNotification(context, finishedAssignment);
-            dueAssignmentsDb.child(finishedAssignment.getID()).removeValue();
-            doneAssignmentsDb.child(finishedAssignment.getID()).setValue(finishedAssignment);
-        } else {
-            Log.i(TAG, "Creating finished assignment: " + finishedAssignment.getName());
-            doneAssignmentsDb.push().setValue(finishedAssignment);
-        }
+    public static void finishAssignment(Assignments assignment) {
+        Log.i(TAG, "Creating finished assignment: " + assignment.getName());
+        String key = doneAssignmentsDb.push().getKey();
+        assignment.setID(key);
+
+        allAssignmentsDb.child(key).setValue(assignment);
+        doneAssignmentsDb.child(key).setValue(assignment);
     }
 
-    // Editing existing objects in database
-    public void editClass(final String oldID, final Classes newClass) {
+    public static void unfinishAssignment(Assignments assignment) {
+        doneAssignmentsDb.child(assignment.getID()).removeValue();
+        dueAssignmentsDb.child(assignment.getID()).setValue(assignment);
+    }
+
+    public static void editClass(String oldID, Classes newClass) {
         classDb.child(oldID).setValue(newClass);
     }
 
-    public void editAssignment(final Assignments newAssignment, Context context) {
-        if (newAssignment.getPercent() == 100) {
-            finishAssignment(newAssignment, true, context);
+    public static void editAssignment(final Assignments assignment, Boolean wasFinished) {
+        if (wasFinished) {
+            // Assignment used to be finished, check and see if it's not anymore.
+
+            if (assignment.getPercent() < 100) {
+                // Assignment not finished anymore, update that in database.
+                unfinishAssignment(assignment);
+            } else {
+                // Assignment still finished, just update new values in database.
+                doneAssignmentsDb.child(assignment.getID()).setValue(assignment);
+            }
         } else {
-            // editNotification(context, newAssignment);
-            dueAssignmentsDb.child(newAssignment.getID()).setValue(newAssignment);
+            // Assignment didn't used to be finished. Check if it is now.
+
+            if (assignment.getPercent() == 100) {
+                // Assignment now finished, update that in database.
+                finishAssignment(assignment);
+            } else {
+                // Assignment still due, just update new values in database.
+                dueAssignmentsDb.child(assignment.getID()).setValue(assignment);
+            }
         }
     }
 
-    private void cancelNotification(Context context, Assignments assignments) {
+    /*
+
+    NOTIFICATIONS
+    TODO Debug notifications.
+
+    private static void cancelNotification(Context context, Assignments assignments) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(assignments.getNotificationIntent());
     }
 
-    private void editNotification(Context context, Assignments assignments) {
+    private static void editNotification(Context context, Assignments assignments) {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(assignments.getNotificationIntent());
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, assignments.getDueDate(), assignments.getNotificationIntent());
     }
 
-    private void scheduleNotification(Notification notification, long notifyTime, Context context, Assignments assignment) {
+    private static void scheduleNotification(Notification notification, long notifyTime, Context context, Assignments assignment) {
         Intent notificationIntent = new Intent(context, NotificationPublisher.class);
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, assignment.getID());
         notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
@@ -155,4 +178,5 @@ public class Database {
         builder.setSmallIcon(R.drawable.ic_assignments_due);
         return builder.build();
     }
+    */
 }
