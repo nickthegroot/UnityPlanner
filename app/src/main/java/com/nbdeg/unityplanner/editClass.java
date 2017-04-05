@@ -1,5 +1,7 @@
 package com.nbdeg.unityplanner;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -125,32 +127,54 @@ public class editClass extends AppCompatActivity {
     }
 
     public void deleteClass(View view) {
-        classRef.removeValue();
-        final DatabaseReference allAssignments = Database.allAssignmentsDb;
-        final DatabaseReference dueAssignments = Database.dueAssignmentsDb;
-        final DatabaseReference doneAssignments = Database.doneAssignmentsDb;
-        allAssignments.addListenerForSingleValueEvent(new ValueEventListener() {
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                    Assignments assignment = userSnapshot.getValue(Assignments.class);
-                        if (assignment.getPercent() == 100) {
-                            doneAssignments.child(assignment.getID()).removeValue();
-                            allAssignments.child(assignment.getID()).removeValue();
-                        } else {
-                            dueAssignments.child(assignment.getID()).removeValue();
-                            allAssignments.child(assignment.getID()).removeValue();
-                    }
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        classRef.removeValue();
+                        final DatabaseReference allAssignments = Database.allAssignmentsDb;
+                        final DatabaseReference dueAssignments = Database.dueAssignmentsDb;
+                        final DatabaseReference doneAssignments = Database.doneAssignmentsDb;
+                        allAssignments.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                                    Assignments assignment = userSnapshot.getValue(Assignments.class);
+                                    if (assignment.getClassName().equalsIgnoreCase(oldClass.getName())) {
+                                        if (assignment.getPercent() == 100) {
+                                            doneAssignments.child(assignment.getID()).removeValue();
+                                            allAssignments.child(assignment.getID()).removeValue();
+                                        } else {
+                                            dueAssignments.child(assignment.getID()).removeValue();
+                                            allAssignments.child(assignment.getID()).removeValue();
+                                        }
+                                    }
+                                }
+
+                                startActivity(new Intent(editClass.this, MainActivity.class));
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                startActivity(new Intent(editClass.this, MainActivity.class));
+                            }
+                        });
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        //No button clicked
+                        break;
                 }
-
-                startActivity(new Intent(editClass.this, MainActivity.class));
             }
+        };
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                startActivity(new Intent(editClass.this, MainActivity.class));
-            }
-        });
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Are you sure?");
+        builder.setMessage("Deleting a class will delete all " +
+                "assignments linked with that class as well.").setPositiveButton("Yes", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
+
 
     }
 }
