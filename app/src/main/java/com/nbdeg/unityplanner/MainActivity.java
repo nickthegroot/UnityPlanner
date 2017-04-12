@@ -174,8 +174,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             finish();
                         }
                     });
-        } else if (id == R.id.action_settings) {
-            return true;
+        } else if (id == R.id.action_sync) {
+            startActivity(new Intent(MainActivity.this, classroomLogin.class));
         } else if (id == R.id.action_tutorial) {
             startActivity(new Intent(MainActivity.this, IntroActivity.class));
         }

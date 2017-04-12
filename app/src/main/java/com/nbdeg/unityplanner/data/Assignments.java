@@ -1,16 +1,15 @@
 package com.nbdeg.unityplanner.data;
 
-import android.app.PendingIntent;
+import com.google.api.services.classroom.model.CourseWork;
 
-@SuppressWarnings("unused")
 public class Assignments {
     private Long dueDate;
     private String assignmentName;
     private String extraInfo;
     private String dueClass;
     private int percentComplete;
+    private CourseWork classroomCourse;
     private String ID;
-    private PendingIntent notificationIntent;
 
     // Empty Constructor
     public Assignments() {}
@@ -24,62 +23,63 @@ public class Assignments {
         this.percentComplete = percentComplete;
     }
 
-    // Adding all info
-    public Assignments(String assignmentName, String dueClass, Long dueDate, String extraInfo, int percentComplete, String ID) {
-        this.assignmentName = assignmentName;
-        this.dueClass = dueClass;
+    // Adding Classroom Assignment
+    public Assignments(Long dueDate, String assignmentName, String extraInfo, String dueClass, int percentComplete, CourseWork classroomCourse) {
         this.dueDate = dueDate;
+        this.assignmentName = assignmentName;
         this.extraInfo = extraInfo;
+        this.dueClass = dueClass;
         this.percentComplete = percentComplete;
-        this.ID = ID;
+        this.classroomCourse = classroomCourse;
     }
 
-    /* --- Setters --- */
-
-    public void setName(String name) {
-        this.assignmentName = name;
-    }
-    public void setClassName(String name) {
-        this.dueClass = name;
-    }
-    public void setExtra(String extra) {
-        this.extraInfo = extra;
+    public Long getDueDate() {
+        return dueDate;
     }
     public void setDueDate(Long dueDate) {
         this.dueDate = dueDate;
     }
-    public void setPercent(int percent) {
-        this.percentComplete = percent;
-    }
-    public void setID(String ID) {
-        this.ID = ID;
-    }
-    public void setNotificationIntent(PendingIntent notificationIntent) {
-        this.notificationIntent = notificationIntent;
-    }
 
-    /* --- Getters --- */
-
-    public String getName() {
+    public String getAssignmentName() {
         return assignmentName;
     }
-    public String getClassName() {
-        return dueClass;
+    public void setAssignmentName(String assignmentName) {
+        this.assignmentName = assignmentName;
     }
-    public String getExtra() {
+
+    public String getExtraInfo() {
         return extraInfo;
     }
-    public Long getDueDate() {
-        return dueDate;
+    public void setExtraInfo(String extraInfo) {
+        this.extraInfo = extraInfo;
     }
-    public int getPercent() {
+
+    public String getDueClass() {
+        return dueClass;
+    }
+    public void setDueClass(String dueClass) {
+        this.dueClass = dueClass;
+    }
+
+    public int getPercentComplete() {
         return percentComplete;
     }
+    public void setPercentComplete(int percentComplete) {
+        this.percentComplete = percentComplete;
+    }
+
+    public CourseWork getClassroomCourseWork() {
+        return classroomCourse;
+    }
+    public void setClassroomCourseWork(CourseWork classroomCourse) {
+        this.classroomCourse = classroomCourse;
+    }
+
     public String getID() {
         return ID;
     }
-    public PendingIntent getNotificationIntent() {
-        return notificationIntent;
+    public void setID(String ID) {
+        this.ID = ID;
     }
 }
 

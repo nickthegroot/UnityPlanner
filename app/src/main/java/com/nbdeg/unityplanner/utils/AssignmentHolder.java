@@ -25,22 +25,12 @@ public class AssignmentHolder extends RecyclerView.ViewHolder {
     }
 
     public void setEverything(Assignments assignment) {
-        mNameField.setText(assignment.getName());
+        mNameField.setText(assignment.getAssignmentName());
         if (assignment.getDueDate() != null) {
             Date dueDate = new Date(assignment.getDueDate());
             SimpleDateFormat formatter = new SimpleDateFormat("MMMM d, yyyy");
             mDueField.setText(formatter.format(dueDate));
         }
-        mClassField.setText(assignment.getClassName());
-    }
-
-    public void setName(String name) {
-        mNameField.setText(name);
-    }
-    public void setDueDate(String date) {
-        mDueField.setText(date);
-    }
-    public void setClassField(String mClass) {
-        mClassField.setText(mClass);
+        mClassField.setText(assignment.getDueClass());
     }
 }

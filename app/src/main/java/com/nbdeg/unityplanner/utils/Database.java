@@ -17,8 +17,8 @@ import java.util.ArrayList;
 public class Database {
 
     private static final String TAG = "Database";
-    private static ArrayList<Assignments> assignmentList = new ArrayList<>();
-    private static ArrayList<Classes> classList = new ArrayList<>();
+    private static ArrayList<String> courseWorkIDs = new ArrayList<>();
+    private static ArrayList<String> courseIDs = new ArrayList<>();
 
     public static FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     public static DatabaseReference classDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("classes");
@@ -34,51 +34,48 @@ public class Database {
         allAssignmentsDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments").child("all");
     }
 
-    // Gets all assignments
-    public static ArrayList<Assignments> getAssignments() {
-        assignmentList.clear();
-        doneAssignmentsDb.addListenerForSingleValueEvent(new ValueEventListener() {
+    // Gets all classroom coursework
+    public static ArrayList<String> getClassroomCourseWork() {
+        courseWorkIDs.clear();
+        allAssignmentsDb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
                     Assignments assignment = userSnapshot.getValue(Assignments.class);
-                    assignmentList.add(assignment);
-                    Log.i(TAG, "Assignment loaded: " + assignment.getName());
+                    courseWorkIDs.add(assignment.getClassroomCourseWork().getId());
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.e(TAG, "Error loading assignments: " + databaseError.getMessage());
             }
+
         });
-        return assignmentList;
+        return courseWorkIDs;
     }
 
-    // Gets all classes
-    public static ArrayList<Classes> getClasses() {
-        classList.clear();
+    // Gets all classroom courses
+    public static ArrayList<String> getClassroomCoursesId() {
+        courseIDs.clear();
         classDb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     Classes mClass = userSnapshot.getValue(Classes.class);
-                    classList.add(mClass);
-                    Log.i(TAG, "Class loaded: " + mClass.getName());
+                    courseIDs.add(mClass.getClassroomCourse().getId());
                 }
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                Log.e(TAG, "Error loading classes: " + databaseError.getMessage());
             }
         });
-        return classList;
+        return courseIDs;
     }
 
 
-    public static void addDueAssignment(Assignments assignment) {
-        Log.i(TAG, "Creating due assignment: " + assignment.getName());
+    public static void createDueAssignment(Assignments assignment) {
+        Log.i(TAG, "Creating due assignment: " + assignment.getAssignmentName());
 
         String key = dueAssignmentsDb.push().getKey();
         assignment.setID(key);
@@ -86,8 +83,8 @@ public class Database {
         dueAssignmentsDb.child(key).setValue(assignment);
     }
 
-    public static void addFinishedAssignment(Assignments assignment) {
-        Log.i(TAG, "Creating finished assignment: " + assignment.getName());
+    public static void createFinishedAssignment(Assignments assignment) {
+        Log.i(TAG, "Creating finished assignment: " + assignment.getAssignmentName());
 
         String key = doneAssignmentsDb.push().getKey();
         assignment.setID(key);
@@ -95,50 +92,71 @@ public class Database {
         doneAssignmentsDb.child(key).setValue(assignment);
     }
 
-    public static void addClass(Classes mClass) {
+    public static DatabaseReference createClass(Classes mClass) {
         Log.i(TAG, "Creating class: " + mClass.getName());
         String key = classDb.push().getKey();
         mClass.setID(key);
         classDb.child(key).setValue(mClass);
+        return classDb.child(key);
     }
 
-    public static void finishAssignment(Assignments assignment) {
-        Log.i(TAG, "Creating finished assignment: " + assignment.getName());
-        String key = doneAssignmentsDb.push().getKey();
-        assignment.setID(key);
+    public static void editClass(final Classes newClass, final Classes oldClass) {
+        classDb.child(oldClass.getID()).setValue(newClass);
 
-        allAssignmentsDb.child(key).setValue(assignment);
-        doneAssignmentsDb.child(key).setValue(assignment);
-    }
+        // Update All Assignments Under That Name
+        allAssignmentsDb.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    Assignments assignment = userSnapshot.getValue(Assignments.class);
+                    if (assignment.getDueClass().equalsIgnoreCase(oldClass.getName())) {
+                        assignment.setDueClass(newClass.getName());
+                        if (assignment.getPercentComplete() == 100) {
+                            allAssignmentsDb.child(assignment.getID()).setValue(assignment);
+                            doneAssignmentsDb.child(assignment.getID()).setValue(assignment);
+                        } else {
+                            allAssignmentsDb.child(assignment.getID()).setValue(assignment);
+                            dueAssignmentsDb.child(assignment.getID()).setValue(assignment);
+                        }
+                    }
+                }
+            }
 
-    public static void unfinishAssignment(Assignments assignment) {
-        doneAssignmentsDb.child(assignment.getID()).removeValue();
-        dueAssignmentsDb.child(assignment.getID()).setValue(assignment);
-    }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-    public static void editClass(String oldID, Classes newClass) {
-        classDb.child(oldID).setValue(newClass);
+            }
+        });
     }
 
     public static void editAssignment(final Assignments assignment, Boolean wasFinished) {
         if (wasFinished) {
             // Assignment used to be finished, check and see if it's not anymore.
 
-            if (assignment.getPercent() < 100) {
+            if (assignment.getPercentComplete() < 100) {
+
                 // Assignment not finished anymore, update that in database.
-                unfinishAssignment(assignment);
+                dueAssignmentsDb.child(assignment.getID()).setValue(assignment);
+                allAssignmentsDb.child(assignment.getID()).setValue(assignment);
+                doneAssignmentsDb.child(assignment.getID()).removeValue();
             } else {
+
                 // Assignment still finished, just update new values in database.
                 doneAssignmentsDb.child(assignment.getID()).setValue(assignment);
+                allAssignmentsDb.child(assignment.getID()).setValue(assignment);
             }
         } else {
             // Assignment didn't used to be finished. Check if it is now.
 
-            if (assignment.getPercent() == 100) {
+            if (assignment.getPercentComplete() == 100) {
+
                 // Assignment now finished, update that in database.
-                finishAssignment(assignment);
+                dueAssignmentsDb.child(assignment.getID()).removeValue();
+                allAssignmentsDb.child(assignment.getID()).setValue(assignment);
+                doneAssignmentsDb.child(assignment.getID()).setValue(assignment);
             } else {
                 // Assignment still due, just update new values in database.
+                allAssignmentsDb.child(assignment.getID()).setValue(assignment);
                 dueAssignmentsDb.child(assignment.getID()).setValue(assignment);
             }
         }

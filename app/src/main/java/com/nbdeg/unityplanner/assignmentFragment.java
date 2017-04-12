@@ -38,8 +38,9 @@ public class assignmentFragment extends Fragment {
 
         // Displaying Data
         final RecyclerView assignmentView = (RecyclerView) view.findViewById(R.id.assignment_list);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setReverseLayout(true);
+        layoutManager.setStackFromEnd(true);
         assignmentView.setLayoutManager(layoutManager);
 
         mDueAdapter = new FirebaseRecyclerAdapter<Assignments, AssignmentHolder>(Assignments.class, R.layout.assignment_layout, AssignmentHolder.class, query) {

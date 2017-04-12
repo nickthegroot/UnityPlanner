@@ -58,7 +58,7 @@ public class addClass extends AppCompatActivity {
         String roomNumber = classRoomNumber.getText().toString();
         String buildingName = classBuildingName.getText().toString();
 
-        Database.addClass(new Classes(name, teacherName, startDate, endDate, roomNumber, buildingName));
+        Database.createClass(new Classes(name, teacherName, startDate, endDate, roomNumber, buildingName));
         startActivity(new Intent(addClass.this, MainActivity.class));
         return super.onOptionsItemSelected(item);
     }

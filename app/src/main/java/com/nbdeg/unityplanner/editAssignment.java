@@ -96,14 +96,14 @@ public class editAssignment extends AppCompatActivity  {
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     if (Objects.equals(userSnapshot.getKey(), oldAssignmentID)) {
                         oldAssignment = userSnapshot.getValue(Assignments.class);
-                        percentComplete = oldAssignment.getPercent();
+                        percentComplete = oldAssignment.getPercentComplete();
                         assignmentReference = userSnapshot.getRef();
 
                         // Set Existing Data
-                        mAssignmentName.setText(oldAssignment.getName());
-                        mExtraInfo.setText(oldAssignment.getExtra());
+                        mAssignmentName.setText(oldAssignment.getAssignmentName());
+                        mExtraInfo.setText(oldAssignment.getExtraInfo());
                         datePicker.setDisplay(new Date(oldAssignment.getDueDate()));
-                        mDueClass.setSelection(classListNames.indexOf(oldAssignment.getClassName()));
+                        mDueClass.setSelection(classListNames.indexOf(oldAssignment.getDueClass()));
                         mPercentComplete.setProgress(percentComplete);
                     }
                 }
@@ -134,22 +134,24 @@ public class editAssignment extends AppCompatActivity  {
         String extraInfo = mExtraInfo.getText().toString();
         String dueClass = mDueClass.getItemAtPosition(mDueClass.getSelectedItemPosition()).toString();
 
-        if (percentComplete == 100) {
-            Database.finishAssignment(new Assignments(
-                    assignmentName,
-                    dueClass,
-                    dueDate,
-                    extraInfo,
-                    percentComplete,
-                    oldAssignmentID));
+        if (oldAssignment.getPercentComplete() == 100) {
+            Assignments newAssignment = oldAssignment;
+            // ID Already Set
+            newAssignment.setDueDate(dueDate);
+            newAssignment.setAssignmentName(assignmentName);
+            newAssignment.setExtraInfo(extraInfo);
+            newAssignment.setDueClass(dueClass);
+            newAssignment.setPercentComplete(percentComplete);
+            Database.editAssignment(newAssignment, true);
         } else {
-            Database.editAssignment(new Assignments(
-                    assignmentName,
-                    dueClass,
-                    dueDate,
-                    extraInfo,
-                    percentComplete,
-                    oldAssignmentID), (oldAssignment.getPercent() == 100));
+            Assignments newAssignment = oldAssignment;
+            // ID Already Set
+            newAssignment.setDueDate(dueDate);
+            newAssignment.setAssignmentName(assignmentName);
+            newAssignment.setExtraInfo(extraInfo);
+            newAssignment.setDueClass(dueClass);
+            newAssignment.setPercentComplete(percentComplete);
+            Database.editAssignment(newAssignment, false);
         }
 
         // Bring user back to MainActivity

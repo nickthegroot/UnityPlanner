@@ -33,20 +33,11 @@ public class editClass extends AppCompatActivity {
     private EditText classTeacher;
     private EditText classRoomNumber;
     private EditText classBuildingName;
-
     private EditTextDatePicker mStartDate;
     private EditTextDatePicker mEndDate;
 
-    private String oldClassID;
-    private String name;
-    private String teacher;
-    private Date startDate;
-    private Date endDate;
-    private String roomNumber;
-    private String buildingName;
-    private DatabaseReference classRef;
-
     private Classes oldClass;
+    private DatabaseReference classRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +54,7 @@ public class editClass extends AppCompatActivity {
         classRoomNumber = (EditText) findViewById(R.id.class_edit_room);
         classBuildingName = (EditText) findViewById(R.id.class_edit_building);
 
-        oldClassID = getIntent().getStringExtra("ID");
+        final String oldClassID = getIntent().getStringExtra("ID");
         Database.classDb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -72,27 +63,18 @@ public class editClass extends AppCompatActivity {
 
                         // Get data from class
                         oldClass = userSnapshot.getValue(Classes.class);
-                        name = oldClass.getName();
-                        teacher = oldClass.getTeacher();
-                        if (oldClass.getStartDate() != null) {
-                            startDate = new Date(oldClass.getStartDate());
-                        } if (oldClass.getEndDate() != null) {
-                            endDate = new Date(oldClass.getEndDate());
-                        }
-                        roomNumber = oldClass.getRoomNumber();
-                        buildingName = oldClass.getBuildingName();
                         classRef = userSnapshot.getRef();
 
                         // Set data from class
-                        className.setText(name);
-                        classTeacher.setText(teacher);
-                        if (startDate != null) {
-                            mStartDate.setDisplay(startDate);
-                        } if (endDate != null) {
-                            mEndDate.setDisplay(endDate);
+                        className.setText(oldClass.getName());
+                        classTeacher.setText(oldClass.getTeacher());
+                        if (oldClass.getStartDate() != null) {
+                            mStartDate.setDisplay(new Date(oldClass.getStartDate()));
+                        } if (oldClass.getEndDate() != null) {
+                            mEndDate.setDisplay(new Date(oldClass.getEndDate()));
                         }
-                        classRoomNumber.setText(roomNumber);
-                        classBuildingName.setText(buildingName);
+                        classRoomNumber.setText(oldClass.getRoomNumber());
+                        classBuildingName.setText(oldClass.getBuildingName());
                     }
                 }
             }
@@ -121,7 +103,7 @@ public class editClass extends AppCompatActivity {
         String roomNumber = classRoomNumber.getText().toString();
         String buildingName = classBuildingName.getText().toString();
 
-        Database.editClass(oldClassID, new Classes(name, teacherName, startDate, endDate, roomNumber, buildingName, oldClassID));
+        Database.editClass(new Classes(name, teacherName, startDate, endDate, roomNumber, buildingName, oldClass.getID()), oldClass);
         startActivity(new Intent(editClass.this, MainActivity.class));
         return super.onOptionsItemSelected(item);
     }
@@ -141,8 +123,8 @@ public class editClass extends AppCompatActivity {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                                     Assignments assignment = userSnapshot.getValue(Assignments.class);
-                                    if (assignment.getClassName().equalsIgnoreCase(oldClass.getName())) {
-                                        if (assignment.getPercent() == 100) {
+                                    if (assignment.getDueClass().equalsIgnoreCase(oldClass.getName())) {
+                                        if (assignment.getPercentComplete() == 100) {
                                             doneAssignments.child(assignment.getID()).removeValue();
                                             allAssignments.child(assignment.getID()).removeValue();
                                         } else {
