@@ -292,7 +292,7 @@ public class classroomLogin extends AppCompatActivity implements EasyPermissions
             JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
             mService = new com.google.api.services.classroom.Classroom.Builder(
                     transport, jsonFactory, credential)
-                    .setApplicationName("Classroom API Android Quickstart")
+                    .setApplicationName("Unity Planner")
                     .build();
         }
 
