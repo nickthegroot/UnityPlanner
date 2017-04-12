@@ -32,8 +32,6 @@ public class addAssignment extends AppCompatActivity  {
     private ArrayList<String> classListNames = new ArrayList<>();
     private EditTextDatePicker datePicker;
 
-    Database db = new Database();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,12 +101,20 @@ public class addAssignment extends AppCompatActivity  {
         String extraInfo = mExtraInfo.getText().toString();
         String dueClass = mDueClass.getItemAtPosition(mDueClass.getSelectedItemPosition()).toString();
 
-        Database database = new Database();
-
         if (percentComplete == 100) {
-            database.finishAssignment(new Assignments(assignmentName, dueClass, dueDate, extraInfo, percentComplete), false, this);
+            Database.createFinishedAssignment(new Assignments(
+                    assignmentName,
+                    dueClass,
+                    dueDate,
+                    extraInfo,
+                    100));
         } else {
-            database.addAssignment(new Assignments(assignmentName, dueClass, dueDate, extraInfo, percentComplete), this);
+            Database.createDueAssignment(new Assignments(
+                    assignmentName,
+                    dueClass,
+                    dueDate,
+                    extraInfo,
+                    percentComplete));
         }
 
         // Bring user back to MainActivity

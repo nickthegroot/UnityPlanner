@@ -1,5 +1,7 @@
 package com.nbdeg.unityplanner;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +16,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.nbdeg.unityplanner.data.Assignments;
 import com.nbdeg.unityplanner.data.Classes;
 import com.nbdeg.unityplanner.utils.Database;
 import com.nbdeg.unityplanner.utils.EditTextDatePicker;
@@ -30,20 +33,11 @@ public class editClass extends AppCompatActivity {
     private EditText classTeacher;
     private EditText classRoomNumber;
     private EditText classBuildingName;
-
     private EditTextDatePicker mStartDate;
     private EditTextDatePicker mEndDate;
 
-    private String oldClassID;
-    private String name;
-    private String teacher;
-    private Date startDate;
-    private Date endDate;
-    private String roomNumber;
-    private String buildingName;
+    private Classes oldClass;
     private DatabaseReference classRef;
-
-    Database db = new Database();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +54,7 @@ public class editClass extends AppCompatActivity {
         classRoomNumber = (EditText) findViewById(R.id.class_edit_room);
         classBuildingName = (EditText) findViewById(R.id.class_edit_building);
 
-        oldClassID = getIntent().getStringExtra("ID");
+        final String oldClassID = getIntent().getStringExtra("ID");
         Database.classDb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -68,28 +62,19 @@ public class editClass extends AppCompatActivity {
                     if (Objects.equals(userSnapshot.getKey(), oldClassID)) {
 
                         // Get data from class
-                        Classes mClass = userSnapshot.getValue(Classes.class);
-                        name = mClass.getName();
-                        teacher = mClass.getTeacher();
-                        if (mClass.getStartDate() != null) {
-                            startDate = new Date(mClass.getStartDate());
-                        } if (mClass.getEndDate() != null) {
-                            endDate = new Date(mClass.getEndDate());
-                        }
-                        roomNumber = mClass.getRoomNumber();
-                        buildingName = mClass.getBuildingName();
+                        oldClass = userSnapshot.getValue(Classes.class);
                         classRef = userSnapshot.getRef();
 
                         // Set data from class
-                        className.setText(name);
-                        classTeacher.setText(teacher);
-                        if (startDate != null) {
-                            mStartDate.setDisplay(startDate);
-                        } if (endDate != null) {
-                            mEndDate.setDisplay(endDate);
+                        className.setText(oldClass.getName());
+                        classTeacher.setText(oldClass.getTeacher());
+                        if (oldClass.getStartDate() != null) {
+                            mStartDate.setDisplay(new Date(oldClass.getStartDate()));
+                        } if (oldClass.getEndDate() != null) {
+                            mEndDate.setDisplay(new Date(oldClass.getEndDate()));
                         }
-                        classRoomNumber.setText(roomNumber);
-                        classBuildingName.setText(buildingName);
+                        classRoomNumber.setText(oldClass.getRoomNumber());
+                        classBuildingName.setText(oldClass.getBuildingName());
                     }
                 }
             }
@@ -118,14 +103,60 @@ public class editClass extends AppCompatActivity {
         String roomNumber = classRoomNumber.getText().toString();
         String buildingName = classBuildingName.getText().toString();
 
-        Database database = new Database();
-        database.editClass(oldClassID, new Classes(name, teacherName, startDate, endDate, roomNumber, buildingName, oldClassID));
+        Database.editClass(new Classes(name, teacherName, startDate, endDate, roomNumber, buildingName, oldClass.getID()), oldClass);
         startActivity(new Intent(editClass.this, MainActivity.class));
         return super.onOptionsItemSelected(item);
     }
 
     public void deleteClass(View view) {
-        classRef.removeValue();
-        startActivity(new Intent(editClass.this, MainActivity.class));
+        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which){
+                    case DialogInterface.BUTTON_POSITIVE:
+                        classRef.removeValue();
+                        final DatabaseReference allAssignments = Database.allAssignmentsDb;
+                        final DatabaseReference dueAssignments = Database.dueAssignmentsDb;
+                        final DatabaseReference doneAssignments = Database.doneAssignmentsDb;
+                        allAssignments.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                                    Assignments assignment = userSnapshot.getValue(Assignments.class);
+                                    if (assignment.getDueClass().equalsIgnoreCase(oldClass.getName())) {
+                                        if (assignment.getPercentComplete() == 100) {
+                                            doneAssignments.child(assignment.getID()).removeValue();
+                                            allAssignments.child(assignment.getID()).removeValue();
+                                        } else {
+                                            dueAssignments.child(assignment.getID()).removeValue();
+                                            allAssignments.child(assignment.getID()).removeValue();
+                                        }
+                                    }
+                                }
+
+                                startActivity(new Intent(editClass.this, MainActivity.class));
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+                                startActivity(new Intent(editClass.this, MainActivity.class));
+                            }
+                        });
+                        break;
+
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        //No button clicked
+                        break;
+                }
+            }
+        };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Are you sure?");
+        builder.setMessage("Deleting a class will delete all " +
+                "assignments linked with that class as well.").setPositiveButton("Yes", dialogClickListener)
+                .setNegativeButton("No", dialogClickListener).show();
+
+
     }
 }

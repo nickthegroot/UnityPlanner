@@ -9,12 +9,21 @@ android {
         minSdkVersion 21
         targetSdkVersion 25
         versionCode 1
-        versionName "v0.5.1"
+        versionName "0.6.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 
         configurations.all {
             resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
+        }
+    }
+
+    signingConfigs {
+        release {
+            keyAlias System.getenv("BITRISEIO_ANDROID_KEYSTORE_ALIAS")
+            keyPassword System.getenv("BITRISEIO_ANDROID_KEYSTORE_PRIVATE_KEY_PASSWORD")
+            storeFile file(System.getenv("HOME") + "/keystores/my_keystore.jks")
+            storePassword System.getenv("BITRISEIO_ANDROID_KEYSTORE_PASSWORD")
         }
     }
 
