@@ -19,6 +19,7 @@ public class Database {
     private static final String TAG = "Database";
     private static ArrayList<String> courseWorkIDs = new ArrayList<>();
     private static ArrayList<String> courseIDs = new ArrayList<>();
+    private static ArrayList<Assignments> dueAssignmentList = new ArrayList<>();
 
     public static FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     public static DatabaseReference classDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("classes");
@@ -73,6 +74,27 @@ public class Database {
         return courseIDs;
     }
 
+    public static ArrayList<Assignments> getAllDueAssignments() {
+        if (user == null || dueAssignmentsDb == null || allAssignmentsDb == null || doneAssignmentsDb == null) {
+            refreshDatabase();
+        }
+        dueAssignmentList.clear();
+        dueAssignmentsDb.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
+                    Assignments assignment = userSnapshot.getValue(Assignments.class);
+                    dueAssignmentList.add(assignment);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+
+        });
+        return dueAssignmentList;
+    }
 
     public static void createDueAssignment(Assignments assignment) {
         Log.i(TAG, "Creating due assignment: " + assignment.getAssignmentName());
@@ -92,12 +114,11 @@ public class Database {
         doneAssignmentsDb.child(key).setValue(assignment);
     }
 
-    public static DatabaseReference createClass(Classes mClass) {
+    public static void createClass(Classes mClass) {
         Log.i(TAG, "Creating class: " + mClass.getName());
         String key = classDb.push().getKey();
         mClass.setID(key);
         classDb.child(key).setValue(mClass);
-        return classDb.child(key);
     }
 
     public static void editClass(final Classes newClass, final Classes oldClass) {
@@ -161,40 +182,4 @@ public class Database {
             }
         }
     }
-
-    /*
-
-    NOTIFICATIONS
-    TODO Debug notifications.
-
-    private static void cancelNotification(Context context, Assignments assignments) {
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.cancel(assignments.getNotificationIntent());
-    }
-
-    private static void editNotification(Context context, Assignments assignments) {
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.cancel(assignments.getNotificationIntent());
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, assignments.getDueDate(), assignments.getNotificationIntent());
-    }
-
-    private static void scheduleNotification(Notification notification, long notifyTime, Context context, Assignments assignment) {
-        Intent notificationIntent = new Intent(context, NotificationPublisher.class);
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, assignment.getID());
-        notificationIntent.putExtra(NotificationPublisher.NOTIFICATION, notification);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        assignment.setNotificationIntent(pendingIntent);
-
-        AlarmManager alarmManager = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, notifyTime, pendingIntent);
-    }
-
-    private Notification getNotification(Assignments assignment, Context context) {
-        Notification.Builder builder = new Notification.Builder(context);
-        builder.setContentTitle("Assignment Due Tomorrow");
-        builder.setContentText(assignment.getName());
-        builder.setSmallIcon(R.drawable.ic_assignments_due);
-        return builder.build();
-    }
-    */
 }

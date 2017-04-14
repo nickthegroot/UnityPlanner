@@ -14,8 +14,7 @@ import com.nbdeg.unityplanner.utils.EditTextDatePicker;
 
 public class addClass extends AppCompatActivity {
 
-    // TODO Add A/B Schedule
-    // TODO Select which days class occurs on
+    // TODO Add A/B Schedule and select which days class occurs on
 
     private EditText className;
     private EditText classTeacher;

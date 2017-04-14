@@ -38,8 +38,6 @@
     <string name="sign_in">Sign In</string>
     <string name="delete">Delete</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="gclassroom_description">Integrating with Google Classroom allows Unity Planner to easily import all your existing classes and assignments.</string>
     <string name="gclassroom_title">Integrate with Google Classroom</string>
     <string name="gclassroom_successfull">Google Classroom successfully linked!</string>

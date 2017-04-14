@@ -99,6 +99,12 @@ public class editAssignment extends AppCompatActivity  {
                         percentComplete = oldAssignment.getPercentComplete();
                         assignmentReference = userSnapshot.getRef();
 
+                        if (getIntent().getBooleanExtra("CompleteExtra", false)) {
+                            Assignments finishedAssignment = oldAssignment;
+                            finishedAssignment.setPercentComplete(100);
+                            Database.editAssignment(finishedAssignment, oldAssignment.getPercentComplete() == 100);
+                        }
+
                         // Set Existing Data
                         mAssignmentName.setText(oldAssignment.getAssignmentName());
                         mExtraInfo.setText(oldAssignment.getExtraInfo());
