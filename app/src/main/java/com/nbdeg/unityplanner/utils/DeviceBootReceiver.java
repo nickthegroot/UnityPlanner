@@ -19,10 +19,11 @@ public class DeviceBootReceiver extends BroadcastReceiver {
             AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
             Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(System.currentTimeMillis() + 30000);
-//            calendar.set(Calendar.HOUR_OF_DAY, 17);
-//            calendar.set(Calendar.MINUTE, 0);
-//            calendar.set(Calendar.SECOND, 1);
+            // TODO: Change notification to user set time.
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            calendar.set(Calendar.HOUR_OF_DAY, 12 + 5);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 1);
 
             manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                     AlarmManager.INTERVAL_DAY, pendingIntent);

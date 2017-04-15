@@ -5,7 +5,6 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.support.v4.app.NotificationManagerCompat;
 
 import com.google.firebase.database.DataSnapshot;
@@ -16,7 +15,7 @@ import com.nbdeg.unityplanner.data.Assignments;
 import com.nbdeg.unityplanner.editAssignment;
 
 public class AlarmReceiver extends BroadcastReceiver {
-    private final int NOTIFICATION_ID = 803;
+    private int NOTIFICATION_ID = 803;
 
     @Override
     public void onReceive(final Context context, Intent intent) {
@@ -26,6 +25,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
+                    NOTIFICATION_ID++;
                     Assignments assignment = userSnapshot.getValue(Assignments.class);
                     Notification.Builder builder = new Notification.Builder(context);
                     builder.setContentTitle("Assignment Due Soon");
@@ -37,14 +37,6 @@ public class AlarmReceiver extends BroadcastReceiver {
                     PendingIntent pendingIntent = PendingIntent.getActivity(context, 2, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                     //to be able to launch your activity from the notification
                     builder.setContentIntent(pendingIntent);
-
-                    // Set extras if over API 23
-                    if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        // only for marshmallow and newer versions (API 23)
-                        Intent finishAssignmentIntent = new Intent(context, editAssignment.class);
-                        finishAssignmentIntent.putExtra("CompleteExtra", true);
-                        builder.addAction(new Notification.Action.Builder(null, "Complete Assignment", PendingIntent.getActivity(context, 3, finishAssignmentIntent, PendingIntent.FLAG_ONE_SHOT)).build());
-                    }
 
                     NotificationManagerCompat managerCompat = NotificationManagerCompat.from(context);
                     managerCompat.notify(NOTIFICATION_ID, builder.build());
