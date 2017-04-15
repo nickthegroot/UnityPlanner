@@ -24,19 +24,28 @@ public class AlarmReceiver extends BroadcastReceiver {
         Database.dueAssignmentsDb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                int numberOfAssignments = 0;
+                Notification.Builder builder = new Notification.Builder(context);
+                Notification.InboxStyle inboxStyle = new Notification.InboxStyle();
+
                 for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
-                    NOTIFICATION_ID++;
                     Assignments assignment = userSnapshot.getValue(Assignments.class);
-                    Notification.Builder builder = new Notification.Builder(context);
-                    builder.setContentTitle("Assignment Due Soon");
-                    builder.setContentText(assignment.getAssignmentName());
+                    // Assignment due next day, notify user about that
+                    numberOfAssignments++;
+                    inboxStyle.addLine(assignment.getAssignmentName());
+                }
+
+                if (numberOfAssignments != 0) {
                     builder.setSmallIcon(R.drawable.ic_logo);
                     builder.setAutoCancel(true);
-                    Intent notifyIntent = new Intent(context, editAssignment.class);
-                    notifyIntent.putExtra("ID", assignment.getID());
-                    PendingIntent pendingIntent = PendingIntent.getActivity(context, 2, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
                     //to be able to launch your activity from the notification
+                    Intent notifyIntent = new Intent(context, editAssignment.class);
+                    PendingIntent pendingIntent = PendingIntent.getActivity(context, 2, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                     builder.setContentIntent(pendingIntent);
+
+                    inboxStyle.setBigContentTitle("Assignments Due Soon");
+                    builder.setStyle(inboxStyle);
 
                     NotificationManagerCompat managerCompat = NotificationManagerCompat.from(context);
                     managerCompat.notify(NOTIFICATION_ID, builder.build());
