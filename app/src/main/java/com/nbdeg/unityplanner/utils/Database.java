@@ -17,9 +17,9 @@ import java.util.ArrayList;
 public class Database {
 
     private static final String TAG = "Database";
-    private static ArrayList<String> courseWorkIDs = new ArrayList<>();
-    private static ArrayList<String> courseIDs = new ArrayList<>();
-    private static ArrayList<Assignments> dueAssignmentList = new ArrayList<>();
+    public static ArrayList<String> courseWorkIDs = new ArrayList<>();
+    public static ArrayList<String> courseIDs = new ArrayList<>();
+    public static ArrayList<String> classNames = new ArrayList<>();
 
     public static FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     public static DatabaseReference classDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("classes");
@@ -33,10 +33,26 @@ public class Database {
         doneAssignmentsDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments").child("done");
         dueAssignmentsDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments").child("due");
         allAssignmentsDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments").child("all");
-    }
 
-    // Gets all classroom coursework
-    public static ArrayList<String> getClassroomCourseWork() {
+        // Refresh Course IDs and class names
+        courseIDs.clear();
+        classNames.clear();
+        classDb.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    Classes mClass = userSnapshot.getValue(Classes.class);
+                    courseIDs.add(mClass.getClassroomCourse().getId());
+                    classNames.add(mClass.getName());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+        // Refresh CourseWork IDs
         courseWorkIDs.clear();
         allAssignmentsDb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -52,48 +68,7 @@ public class Database {
             }
 
         });
-        return courseWorkIDs;
-    }
 
-    // Gets all classroom courses
-    public static ArrayList<String> getClassroomCoursesId() {
-        courseIDs.clear();
-        classDb.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                    Classes mClass = userSnapshot.getValue(Classes.class);
-                    courseIDs.add(mClass.getClassroomCourse().getId());
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-        return courseIDs;
-    }
-
-    public static ArrayList<Assignments> getAllDueAssignments() {
-        if (user == null || dueAssignmentsDb == null || allAssignmentsDb == null || doneAssignmentsDb == null) {
-            refreshDatabase();
-        }
-        dueAssignmentList.clear();
-        dueAssignmentsDb.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
-                    Assignments assignment = userSnapshot.getValue(Assignments.class);
-                    dueAssignmentList.add(assignment);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-
-        });
-        return dueAssignmentList;
     }
 
     public static void createDueAssignment(Assignments assignment) {

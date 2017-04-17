@@ -325,8 +325,8 @@ public class classroomLogin extends AppCompatActivity implements EasyPermissions
 
             Database.refreshDatabase();
 
-            ArrayList<String> courseIDs = Database.getClassroomCoursesId();
-            ArrayList<String> courseWorkIDs = Database.getClassroomCourseWork();
+            ArrayList<String> courseIDs = Database.courseIDs;
+            ArrayList<String> courseWorkIDs = Database.courseWorkIDs;
 
             for (Course course : courseResponse.getCourses()) {
                 SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -337,7 +337,7 @@ public class classroomLogin extends AppCompatActivity implements EasyPermissions
                     e.printStackTrace();
                 }
 
-                if (course.getCourseState().equalsIgnoreCase("ACTIVE")) {
+                if (course.getCourseState().equals("ACTIVE")) {
                     if (!courseIDs.contains(course.getId())) {
                         // Add class to database
                         Database.createClass(new Classes(

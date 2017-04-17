@@ -18,11 +18,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.nbdeg.unityplanner.data.Assignments;
-import com.nbdeg.unityplanner.data.Classes;
 import com.nbdeg.unityplanner.utils.Database;
 import com.nbdeg.unityplanner.utils.EditTextDatePicker;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
 
@@ -31,7 +29,6 @@ public class editAssignment extends AppCompatActivity  {
     private EditText mAssignmentName;
     private EditText mExtraInfo;
     private Spinner mDueClass;
-    private ArrayList<String> classListNames = new ArrayList<>();
     private EditTextDatePicker datePicker;
     private SeekBar mPercentComplete;
 
@@ -70,27 +67,12 @@ public class editAssignment extends AppCompatActivity  {
             }
         });
 
-        Database.classDb.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                classListNames.clear();
-                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                    Classes mClass = userSnapshot.getValue(Classes.class);
-                    classListNames.add(mClass.getName());
-                }
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(editAssignment.this, R.layout.spinner_layout, classListNames);
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                mDueClass.setAdapter(adapter);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("Database", "Error loading classes: " + databaseError.getMessage());
-            }
-        });
+        final ArrayAdapter<String> adapter = new ArrayAdapter<String>(editAssignment.this, R.layout.spinner_layout, Database.classNames);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mDueClass.setAdapter(adapter);
 
         oldAssignmentID = getIntent().getStringExtra("ID");
-        Database.dueAssignmentsDb.addListenerForSingleValueEvent(new ValueEventListener() {
+        Database.allAssignmentsDb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
@@ -103,7 +85,7 @@ public class editAssignment extends AppCompatActivity  {
                         mAssignmentName.setText(oldAssignment.getAssignmentName());
                         mExtraInfo.setText(oldAssignment.getExtraInfo());
                         datePicker.setDisplay(new Date(oldAssignment.getDueDate()));
-                        mDueClass.setSelection(classListNames.indexOf(oldAssignment.getDueClass()));
+                        mDueClass.setSelection(Database.classNames.indexOf(oldAssignment.getDueClass()));
                         mPercentComplete.setProgress(percentComplete);
                     }
                 }

@@ -38,15 +38,14 @@ import java.util.Calendar;
 
 @SuppressWarnings({"CanBeFinal", "MismatchedQueryAndUpdateOfCollection"})
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
-    private Database db = new Database();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Database.refreshDatabase();
 
         // Sets button to send user to add assignment page when clicked
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
