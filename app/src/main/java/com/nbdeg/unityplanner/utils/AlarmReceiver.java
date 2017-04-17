@@ -20,7 +20,6 @@ public class AlarmReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(final Context context, Intent intent) {
         // Notification for each due assignment
-        // TODO: Option to notify for each assignment or lump them together.
         Database.dueAssignmentsDb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
