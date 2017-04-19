@@ -2,10 +2,10 @@
 
     <!-- These settings headers are only used on tablets. -->
 
-    <header
-        android:fragment="com.nbdeg.unityplanner.SettingsActivity$GeneralPreferenceFragment"
-        android:icon="@drawable/ic_info_black_24dp"
-        android:title="@string/pref_header_general" />
+    <!--<header-->
+        <!--android:fragment="com.nbdeg.unityplanner.SettingsActivity$GeneralPreferenceFragment"-->
+        <!--android:icon="@drawable/ic_info_black_24dp"-->
+        <!--android:title="@string/pref_header_general" />-->
 
     <header
         android:fragment="com.nbdeg.unityplanner.SettingsActivity$NotificationPreferenceFragment"

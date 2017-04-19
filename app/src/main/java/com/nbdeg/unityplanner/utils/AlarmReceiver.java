@@ -5,6 +5,8 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationManagerCompat;
 
 import com.google.firebase.database.DataSnapshot;
@@ -14,11 +16,15 @@ import com.nbdeg.unityplanner.R;
 import com.nbdeg.unityplanner.data.Assignments;
 import com.nbdeg.unityplanner.editAssignment;
 
+import java.net.URI;
+
 public class AlarmReceiver extends BroadcastReceiver {
     private int NOTIFICATION_ID = 803;
 
     @Override
     public void onReceive(final Context context, Intent intent) {
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
         // Notification for each due assignment
         Database.dueAssignmentsDb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -42,8 +48,10 @@ public class AlarmReceiver extends BroadcastReceiver {
                     Intent notifyIntent = new Intent(context, editAssignment.class);
                     PendingIntent pendingIntent = PendingIntent.getActivity(context, 2, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
                     builder.setContentIntent(pendingIntent);
+                    builder.setSound(URI.create(prefs.getString("notifications_new_message_ringtone", null)));
 
                     inboxStyle.setBigContentTitle("Assignments Due Soon");
+                    inboxStyle.setSummaryText(numberOfAssignments + " assignments due soon");
                     builder.setStyle(inboxStyle);
 
                     NotificationManagerCompat managerCompat = NotificationManagerCompat.from(context);

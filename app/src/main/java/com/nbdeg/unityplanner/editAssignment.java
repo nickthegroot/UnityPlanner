@@ -117,7 +117,10 @@ public class editAssignment extends AppCompatActivity  {
         String dueClass = mDueClass.getItemAtPosition(mDueClass.getSelectedItemPosition()).toString();
 
         if (oldAssignment.getPercentComplete() == 100) {
-            Assignments newAssignment = oldAssignment;
+            Assignments newAssignment = new Assignments(
+                    oldAssignment.getAssignmentName(),
+
+            );
             // ID Already Set
             newAssignment.setDueDate(dueDate);
             newAssignment.setAssignmentName(assignmentName);
