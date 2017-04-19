@@ -30,7 +30,8 @@ public class AssignmentHolder extends RecyclerView.ViewHolder {
             Date dueDate = new Date(assignment.getDueDate());
             SimpleDateFormat formatter = new SimpleDateFormat("MMMM d, yyyy");
             mDueField.setText(formatter.format(dueDate));
+        } if (assignment.getDueClass() != null) {
+            mClassField.setText(assignment.getDueClass());
         }
-        mClassField.setText(assignment.getDueClass());
     }
 }

@@ -118,7 +118,13 @@ public class editAssignment extends AppCompatActivity  {
 
         if (oldAssignment.getPercentComplete() == 100) {
             Assignments newAssignment = new Assignments(
+                    oldAssignment.getDueDate(),
                     oldAssignment.getAssignmentName(),
+                    oldAssignment.getExtraInfo(),
+                    oldAssignment.getDueClass(),
+                    oldAssignment.getPercentComplete(),
+                    oldAssignment.getClassroomCourseWork(),
+                    oldAssignment.getID()
 
             );
             // ID Already Set

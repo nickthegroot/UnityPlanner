@@ -25,12 +25,13 @@ public class DeviceBootReceiver extends BroadcastReceiver {
 
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(System.currentTimeMillis());
-                calendar.set(Calendar.HOUR_OF_DAY, 12 + 5);
+
+                Calendar hourCal = Calendar.getInstance();
+                hourCal.setTimeInMillis(prefs.getLong("notification_time", 90000000));
+
+                calendar.set(Calendar.HOUR_OF_DAY, hourCal.get(Calendar.HOUR_OF_DAY));
                 calendar.set(Calendar.MINUTE, 0);
                 calendar.set(Calendar.SECOND, 1);
-
-                calendar.setTimeInMillis(prefs.getLong("notification_time", calendar.getTimeInMillis()));
-
 
                 manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                         AlarmManager.INTERVAL_DAY, pendingIntent);

@@ -59,7 +59,9 @@ public class Database {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
                     Assignments assignment = userSnapshot.getValue(Assignments.class);
-                    courseWorkIDs.add(assignment.getClassroomCourseWork().getId());
+                    if (assignment.getClassroomCourseWork() != null) {
+                        courseWorkIDs.add(assignment.getClassroomCourseWork().getId());
+                    }
                 }
             }
 
