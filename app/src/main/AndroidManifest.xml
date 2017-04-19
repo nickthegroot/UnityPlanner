@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.GET_INTENT_SENDER_INTENT" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
@@ -17,7 +18,7 @@
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
 
-        <!--Start Notifications-->
+        <!-- Start Notifications -->
 
         <service android:name=".utils.MyFirebaseMessagingService">
             <intent-filter>
@@ -37,7 +38,7 @@
         </receiver>
         <receiver android:name=".utils.AlarmReceiver" />
 
-        <!--End Notifications-->
+        <!-- End Notifications -->
 
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
@@ -84,7 +85,15 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".classroomLogin"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.nbdeg.unityplanner.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

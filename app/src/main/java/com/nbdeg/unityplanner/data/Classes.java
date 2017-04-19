@@ -19,7 +19,21 @@ public class Classes {
     public Classes() {
     }
 
-    // Adding all info in one call
+    // Adding ALL info in one call
+    public Classes(String name, String teacher, Long startDate, Long endDate, String roomNumber, String buildingName, String ID, String description, String section, Course classroomCourse) {
+        this.name = name;
+        this.teacher = teacher;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.roomNumber = roomNumber;
+        this.buildingName = buildingName;
+        this.ID = ID;
+        this.description = description;
+        this.section = section;
+        this.classroomCourse = classroomCourse;
+    }
+
+    // Adding most info in one call
     public Classes(String name, String teacher, Long startDate, Long endDate, String roomNumber, String buildingName, String ID) {
         this.name = name;
         this.teacher = teacher;

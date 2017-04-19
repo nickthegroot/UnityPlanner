@@ -14,6 +14,17 @@ public class Assignments {
     // Empty Constructor
     public Assignments() {}
 
+    // Adding ALL info
+    public Assignments(Long dueDate, String assignmentName, String extraInfo, String dueClass, int percentComplete, CourseWork classroomCourse, String ID) {
+        this.dueDate = dueDate;
+        this.assignmentName = assignmentName;
+        this.extraInfo = extraInfo;
+        this.dueClass = dueClass;
+        this.percentComplete = percentComplete;
+        this.classroomCourse = classroomCourse;
+        this.ID = ID;
+    }
+
     // Adding common info
     public Assignments(String assignmentName, String dueClass, Long dueDate, String extraInfo, int percentComplete) {
         this.assignmentName = assignmentName;

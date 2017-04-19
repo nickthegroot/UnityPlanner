@@ -323,8 +323,10 @@ public class classroomLogin extends AppCompatActivity implements EasyPermissions
                     .setPageSize(10)
                     .execute();
 
-            ArrayList<String> courseIDs = Database.getClassroomCoursesId();
-            ArrayList<String> courseWorkIDs = Database.getClassroomCourseWork();
+            Database.refreshDatabase();
+
+            ArrayList<String> courseIDs = Database.courseIDs;
+            ArrayList<String> courseWorkIDs = Database.courseWorkIDs;
 
             for (Course course : courseResponse.getCourses()) {
                 SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -335,46 +337,48 @@ public class classroomLogin extends AppCompatActivity implements EasyPermissions
                     e.printStackTrace();
                 }
 
-                if (!courseIDs.contains(course.getId())) {
-                    // Add class to database
-                    Database.createClass(new Classes(
-                            course.getName(),
-                            mService.userProfiles().get(course.getOwnerId()).execute().getName().getFullName(),
-                            startDate,
-                            course.getRoom(),
-                            course.getDescription(),
-                            course.getSection(),
-                            course
-                    ));
-                }
+                if (course.getCourseState().equals("ACTIVE")) {
+                    if (!courseIDs.contains(course.getId())) {
+                        // Add class to database
+                        Database.createClass(new Classes(
+                                course.getName(),
+                                mService.userProfiles().get(course.getOwnerId()).execute().getName().getFullName(),
+                                startDate,
+                                course.getRoom(),
+                                course.getDescription(),
+                                course.getSection(),
+                                course
+                        ));
+                    }
 
-                // Add assignments to database
-                ListCourseWorkResponse courseworkResponse = mService.courses().courseWork().list(course.getId()).execute();
-                if (courseworkResponse.getCourseWork() != null) {
-                    for (CourseWork courseWork : courseworkResponse.getCourseWork()) {
-                        if (!courseWorkIDs.contains(courseWork.getId())) {
-                            ListStudentSubmissionsResponse studentSubmissionResponse = mService.courses().courseWork().studentSubmissions().list(course.getId(), courseWork.getId()).execute();
-                            for (StudentSubmission submission : studentSubmissionResponse.getStudentSubmissions()) {
-                                Calendar cal = Calendar.getInstance();
-                                if (courseWork.getDueDate() != null) {
-                                    cal.set(courseWork.getDueDate().getYear(), courseWork.getDueDate().getMonth(), courseWork.getDueDate().getDay());
-                                } else {
-                                    cal.setTimeInMillis(System.currentTimeMillis());
-                                }
-                                if (submission.getState().equalsIgnoreCase("RETURNED") || submission.getState().equalsIgnoreCase("TURNED_IN")) {
-                                    Database.createFinishedAssignment(new Assignments(cal.getTimeInMillis(),
-                                            courseWork.getTitle(),
-                                            courseWork.getDescription(),
-                                            course.getName(),
-                                            100,
-                                            courseWork));
-                                } else {
-                                    Database.createDueAssignment(new Assignments(cal.getTimeInMillis(),
-                                            courseWork.getTitle(),
-                                            courseWork.getDescription(),
-                                            course.getName(),
-                                            0,
-                                            courseWork));
+                    // Add assignments to database
+                    ListCourseWorkResponse courseworkResponse = mService.courses().courseWork().list(course.getId()).execute();
+                    if (courseworkResponse.getCourseWork() != null) {
+                        for (CourseWork courseWork : courseworkResponse.getCourseWork()) {
+                            if (!courseWorkIDs.contains(courseWork.getId())) {
+                                ListStudentSubmissionsResponse studentSubmissionResponse = mService.courses().courseWork().studentSubmissions().list(course.getId(), courseWork.getId()).execute();
+                                for (StudentSubmission submission : studentSubmissionResponse.getStudentSubmissions()) {
+                                    Calendar cal = Calendar.getInstance();
+                                    if (courseWork.getDueDate() != null) {
+                                        cal.set(courseWork.getDueDate().getYear(), courseWork.getDueDate().getMonth(), courseWork.getDueDate().getDay());
+                                    } else {
+                                        cal.setTimeInMillis(System.currentTimeMillis());
+                                    }
+                                    if (submission.getState().equalsIgnoreCase("RETURNED") || submission.getState().equalsIgnoreCase("TURNED_IN")) {
+                                        Database.createFinishedAssignment(new Assignments(cal.getTimeInMillis(),
+                                                courseWork.getTitle(),
+                                                courseWork.getDescription(),
+                                                course.getName(),
+                                                100,
+                                                courseWork));
+                                    } else {
+                                        Database.createDueAssignment(new Assignments(cal.getTimeInMillis(),
+                                                courseWork.getTitle(),
+                                                courseWork.getDescription(),
+                                                course.getName(),
+                                                0,
+                                                courseWork));
+                                    }
                                 }
                             }
                         }

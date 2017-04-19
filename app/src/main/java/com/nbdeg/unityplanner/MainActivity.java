@@ -38,15 +38,14 @@ import java.util.Calendar;
 
 @SuppressWarnings({"CanBeFinal", "MismatchedQueryAndUpdateOfCollection"})
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
-    private Database db = new Database();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        Database.refreshDatabase();
 
         // Sets button to send user to add assignment page when clicked
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -98,24 +97,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // Set Up Notifications
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        if (!prefs.getBoolean("firstTime", false)) {
+        if (prefs.getBoolean("firstTime", true)) {
+                Intent alarmIntent = new Intent(this, AlarmReceiver.class);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
 
-            Intent alarmIntent = new Intent(this, AlarmReceiver.class);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
+                AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
-            AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(System.currentTimeMillis());
 
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(System.currentTimeMillis());
-            calendar.set(Calendar.HOUR_OF_DAY, 17); // 5:00 PM TODO: Be editable in settings.
-            calendar.set(Calendar.MINUTE, 0);
-            calendar.set(Calendar.SECOND, 0);
+                Calendar hourCal = Calendar.getInstance();
+                hourCal.setTimeInMillis(prefs.getLong("notification_time", 90000000));
 
-            manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                    AlarmManager.INTERVAL_DAY, pendingIntent);
+                calendar.set(Calendar.HOUR_OF_DAY, hourCal.get(Calendar.HOUR_OF_DAY));
+                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.SECOND, 1);
+
+                manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                        AlarmManager.INTERVAL_DAY, pendingIntent);
 
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean("firstTime", true);
+            editor.putBoolean("firstTime", false);
             editor.apply();
         }
 
@@ -180,6 +182,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             transaction.replace(R.id.fragment_container, newFragment);
             transaction.addToBackStack(null);
             transaction.commit();
+        } else if(id == R.id.nav_settings) {
+            startActivity(new Intent(MainActivity.this, SettingsActivity.class));
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
