@@ -38,6 +38,7 @@ public class Database {
         doneAssignmentsDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments").child("done");
         dueAssignmentsDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments").child("due");
         allAssignmentsDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments").child("all");
+        changedClassesDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("classes").child("changedClasses");
 
         // Refresh Course IDs and class names
         courseIDs.clear();
@@ -78,6 +79,21 @@ public class Database {
 
         });
 
+        // Refresh changed class names
+        changedClassNames.clear();
+        changedClassesDb.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    changedClassNames = userSnapshot.getValue(HashMap.class);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public static void createDueAssignment(Assignments assignment) {
