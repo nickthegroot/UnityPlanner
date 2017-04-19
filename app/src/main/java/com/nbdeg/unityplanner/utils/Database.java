@@ -13,6 +13,7 @@ import com.nbdeg.unityplanner.data.Assignments;
 import com.nbdeg.unityplanner.data.Classes;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Database {
 
@@ -21,11 +22,15 @@ public class Database {
     public static ArrayList<String> courseIDs = new ArrayList<>();
     public static ArrayList<String> classNames = new ArrayList<>();
 
+    // Saved as <Original name, new name>
+    public static HashMap<String, String> changedClassNames = new HashMap<>();
+
     public static FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     public static DatabaseReference classDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("classes");
     public static DatabaseReference doneAssignmentsDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments").child("done");
     public static DatabaseReference dueAssignmentsDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments").child("due");
     public static DatabaseReference allAssignmentsDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments").child("all");
+    private static DatabaseReference changedClassesDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("classes").child("changedClasses");
 
     public static void refreshDatabase() {
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -101,6 +106,11 @@ public class Database {
     }
 
     public static void editClass(final Classes newClass, final Classes oldClass) {
+        // If name changed, add to changed name hashmap
+        if (!newClass.getName().equals(oldClass.getName())) {
+            changedClassNames.put(oldClass.getName(), newClass.getName());
+            changedClassesDb.setValue(changedClassNames);
+        }
         classDb.child(oldClass.getID()).setValue(newClass);
 
         // Update All Assignments Under That Name
@@ -129,36 +139,48 @@ public class Database {
         });
     }
 
-    public static void editAssignment(final Assignments assignment, Boolean wasFinished) {
-        if (wasFinished) {
+    public static void editAssignment(final Assignments newAssignment, Assignments oldAssignment) {
+        if (oldAssignment.getPercentComplete() == 100) {
             // Assignment used to be finished, check and see if it's not anymore.
 
-            if (assignment.getPercentComplete() < 100) {
+            if (newAssignment.getPercentComplete() < 100) {
 
                 // Assignment not finished anymore, update that in database.
-                dueAssignmentsDb.child(assignment.getID()).setValue(assignment);
-                allAssignmentsDb.child(assignment.getID()).setValue(assignment);
-                doneAssignmentsDb.child(assignment.getID()).removeValue();
+                dueAssignmentsDb.child(oldAssignment.getID()).setValue(newAssignment);
+                allAssignmentsDb.child(oldAssignment.getID()).setValue(newAssignment);
+                doneAssignmentsDb.child(oldAssignment.getID()).removeValue();
             } else {
 
                 // Assignment still finished, just update new values in database.
-                doneAssignmentsDb.child(assignment.getID()).setValue(assignment);
-                allAssignmentsDb.child(assignment.getID()).setValue(assignment);
+                doneAssignmentsDb.child(oldAssignment.getID()).setValue(newAssignment);
+                allAssignmentsDb.child(oldAssignment.getID()).setValue(newAssignment);
             }
         } else {
             // Assignment didn't used to be finished. Check if it is now.
 
-            if (assignment.getPercentComplete() == 100) {
+            if (newAssignment.getPercentComplete() == 100) {
 
                 // Assignment now finished, update that in database.
-                dueAssignmentsDb.child(assignment.getID()).removeValue();
-                allAssignmentsDb.child(assignment.getID()).setValue(assignment);
-                doneAssignmentsDb.child(assignment.getID()).setValue(assignment);
+                dueAssignmentsDb.child(oldAssignment.getID()).removeValue();
+                allAssignmentsDb.child(oldAssignment.getID()).setValue(newAssignment);
+                doneAssignmentsDb.child(oldAssignment.getID()).setValue(newAssignment);
             } else {
                 // Assignment still due, just update new values in database.
-                allAssignmentsDb.child(assignment.getID()).setValue(assignment);
-                dueAssignmentsDb.child(assignment.getID()).setValue(assignment);
+                allAssignmentsDb.child(oldAssignment.getID()).setValue(newAssignment);
+                dueAssignmentsDb.child(oldAssignment.getID()).setValue(newAssignment);
             }
+        }
+    }
+
+    public static void deleteAssignment(final Assignments assignments) {
+        if (assignments.getPercentComplete() == 100) {
+            // Assignment was finished
+            doneAssignmentsDb.child(assignments.getID()).removeValue();
+            allAssignmentsDb.child(assignments.getID()).removeValue();
+        } else {
+            // Assignment was not finished
+            dueAssignmentsDb.child(assignments.getID()).removeValue();
+            allAssignmentsDb.child(assignments.getID()).removeValue();
         }
     }
 }

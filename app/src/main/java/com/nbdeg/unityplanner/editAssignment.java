@@ -15,7 +15,6 @@ import android.widget.Spinner;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.nbdeg.unityplanner.data.Assignments;
 import com.nbdeg.unityplanner.utils.Database;
@@ -35,9 +34,6 @@ public class editAssignment extends AppCompatActivity  {
     Assignments oldAssignment;
 
     private int percentComplete = 0;
-
-    private String oldAssignmentID;
-    private DatabaseReference assignmentReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +67,7 @@ public class editAssignment extends AppCompatActivity  {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mDueClass.setAdapter(adapter);
 
-        oldAssignmentID = getIntent().getStringExtra("ID");
+        final String oldAssignmentID = getIntent().getStringExtra("ID");
         Database.allAssignmentsDb.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -79,7 +75,6 @@ public class editAssignment extends AppCompatActivity  {
                     if (Objects.equals(userSnapshot.getKey(), oldAssignmentID)) {
                         oldAssignment = userSnapshot.getValue(Assignments.class);
                         percentComplete = oldAssignment.getPercentComplete();
-                        assignmentReference = userSnapshot.getRef();
 
                         // Set Existing Data
                         mAssignmentName.setText(oldAssignment.getAssignmentName());
@@ -133,7 +128,7 @@ public class editAssignment extends AppCompatActivity  {
             newAssignment.setExtraInfo(extraInfo);
             newAssignment.setDueClass(dueClass);
             newAssignment.setPercentComplete(percentComplete);
-            Database.editAssignment(newAssignment, true);
+            Database.editAssignment(newAssignment, oldAssignment);
         } else {
             Assignments newAssignment = oldAssignment;
             // ID Already Set
@@ -142,7 +137,7 @@ public class editAssignment extends AppCompatActivity  {
             newAssignment.setExtraInfo(extraInfo);
             newAssignment.setDueClass(dueClass);
             newAssignment.setPercentComplete(percentComplete);
-            Database.editAssignment(newAssignment, false);
+            Database.editAssignment(newAssignment, oldAssignment);
         }
 
         // Bring user back to MainActivity
@@ -152,7 +147,7 @@ public class editAssignment extends AppCompatActivity  {
     }
 
     public void deleteAssignment(View view) {
-        assignmentReference.removeValue();
+        Database.deleteAssignment(oldAssignment);
         startActivity(new Intent(editAssignment.this, MainActivity.class));
     }
 }
