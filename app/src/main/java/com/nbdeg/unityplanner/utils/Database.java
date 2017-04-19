@@ -42,7 +42,9 @@ public class Database {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     Classes mClass = userSnapshot.getValue(Classes.class);
-                    courseIDs.add(mClass.getClassroomCourse().getId());
+                    if (mClass.getClassroomCourse() != null) {
+                        courseIDs.add(mClass.getClassroomCourse().getId());
+                    }
                     classNames.add(mClass.getName());
                 }
             }

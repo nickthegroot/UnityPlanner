@@ -22,18 +22,14 @@ public class ClassesHolder extends RecyclerView.ViewHolder {
     }
 
     public void setEverything(Classes mClass) {
-        mNameField.setText(mClass.getName());
-        mTeacherField.setText(mClass.getTeacher());
-        mRoomNumField.setText(String.valueOf(mClass.getRoomNumber()));
-    }
-
-    public void setName(String name) {
-        mNameField.setText(name);
-    }
-    public void setTeacher(String teacher) {
-        mTeacherField.setText(teacher);
-    }
-    public void setRoomNum(int roomNum) {
-        mRoomNumField.setText(String.valueOf(roomNum));
+        if (mClass.getName() != null) {
+            mNameField.setText(mClass.getName());
+        }
+        if (mClass.getTeacher() != null) {
+            mTeacherField.setText(mClass.getTeacher());
+        }
+        if (mClass.getRoomNumber() != null) {
+            mRoomNumField.setText(mClass.getRoomNumber());
+        }
     }
 }
