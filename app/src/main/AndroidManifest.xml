@@ -78,8 +78,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".editAssignment" />
-        <activity android:name=".editClass" />
+        <activity android:name=".editAssignment"
+            android:label="Edit an assignment"/>
+        <activity android:name=".editClass"
+            android:label="Edit a class"/>
         <activity
             android:name=".IntroActivity"
             android:theme="@style/AppTheme.NoActionBar" />

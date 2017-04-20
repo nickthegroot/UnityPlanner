@@ -99,41 +99,43 @@ public class editClass extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Classes newClass = new Classes(
-                oldClass.getName(),
-                oldClass.getTeacher(),
-                oldClass.getStartDate(),
-                oldClass.getEndDate(),
-                oldClass.getRoomNumber(),
-                oldClass.getBuildingName(),
-                oldClass.getID(),
-                oldClass.getDescription(),
-                oldClass.getSection(),
-                oldClass.getClassroomCourse());
+        if (oldClass != null) {
+            Classes newClass = new Classes(
+                    oldClass.getName(),
+                    oldClass.getTeacher(),
+                    oldClass.getStartDate(),
+                    oldClass.getEndDate(),
+                    oldClass.getRoomNumber(),
+                    oldClass.getBuildingName(),
+                    oldClass.getID(),
+                    oldClass.getDescription(),
+                    oldClass.getSection(),
+                    oldClass.getClassroomCourse());
 
-        String name = className.getText().toString();
-        newClass.setName(name);
+            String name = className.getText().toString();
+            newClass.setName(name);
 
-        String teacherName = classTeacher.getText().toString();
-        newClass.setTeacher(teacherName);
+            String teacherName = classTeacher.getText().toString();
+            newClass.setTeacher(teacherName);
 
-        if (mStartDate.date != null) {
-            Long startDate = mStartDate.date.getTime();
-            newClass.setStartDate(startDate);
+            if (mStartDate.date != null) {
+                Long startDate = mStartDate.date.getTime();
+                newClass.setStartDate(startDate);
+            }
+            if (mEndDate.date != null) {
+                Long endDate = mEndDate.date.getTime();
+                newClass.setEndDate(endDate);
+            }
+
+            String roomNumber = classRoomNumber.getText().toString();
+            newClass.setRoomNumber(roomNumber);
+
+            String buildingName = classBuildingName.getText().toString();
+            newClass.setBuildingName(buildingName);
+
+            Database.editClass(newClass, oldClass);
+            startActivity(new Intent(editClass.this, MainActivity.class));
         }
-        if (mEndDate.date != null) {
-            Long endDate = mEndDate.date.getTime();
-            newClass.setEndDate(endDate);
-        }
-
-        String roomNumber = classRoomNumber.getText().toString();
-        newClass.setRoomNumber(roomNumber);
-
-        String buildingName = classBuildingName.getText().toString();
-        newClass.setBuildingName(buildingName);
-
-        Database.editClass(newClass, oldClass);
-        startActivity(new Intent(editClass.this, MainActivity.class));
         return super.onOptionsItemSelected(item);
     }
 

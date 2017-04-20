@@ -108,20 +108,21 @@ public class editAssignment extends AppCompatActivity  {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Getting information from views
-        Long dueDate = datePicker.date.getTime();
-        String assignmentName = mAssignmentName.getText().toString();
-        String extraInfo = mExtraInfo.getText().toString();
-        String dueClass = mDueClass.getItemAtPosition(mDueClass.getSelectedItemPosition()).toString();
+        if (oldAssignment != null) {
+            // Getting information from views
+            Long dueDate = datePicker.date.getTime();
+            String assignmentName = mAssignmentName.getText().toString();
+            String extraInfo = mExtraInfo.getText().toString();
+            String dueClass = mDueClass.getItemAtPosition(mDueClass.getSelectedItemPosition()).toString();
 
-        Assignments newAssignment = new Assignments(
-                oldAssignment.getDueDate(),
-                oldAssignment.getAssignmentName(),
-                oldAssignment.getExtraInfo(),
-                oldAssignment.getDueClass(),
-                oldAssignment.getPercentComplete(),
-                oldAssignment.getClassroomCourseWork(),
-                oldAssignment.getID());
+            Assignments newAssignment = new Assignments(
+                    oldAssignment.getDueDate(),
+                    oldAssignment.getAssignmentName(),
+                    oldAssignment.getExtraInfo(),
+                    oldAssignment.getDueClass(),
+                    oldAssignment.getPercentComplete(),
+                    oldAssignment.getClassroomCourseWork(),
+                    oldAssignment.getID());
 
             // ID Already Set
             newAssignment.setDueDate(dueDate);
@@ -131,8 +132,9 @@ public class editAssignment extends AppCompatActivity  {
             newAssignment.setPercentComplete(percentComplete);
             Database.editAssignment(newAssignment, oldAssignment);
 
-        // Bring user back to MainActivity
-        startActivity(new Intent(editAssignment.this, MainActivity.class));
+            // Bring user back to MainActivity
+            startActivity(new Intent(editAssignment.this, MainActivity.class));
+        }
 
         return super.onOptionsItemSelected(item);
     }
