@@ -210,6 +210,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
                     });
         } else if (id == R.id.action_sync) {
+            Database.refreshDatabase();
             startActivity(new Intent(MainActivity.this, classroomLogin.class));
         } else if (id == R.id.action_tutorial) {
             startActivity(new Intent(MainActivity.this, IntroActivity.class));

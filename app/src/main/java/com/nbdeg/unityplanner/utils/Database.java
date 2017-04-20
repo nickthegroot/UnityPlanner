@@ -1,7 +1,10 @@
 package com.nbdeg.unityplanner.utils;
 
+import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -11,6 +14,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nbdeg.unityplanner.data.Assignments;
 import com.nbdeg.unityplanner.data.Classes;
+import com.nbdeg.unityplanner.data.changedClass;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +34,7 @@ public class Database {
     public static DatabaseReference doneAssignmentsDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments").child("done");
     public static DatabaseReference dueAssignmentsDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments").child("due");
     public static DatabaseReference allAssignmentsDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments").child("all");
-    private static DatabaseReference changedClassesDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("classes").child("changedClasses");
+    public static DatabaseReference changedClassesDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("changedClasses");
 
     public static void refreshDatabase() {
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -38,7 +42,7 @@ public class Database {
         doneAssignmentsDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments").child("done");
         dueAssignmentsDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments").child("due");
         allAssignmentsDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("assignments").child("all");
-        changedClassesDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("classes").child("changedClasses");
+        changedClassesDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid()).child("changedClasses");
 
         // Refresh Course IDs and class names
         courseIDs.clear();
@@ -85,7 +89,8 @@ public class Database {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                    changedClassNames = userSnapshot.getValue(HashMap.class);
+                    changedClass mChangedClass = userSnapshot.getValue(changedClass.class);
+                    changedClassNames.put(mChangedClass.getOriginalName(), mChangedClass.getNewName());
                 }
             }
 
@@ -122,10 +127,9 @@ public class Database {
     }
 
     public static void editClass(final Classes newClass, final Classes oldClass) {
-        // If name changed, add to changed name hashmap
+        // If name changed, add to database
         if (!newClass.getName().equals(oldClass.getName())) {
-            changedClassNames.put(oldClass.getName(), newClass.getName());
-            changedClassesDb.setValue(changedClassNames);
+            changedClassesDb.push().setValue(new changedClass(oldClass.getName(), newClass.getName()));
         }
         classDb.child(oldClass.getID()).setValue(newClass);
 

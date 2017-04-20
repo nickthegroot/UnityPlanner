@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -53,6 +54,7 @@ public class editClass extends AppCompatActivity {
         classTeacher = (EditText) findViewById(R.id.class_edit_teacher);
         classRoomNumber = (EditText) findViewById(R.id.class_edit_room);
         classBuildingName = (EditText) findViewById(R.id.class_edit_building);
+        final RelativeLayout mEditClassView = (RelativeLayout) findViewById(R.id.edit_class_view);
 
         final String oldClassID = getIntent().getStringExtra("ID");
         Database.classDb.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -75,6 +77,7 @@ public class editClass extends AppCompatActivity {
                         }
                         classRoomNumber.setText(oldClass.getRoomNumber());
                         classBuildingName.setText(oldClass.getBuildingName());
+                        mEditClassView.setVisibility(View.VISIBLE);
                     }
                 }
             }

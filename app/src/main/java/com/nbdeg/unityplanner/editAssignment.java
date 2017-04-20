@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 
@@ -45,6 +46,7 @@ public class editAssignment extends AppCompatActivity  {
         mExtraInfo = (EditText) findViewById(R.id.extra_homework_info_edit);
         mDueClass = (Spinner) findViewById(R.id.class_edit_spinner);
         mPercentComplete = (SeekBar) findViewById(R.id.percent_complete_edit);
+        final RelativeLayout mAssignmentView = (RelativeLayout) findViewById(R.id.edit_assignment_view);
 
         // Sets DueDate EditText to open a datepicker when clicked
         datePicker = new EditTextDatePicker(this, R.id.due_date_edit_edittext);
@@ -82,6 +84,7 @@ public class editAssignment extends AppCompatActivity  {
                         datePicker.setDisplay(new Date(oldAssignment.getDueDate()));
                         mDueClass.setSelection(Database.classNames.indexOf(oldAssignment.getDueClass()));
                         mPercentComplete.setProgress(percentComplete);
+                        mAssignmentView.setVisibility(View.VISIBLE);
                     }
                 }
             }
@@ -111,17 +114,15 @@ public class editAssignment extends AppCompatActivity  {
         String extraInfo = mExtraInfo.getText().toString();
         String dueClass = mDueClass.getItemAtPosition(mDueClass.getSelectedItemPosition()).toString();
 
-        if (oldAssignment.getPercentComplete() == 100) {
-            Assignments newAssignment = new Assignments(
-                    oldAssignment.getDueDate(),
-                    oldAssignment.getAssignmentName(),
-                    oldAssignment.getExtraInfo(),
-                    oldAssignment.getDueClass(),
-                    oldAssignment.getPercentComplete(),
-                    oldAssignment.getClassroomCourseWork(),
-                    oldAssignment.getID()
+        Assignments newAssignment = new Assignments(
+                oldAssignment.getDueDate(),
+                oldAssignment.getAssignmentName(),
+                oldAssignment.getExtraInfo(),
+                oldAssignment.getDueClass(),
+                oldAssignment.getPercentComplete(),
+                oldAssignment.getClassroomCourseWork(),
+                oldAssignment.getID());
 
-            );
             // ID Already Set
             newAssignment.setDueDate(dueDate);
             newAssignment.setAssignmentName(assignmentName);
@@ -129,16 +130,6 @@ public class editAssignment extends AppCompatActivity  {
             newAssignment.setDueClass(dueClass);
             newAssignment.setPercentComplete(percentComplete);
             Database.editAssignment(newAssignment, oldAssignment);
-        } else {
-            Assignments newAssignment = oldAssignment;
-            // ID Already Set
-            newAssignment.setDueDate(dueDate);
-            newAssignment.setAssignmentName(assignmentName);
-            newAssignment.setExtraInfo(extraInfo);
-            newAssignment.setDueClass(dueClass);
-            newAssignment.setPercentComplete(percentComplete);
-            Database.editAssignment(newAssignment, oldAssignment);
-        }
 
         // Bring user back to MainActivity
         startActivity(new Intent(editAssignment.this, MainActivity.class));

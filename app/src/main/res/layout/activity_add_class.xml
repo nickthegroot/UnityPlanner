@@ -42,15 +42,16 @@
         android:layout_below="@id/class_name_view"
         android:layout_marginTop="2dp"
         android:padding="5dp">
+
         <EditText
+            android:id="@+id/class_teacher"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:inputType="textCapWords"
+            android:background="@null"
             android:ems="10"
-            android:id="@+id/class_teacher"
             android:hint="@string/teacher_name"
-            android:textSize="16sp"
-            android:background="@null" />
+            android:inputType="textCapWords"
+            android:textSize="16sp" />
     </android.support.design.widget.TextInputLayout>
 
     <View
@@ -117,7 +118,8 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/linearLayout" >
+        android:layout_below="@id/linearLayout"
+        android:id="@+id/class_room_view">
         <EditText
             android:layout_width="match_parent"
             android:layout_height="43dp"
@@ -133,12 +135,12 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#c0c0c0"
-        android:layout_below="@id/class_room"/>
+        android:layout_below="@id/class_room_view"/>
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/class_room" >
+        android:layout_below="@id/class_room_view" >
         <EditText
             android:layout_width="match_parent"
             android:layout_height="43dp"
