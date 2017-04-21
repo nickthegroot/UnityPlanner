@@ -1,10 +1,5 @@
 package com.nbdeg.unityplanner.utils;
 
-import android.content.Context;
-import android.os.Bundle;
-import android.util.Log;
-
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -102,7 +97,7 @@ public class Database {
     }
 
     public static void createDueAssignment(Assignments assignment) {
-        Log.i(TAG, "Creating due assignment: " + assignment.getAssignmentName());
+//        Log.i(TAG, "Creating due assignment: " + assignment.getAssignmentName());
 
         String key = dueAssignmentsDb.push().getKey();
         assignment.setID(key);
@@ -111,7 +106,7 @@ public class Database {
     }
 
     public static void createFinishedAssignment(Assignments assignment) {
-        Log.i(TAG, "Creating finished assignment: " + assignment.getAssignmentName());
+//        Log.i(TAG, "Creating finished assignment: " + assignment.getAssignmentName());
 
         String key = doneAssignmentsDb.push().getKey();
         assignment.setID(key);
@@ -120,7 +115,7 @@ public class Database {
     }
 
     public static void createClass(Classes mClass) {
-        Log.i(TAG, "Creating class: " + mClass.getName());
+//        Log.i(TAG, "Creating class: " + mClass.getName());
         String key = classDb.push().getKey();
         mClass.setID(key);
         classDb.child(key).setValue(mClass);
