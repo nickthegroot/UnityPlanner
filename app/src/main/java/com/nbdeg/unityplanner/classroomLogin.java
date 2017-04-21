@@ -323,8 +323,6 @@ public class classroomLogin extends AppCompatActivity implements EasyPermissions
                     .setPageSize(10)
                     .execute();
 
-            Database.refreshDatabase();
-
             ArrayList<String> courseIDs = Database.courseIDs;
             ArrayList<String> courseWorkIDs = Database.courseWorkIDs;
 
@@ -364,18 +362,24 @@ public class classroomLogin extends AppCompatActivity implements EasyPermissions
                                     } else {
                                         cal.setTimeInMillis(System.currentTimeMillis());
                                     }
+                                    String courseName;
+                                    if (Database.changedClassNames.containsKey(course.getName())) {
+                                        courseName = Database.changedClassNames.get(course.getName());
+                                    } else {
+                                        courseName = course.getName();
+                                    }
                                     if (submission.getState().equalsIgnoreCase("RETURNED") || submission.getState().equalsIgnoreCase("TURNED_IN")) {
                                         Database.createFinishedAssignment(new Assignments(cal.getTimeInMillis(),
                                                 courseWork.getTitle(),
                                                 courseWork.getDescription(),
-                                                course.getName(),
+                                                courseName,
                                                 100,
                                                 courseWork));
                                     } else {
                                         Database.createDueAssignment(new Assignments(cal.getTimeInMillis(),
                                                 courseWork.getTitle(),
                                                 courseWork.getDescription(),
-                                                course.getName(),
+                                                courseName,
                                                 0,
                                                 courseWork));
                                     }
@@ -397,6 +401,7 @@ public class classroomLogin extends AppCompatActivity implements EasyPermissions
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             mProgress.hide();
+            Database.refreshDatabase();
             startActivity(new Intent(classroomLogin.this, MainActivity.class));
         }
 

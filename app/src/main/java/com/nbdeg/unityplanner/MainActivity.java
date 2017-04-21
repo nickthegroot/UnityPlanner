@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.nbdeg.unityplanner.utils.AlarmReceiver;
@@ -182,8 +183,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             transaction.replace(R.id.fragment_container, newFragment);
             transaction.addToBackStack(null);
             transaction.commit();
-        } else if(id == R.id.nav_settings) {
+        } else if (id == R.id.nav_settings) {
             startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+        } else if (id == R.id.nav_share) {
+            Intent intent = new AppInviteInvitation.IntentBuilder("Unity Planner")
+                    .setMessage("Download Unity Planner to unify your school life today!")
+                    .setCallToActionText("Download Now")
+                    .build();
+            startActivityForResult(intent, 3000);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -210,6 +217,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         }
                     });
         } else if (id == R.id.action_sync) {
+            Database.refreshDatabase();
             startActivity(new Intent(MainActivity.this, classroomLogin.class));
         } else if (id == R.id.action_tutorial) {
             startActivity(new Intent(MainActivity.this, IntroActivity.class));

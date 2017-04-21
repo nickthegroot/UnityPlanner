@@ -14,6 +14,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.nbdeg.unityplanner.utils.Database;
 
@@ -93,6 +94,7 @@ public class loginActivity extends AppCompatActivity {
                 // Start the thread
                 t.start();
 
+                FirebaseAnalytics.getInstance(this).logEvent(FirebaseAnalytics.Event.LOGIN, null);
                 startActivity(new Intent(loginActivity.this, MainActivity.class));
                 finish();
                 return;
