@@ -118,6 +118,7 @@
     <orderEntry type="library" exported="" name="google-api-services-classroom-v1-rev24-1.22.0" level="project" />
     <orderEntry type="library" exported="" name="twitter-2.3.0" level="project" />
     <orderEntry type="library" exported="" name="bolts-android-1.4.0" level="project" />
+    <orderEntry type="library" exported="" name="play-services-appinvite-10.0.1" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="multidex-instrumentation-1.0.1" level="project" />
     <orderEntry type="library" exported="" name="fabric-1.3.14" level="project" />
     <orderEntry type="library" exported="" name="tweet-ui-2.3.0" level="project" />
@@ -179,6 +180,7 @@
     <orderEntry type="library" exported="" name="twitter-core-2.3.0" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="animated-vector-drawable-25.3.1" level="project" />
+    <orderEntry type="library" exported="" name="firebase-invites-10.0.1" level="project" />
     <orderEntry type="library" exported="" name="android-android-25" level="project" />
   </component>
 </module>
