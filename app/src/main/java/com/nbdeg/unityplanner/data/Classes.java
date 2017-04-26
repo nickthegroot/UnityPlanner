@@ -1,5 +1,7 @@
 package com.nbdeg.unityplanner.data;
 
+import com.google.api.services.classroom.model.Course;
+
 @SuppressWarnings("ALL")
 public class Classes {
     private String name;
@@ -11,12 +13,27 @@ public class Classes {
     private String ID;
     private String description;
     private String section;
+    private Course classroomCourse;
 
     // Empty Constructor
     public Classes() {
     }
 
-    // Adding all info in one call
+    // Adding ALL info in one call
+    public Classes(String name, String teacher, Long startDate, Long endDate, String roomNumber, String buildingName, String ID, String description, String section, Course classroomCourse) {
+        this.name = name;
+        this.teacher = teacher;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.roomNumber = roomNumber;
+        this.buildingName = buildingName;
+        this.ID = ID;
+        this.description = description;
+        this.section = section;
+        this.classroomCourse = classroomCourse;
+    }
+
+    // Adding most info in one call
     public Classes(String name, String teacher, Long startDate, Long endDate, String roomNumber, String buildingName, String ID) {
         this.name = name;
         this.teacher = teacher;
@@ -38,13 +55,14 @@ public class Classes {
     }
 
     // Google Classroom intergration
-    public Classes(String name, String teacher, Long startDate, String roomNumber, String description, String section) {
+    public Classes(String name, String teacher, Long startDate, String roomNumber, String description, String section, Course classroomCourse) {
         this.name = name;
         this.teacher = teacher;
         this.startDate = startDate;
         this.roomNumber = roomNumber;
         this.description = description;
         this.section = section;
+        this.classroomCourse = classroomCourse;
     }
 
     /* -- Getters and Setters -- */
@@ -110,6 +128,13 @@ public class Classes {
     }
     public void setSection(String section) {
         this.section = section;
+    }
+
+    public Course getClassroomCourse() {
+        return classroomCourse;
+    }
+    public void setClassroomCourse(Course classroomCourse) {
+        this.classroomCourse = classroomCourse;
     }
 }
 

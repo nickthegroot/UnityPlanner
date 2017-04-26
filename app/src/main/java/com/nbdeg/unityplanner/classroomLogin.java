@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.LinearLayout;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -44,7 +43,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Objects;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -55,8 +53,6 @@ public class classroomLogin extends AppCompatActivity implements EasyPermissions
 
     private LinearLayout classroomLoginView;
     ProgressDialog mProgress;
-
-    Database database = new Database();
 
     static final int REQUEST_ACCOUNT_PICKER = 1000;
     static final int REQUEST_AUTHORIZATION = 1001;
@@ -72,7 +68,9 @@ public class classroomLogin extends AppCompatActivity implements EasyPermissions
         setContentView(R.layout.activity_classroom_login);
 
         mProgress = new ProgressDialog(this);
-        mProgress.setMessage("Syncing With Google Classroom...");
+        mProgress.setTitle("Please Wait...");
+        mProgress.setMessage("Syncing With Google Classroom");
+        mProgress.setCancelable(false);
 
         // Initialize credentials and service object.
         mCredential = GoogleAccountCredential.usingOAuth2(
@@ -272,8 +270,7 @@ public class classroomLogin extends AppCompatActivity implements EasyPermissions
      * @param connectionStatusCode code describing the presence (or lack of)
      *     Google Play Services on this device.
      */
-    void showGooglePlayServicesAvailabilityErrorDialog(
-            final int connectionStatusCode) {
+    void showGooglePlayServicesAvailabilityErrorDialog(final int connectionStatusCode) {
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
         Dialog dialog = apiAvailability.getErrorDialog(
                 classroomLogin.this,
@@ -286,7 +283,7 @@ public class classroomLogin extends AppCompatActivity implements EasyPermissions
      * An asynchronous task that handles the Classroom API call.
      * Placing the API calls in their own task ensures the UI stays responsive.
      */
-    private class MakeRequestTask extends AsyncTask<Void, Void, List<String>> {
+    private class MakeRequestTask extends AsyncTask<Void, Void, Void> {
         private com.google.api.services.classroom.Classroom mService = null;
         private Exception mLastError = null;
 
@@ -295,7 +292,7 @@ public class classroomLogin extends AppCompatActivity implements EasyPermissions
             JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
             mService = new com.google.api.services.classroom.Classroom.Builder(
                     transport, jsonFactory, credential)
-                    .setApplicationName("Classroom API Android Quickstart")
+                    .setApplicationName("Unity Planner")
                     .build();
         }
 
@@ -304,15 +301,15 @@ public class classroomLogin extends AppCompatActivity implements EasyPermissions
          * @param params no parameters needed for this task.
          */
         @Override
-        protected List<String> doInBackground(Void... params) {
+        protected Void doInBackground(Void... params) {
             try {
-                return getDataFromApi();
+                getDataFromApi();
             } catch (Exception e) {
                 e.printStackTrace();
                 mLastError = e;
                 cancel(true);
-                return null;
             }
+            return null;
         }
 
         /**
@@ -321,11 +318,13 @@ public class classroomLogin extends AppCompatActivity implements EasyPermissions
          *         found.
          * @throws IOException
          */
-        private List<String> getDataFromApi() throws IOException {
+        private void getDataFromApi() throws IOException {
             ListCoursesResponse courseResponse = mService.courses().list()
                     .setPageSize(10)
                     .execute();
-            List<String> names = new ArrayList<String>();
+
+            ArrayList<String> courseIDs = Database.courseIDs;
+            ArrayList<String> courseWorkIDs = Database.courseWorkIDs;
 
             for (Course course : courseResponse.getCourses()) {
                 SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -336,60 +335,60 @@ public class classroomLogin extends AppCompatActivity implements EasyPermissions
                     e.printStackTrace();
                 }
 
-                // Add class to database
-                database.addClass(new Classes(
-                        course.getName(),
-                        mService.userProfiles().get(course.getOwnerId()).execute().getName().getFullName(),
-                        startDate,
-                        course.getRoom(),
-                        course.getDescription(),
-                        course.getSection()
-                ));
+                if (course.getCourseState().equals("ACTIVE")) {
+                    if (!courseIDs.contains(course.getId())) {
+                        // Add class to database
+                        Database.createClass(new Classes(
+                                course.getName(),
+                                mService.userProfiles().get(course.getOwnerId()).execute().getName().getFullName(),
+                                startDate,
+                                course.getRoom(),
+                                course.getDescription(),
+                                course.getSection(),
+                                course
+                        ));
+                    }
 
-                // Add assignments to database
-                ListCourseWorkResponse courseworkResponse = mService.courses().courseWork().list(course.getId()).execute();
-                if (courseworkResponse.getCourseWork() != null) {
-                    for (CourseWork courseWork : courseworkResponse.getCourseWork()) {
-                        int assignmentPercentDone = 0;
-                        ListStudentSubmissionsResponse studentSubmissionResponse = mService.courses().courseWork().studentSubmissions().list(course.getId(), courseWork.getId()).execute();
-                        for (StudentSubmission submission : studentSubmissionResponse.getStudentSubmissions()) {
-                            Log.d("Classroom", submission.getState());
-                            if (Objects.equals(submission.getState(), "TURNED_IN") || Objects.equals(submission.getState(), "RETURNED")) {
-                                assignmentPercentDone = 100;
+                    // Add assignments to database
+                    ListCourseWorkResponse courseworkResponse = mService.courses().courseWork().list(course.getId()).execute();
+                    if (courseworkResponse.getCourseWork() != null) {
+                        for (CourseWork courseWork : courseworkResponse.getCourseWork()) {
+                            if (!courseWorkIDs.contains(courseWork.getId())) {
+                                ListStudentSubmissionsResponse studentSubmissionResponse = mService.courses().courseWork().studentSubmissions().list(course.getId(), courseWork.getId()).execute();
+                                for (StudentSubmission submission : studentSubmissionResponse.getStudentSubmissions()) {
+                                    Calendar cal = Calendar.getInstance();
+                                    if (courseWork.getDueDate() != null) {
+                                        cal.set(courseWork.getDueDate().getYear(), courseWork.getDueDate().getMonth()-1, courseWork.getDueDate().getDay()-1);
+                                    } else {
+                                        cal.setTimeInMillis(System.currentTimeMillis());
+                                    }
+                                    String courseName;
+                                    if (Database.changedClassNames.containsKey(course.getName())) {
+                                        courseName = Database.changedClassNames.get(course.getName());
+                                    } else {
+                                        courseName = course.getName();
+                                    }
+                                    if (submission.getState().equalsIgnoreCase("RETURNED") || submission.getState().equalsIgnoreCase("TURNED_IN")) {
+                                        Database.createAssignment(new Assignments(cal.getTimeInMillis(),
+                                                courseWork.getTitle(),
+                                                courseWork.getDescription(),
+                                                courseName,
+                                                100,
+                                                courseWork));
+                                    } else {
+                                        Database.createAssignment(new Assignments(cal.getTimeInMillis(),
+                                                courseWork.getTitle(),
+                                                courseWork.getDescription(),
+                                                courseName,
+                                                0,
+                                                courseWork));
+                                    }
+                                }
                             }
-
-                        }
-                        Calendar cal = Calendar.getInstance();
-                        if (courseWork.getDueDate() != null) {
-                            cal.set(courseWork.getDueDate().getYear(), courseWork.getDueDate().getMonth(), courseWork.getDueDate().getDay());
-                        } else {
-                            cal.setTimeInMillis(System.currentTimeMillis());
-                        }
-
-                        if (assignmentPercentDone == 100) {
-                            database.finishAssignment(new Assignments(
-                                    courseWork.getTitle(),
-                                    course.getName(),
-                                    cal.getTimeInMillis(),
-                                    courseWork.getDescription(),
-                                    assignmentPercentDone
-                            ), false, getApplicationContext());
-                        } else {
-                            database.addAssignment(new Assignments(
-                                    courseWork.getTitle(),
-                                    course.getName(),
-                                    cal.getTimeInMillis(),
-                                    courseWork.getDescription(),
-                                    assignmentPercentDone
-                            ), getApplicationContext());
                         }
                     }
                 }
-
-                names.add(course.getName());
             }
-
-            return names;
         }
 
 
@@ -399,13 +398,10 @@ public class classroomLogin extends AppCompatActivity implements EasyPermissions
         }
 
         @Override
-        protected void onPostExecute(List<String> output) {
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
             mProgress.hide();
-            if (output == null || output.size() == 0) {
-                Log.d("Classroom", "No results returned.");
-            } else {
-                Log.d("Classroom", "Data retrieved using the Classroom API:");
-            }
+            Database.refreshDatabase();
             startActivity(new Intent(classroomLogin.this, MainActivity.class));
         }
 

@@ -16,7 +16,7 @@ import com.nbdeg.unityplanner.data.Assignments;
 import com.nbdeg.unityplanner.utils.AssignmentHolder;
 import com.nbdeg.unityplanner.utils.Database;
 
-public class homeScreen extends Fragment {
+public class dashboardFragment extends Fragment {
     private FirebaseRecyclerAdapter mAdapter;
 
     TextView haveAssignmentsDueView;
@@ -24,7 +24,7 @@ public class homeScreen extends Fragment {
 
     boolean haveAssignmentsDue = false;
 
-    public homeScreen() {
+    public dashboardFragment() {
         // Required empty public constructor
     }
 
@@ -45,12 +45,12 @@ public class homeScreen extends Fragment {
             @Override
             protected void populateViewHolder(AssignmentHolder viewHolder, final Assignments assignment, final int position) {
                 // Have assignments due - set haveAssignmentsDue to true
-                if (!haveAssignmentsDue && assignment.getPercent() != 100) {
+                if (!haveAssignmentsDue && assignment.getPercentComplete() != 100) {
                     haveAssignmentsDue = true;
                     haveAssignmentsDueView.setVisibility(View.INVISIBLE);
                     assignmentsDue.setVisibility(View.VISIBLE);
                 }
-                if (assignment.getPercent() != 100) {
+                if (assignment.getPercentComplete() != 100) {
                     viewHolder.setEverything(assignment);
                     viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                         @Override

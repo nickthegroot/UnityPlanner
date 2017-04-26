@@ -11,10 +11,15 @@ import com.github.paolorotolo.appintro.AppIntro;
 import com.github.paolorotolo.appintro.AppIntroFragment;
 import com.nbdeg.unityplanner.IntroSlides.classroomSignIn;
 
+import static android.view.View.SYSTEM_UI_FLAG_FULLSCREEN;
+
 public class IntroActivity extends AppIntro {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Hides status bar
+        getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_FULLSCREEN);
 
         // Adding slides to tutorial slideshow
         // addSlide(AppIntroFragment.newInstance(title, description, image, backgroundColor));
@@ -23,6 +28,7 @@ public class IntroActivity extends AppIntro {
         addSlide(new classroomSignIn());
 
         setColorTransitionsEnabled(true);
+
     }
 
     @Override

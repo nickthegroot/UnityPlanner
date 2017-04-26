@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.nbdeg.unityplanner.MainActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_sync"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="Sync"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_logout"

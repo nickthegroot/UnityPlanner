@@ -36,7 +36,6 @@ public class classFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_class, container, false);
 
         // Gets Firebase Information
-        Database db = new Database();
         DatabaseReference classDb = Database.classDb;
 
         // Displaying Data

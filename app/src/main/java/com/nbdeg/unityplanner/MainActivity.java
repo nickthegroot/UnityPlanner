@@ -1,9 +1,14 @@
 package com.nbdeg.unityplanner;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -22,17 +27,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.nbdeg.unityplanner.utils.AlarmReceiver;
 import com.nbdeg.unityplanner.utils.Database;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.util.Calendar;
+
 @SuppressWarnings({"CanBeFinal", "MismatchedQueryAndUpdateOfCollection"})
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-
-    private Database db = new Database();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,13 +46,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        Database.refreshDatabase();
+
         // Sets button to send user to add assignment page when clicked
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 android.support.v4.app.Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-                if (currentFragment instanceof assignmentFragment || currentFragment instanceof homeScreen) {
+                if (currentFragment instanceof assignmentFragment || currentFragment instanceof dashboardFragment) {
                     startActivity(new Intent(MainActivity.this, addAssignment.class));
                 } else if (currentFragment instanceof classFragment){
                     startActivity(new Intent(MainActivity.this, addClass.class));
@@ -70,23 +78,52 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         final ImageView userPhoto = (ImageView) headerView.findViewById(R.id.user_photo);
 
         userName.setText(Database.user.getDisplayName());
-        userEmail.setText(Database.user.getEmail());
-        Picasso.with(this).load(Database.user.getPhotoUrl())
-                .resize(150, 150)
-                .into(userPhoto, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        Bitmap imageBitmap = ((BitmapDrawable) userPhoto.getDrawable()).getBitmap();
-                        RoundedBitmapDrawable imageDrawable = RoundedBitmapDrawableFactory.create(getResources(), imageBitmap);
-                        imageDrawable.setCircular(true);
-                        imageDrawable.setCornerRadius(Math.max(imageBitmap.getWidth(), imageBitmap.getHeight()) / 2.0f);
-                        userPhoto.setImageDrawable(imageDrawable);
-                    }
-                    @Override
-                    public void onError() {
-                        userPhoto.setImageResource(R.mipmap.ic_launcher);
-                    }
-                });
+        if (Database.user.getPhotoUrl() != null) {
+            userEmail.setText(Database.user.getEmail());
+            Picasso.with(this).load(Database.user.getPhotoUrl())
+                    .resize(150, 150)
+                    .into(userPhoto, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            Bitmap imageBitmap = ((BitmapDrawable) userPhoto.getDrawable()).getBitmap();
+                            RoundedBitmapDrawable imageDrawable = RoundedBitmapDrawableFactory.create(getResources(), imageBitmap);
+                            imageDrawable.setCircular(true);
+                            imageDrawable.setCornerRadius(Math.max(imageBitmap.getWidth(), imageBitmap.getHeight()) / 2.0f);
+                            userPhoto.setImageDrawable(imageDrawable);
+                        }
+
+                        @Override
+                        public void onError() {
+                            userPhoto.setImageResource(R.mipmap.ic_launcher);
+                        }
+                    });
+        }
+
+        // Set Up Notifications
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (prefs.getBoolean("firstTime", true)) {
+                Intent alarmIntent = new Intent(this, AlarmReceiver.class);
+                PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
+
+                AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(System.currentTimeMillis());
+
+                Calendar hourCal = Calendar.getInstance();
+                hourCal.setTimeInMillis(prefs.getLong("notification_time", 90000000));
+
+                calendar.set(Calendar.HOUR_OF_DAY, hourCal.get(Calendar.HOUR_OF_DAY));
+                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.SECOND, 1);
+
+                manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                        AlarmManager.INTERVAL_DAY, pendingIntent);
+
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("firstTime", false);
+            editor.apply();
+        }
 
         if (findViewById(R.id.fragment_container) != null) {
             if (savedInstanceState != null) {
@@ -94,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
             // Create a new Fragment to be placed in the activity layout
-            homeScreen firstFragment = new homeScreen();
+            dashboardFragment firstFragment = new dashboardFragment();
 
             // Add the fragment to the 'fragment_container' FrameLayout
             getSupportFragmentManager().beginTransaction()
@@ -143,12 +180,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             transaction.addToBackStack(null);
             transaction.commit();
         } else if (id == R.id.nav_home) {
-            homeScreen newFragment = new homeScreen();
+            dashboardFragment newFragment = new dashboardFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
             transaction.replace(R.id.fragment_container, newFragment);
             transaction.addToBackStack(null);
             transaction.commit();
+        } else if (id == R.id.nav_settings) {
+            startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+        } else if (id == R.id.nav_share) {
+            Intent intent = new AppInviteInvitation.IntentBuilder("Unity Planner")
+                    .setMessage("Download Unity Planner to unify your school life today!")
+                    .setCallToActionText("Download Now")
+                    .build();
+            startActivityForResult(intent, 3000);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -164,21 +209,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_logout) {
-            AuthUI.getInstance()
-                    .signOut(this)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        public void onComplete(@NonNull Task<Void> task) {
-                            // user is now signed out
-                            startActivity(new Intent(MainActivity.this, loginActivity.class));
-                            finish();
-                        }
-                    });
-        } else if (id == R.id.action_settings) {
-            return true;
-        } else if (id == R.id.action_tutorial) {
-            startActivity(new Intent(MainActivity.this, IntroActivity.class));
+        switch (id) {
+            case R.id.action_logout:
+                AuthUI.getInstance()
+                        .signOut(this)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            public void onComplete(@NonNull Task<Void> task) {
+                                // user is now signed out
+                                startActivity(new Intent(MainActivity.this, loginActivity.class));
+                                finish();
+                            }
+                        });
+                return super.onOptionsItemSelected(item);
+
+            case R.id.action_sync:
+                Database.refreshDatabase();
+                startActivity(new Intent(MainActivity.this, classroomLogin.class));
+                return super.onOptionsItemSelected(item);
+
+            case R.id.action_tutorial:
+                startActivity(new Intent(MainActivity.this, IntroActivity.class));
+                return super.onOptionsItemSelected(item);
         }
+
         return super.onOptionsItemSelected(item);
     }
 }

@@ -11,39 +11,47 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.nbdeg.unityplanner.addAssignment">
 
-    <EditText
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/assignment_name_view"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:inputType="textCapSentences"
-        android:ems="10"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/assignment_name"
-        android:hint="@string/assignment_name"
-        android:padding="5dp"
-        android:textSize="18sp"
-        android:background="@null" />
+        android:layout_height="40dp">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textCapSentences"
+            android:ems="10"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:id="@+id/assignment_name"
+            android:hint="@string/assignment_name"
+            android:padding="5dp"
+            android:textSize="18sp"
+            android:background="@null" />
+    </android.support.design.widget.TextInputLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#c0c0c0"
-        android:layout_below="@id/assignment_name"/>
+        android:layout_below="@id/assignment_name_view"/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="43dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_below="@id/assignment_name"
+        android:layout_below="@id/assignment_name_view"
         android:layout_alignParentStart="true"
         android:id="@+id/linearLayout">
 
         <Spinner
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/class_spinner"
             android:theme="@android:style/Theme.Holo.Light.DarkActionBar"
             android:layout_weight="1"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:gravity="center"
             android:background="@null"/>
             <!--android:layout_marginBottom="3dp"/>-->
 
@@ -52,12 +60,11 @@
             android:layout_height="match_parent"
             android:background="#c0c0c0"/>
 
-        <EditText
-            android:layout_width="0dp"
+        <android.support.design.widget.TextInputEditText
             android:layout_height="match_parent"
+            android:layout_width="0dp"
             android:layout_weight="1"
             android:id="@+id/due_date_edittext"
-            android:padding="5dp"
             android:focusable="false"
             android:hint="@string/due_date"
             android:textSize="16sp"
@@ -100,18 +107,22 @@
         android:background="#c0c0c0"
         android:layout_below="@id/percentCompleteLayout"/>
 
-    <EditText
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="textMultiLine"
-        android:ems="10"
-        android:id="@+id/extra_homework_info"
-        android:hint="@string/extra_infomation"
-        android:textSize="16sp"
         android:layout_below="@id/percentCompleteLayout"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="2dp"
-        android:padding="5dp"
-        android:background="@null" />
-
+        android:layout_marginTop="2dp">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textMultiLine"
+            android:ems="10"
+            android:id="@+id/extra_homework_info"
+            android:hint="@string/extra_infomation"
+            android:textSize="16sp"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="2dp"
+            android:padding="5dp"
+            android:background="@null" />
+    </android.support.design.widget.TextInputLayout>
 </RelativeLayout>
