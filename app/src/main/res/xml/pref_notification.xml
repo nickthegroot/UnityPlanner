@@ -16,6 +16,14 @@
         android:title="Notification time"
         android:dependency="notifications_new_message"/>
 
+    <ListPreference
+        android:key="notification_days_in_advance"
+        android:title="Days in advance to notify"
+        android:dependency="notifications_new_message"
+        android:entries="@array/pref_notification_days_in_advance"
+        android:entryValues="@array/pref_notification_days_in_advance_values"
+        android:defaultValue="1"/>
+
     <RingtonePreference
         android:defaultValue="content://settings/system/notification_sound"
         android:dependency="notifications_new_message"

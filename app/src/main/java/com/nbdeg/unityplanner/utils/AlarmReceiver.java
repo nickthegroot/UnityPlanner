@@ -34,9 +34,11 @@ public class AlarmReceiver extends BroadcastReceiver {
                 Notification.Builder builder = new Notification.Builder(context);
                 Notification.InboxStyle inboxStyle = new Notification.InboxStyle();
 
+                int daysInAdvance = Integer.parseInt(prefs.getString("notification_days_in_advance", "1"));
+
                 Calendar cal = Calendar.getInstance();
                 cal.setTimeInMillis(System.currentTimeMillis());
-                cal.add(Calendar.DATE, 1);
+                cal.add(Calendar.DATE, daysInAdvance);
                 cal.set(Calendar.HOUR_OF_DAY, 23);
 
                 for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {

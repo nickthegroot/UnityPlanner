@@ -200,6 +200,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // guidelines.
             bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
             bindPreferenceSummaryToValue(findPreference("notification_time"));
+            bindPreferenceSummaryToValue(findPreference("notification_days_in_advance"));
         }
 
         @Override

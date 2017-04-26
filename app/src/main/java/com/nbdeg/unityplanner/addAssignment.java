@@ -2,6 +2,7 @@ package com.nbdeg.unityplanner;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -9,6 +10,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 
@@ -25,6 +27,7 @@ import java.util.ArrayList;
 
 public class addAssignment extends AppCompatActivity  {
 
+    private RelativeLayout layout;
     private EditText mAssignmentName;
     private EditText mExtraInfo;
     private Spinner mDueClass;
@@ -38,6 +41,7 @@ public class addAssignment extends AppCompatActivity  {
         setContentView(R.layout.activity_add_assignment);
 
         // Find view by ID calls
+        layout = (RelativeLayout) findViewById(R.id.activity_add_homework);
         mAssignmentName = (EditText) findViewById(R.id.assignment_name);
         mExtraInfo = (EditText) findViewById(R.id.extra_homework_info);
         mDueClass = (Spinner) findViewById(R.id.class_spinner);
@@ -95,30 +99,38 @@ public class addAssignment extends AppCompatActivity  {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Boolean isValidAssignment = true;
+
         // Getting information from views
         Long dueDate = datePicker.date.getTime();
         String assignmentName = mAssignmentName.getText().toString();
         String extraInfo = mExtraInfo.getText().toString();
-        String dueClass = mDueClass.getItemAtPosition(mDueClass.getSelectedItemPosition()).toString();
 
-        if (percentComplete == 100) {
-            Database.createFinishedAssignment(new Assignments(
-                    assignmentName,
-                    dueClass,
-                    dueDate,
-                    extraInfo,
-                    100));
+        Assignments newAssignment = new Assignments();
+
+        if (datePicker.date != null) {
+            newAssignment.setDueDate(datePicker.date.getTime());
         } else {
-            Database.createDueAssignment(new Assignments(
-                    assignmentName,
-                    dueClass,
-                    dueDate,
-                    extraInfo,
-                    percentComplete));
+            isValidAssignment = false;
         }
 
-        // Bring user back to MainActivity
-        startActivity(new Intent(addAssignment.this, MainActivity.class));
+        if (!mAssignmentName.getText().toString().equals("")) {
+            newAssignment.setAssignmentName(mAssignmentName.getText().toString());
+        } else {
+            isValidAssignment = false;
+        }
+
+        newAssignment.setExtraInfo(mExtraInfo.getText().toString());
+        newAssignment.setDueClass(mDueClass.getItemAtPosition(mDueClass.getSelectedItemPosition()).toString());
+
+        if (isValidAssignment) {
+            // Bring user back to MainActivity
+            Database.createAssignment(newAssignment);
+            startActivity(new Intent(addAssignment.this, MainActivity.class));
+        }
+        else {
+            Snackbar.make(layout, "Some essential fields are not filled out!", Snackbar.LENGTH_LONG).show();
+        }
 
         return super.onOptionsItemSelected(item);
     }

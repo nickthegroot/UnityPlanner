@@ -96,22 +96,18 @@ public class Database {
         });
     }
 
-    public static void createDueAssignment(Assignments assignment) {
-//        Log.i(TAG, "Creating due assignment: " + assignment.getAssignmentName());
-
-        String key = dueAssignmentsDb.push().getKey();
-        assignment.setID(key);
-        allAssignmentsDb.child(key).setValue(assignment);
-        dueAssignmentsDb.child(key).setValue(assignment);
-    }
-
-    public static void createFinishedAssignment(Assignments assignment) {
-//        Log.i(TAG, "Creating finished assignment: " + assignment.getAssignmentName());
-
-        String key = doneAssignmentsDb.push().getKey();
-        assignment.setID(key);
-        allAssignmentsDb.child(key).setValue(assignment);
-        doneAssignmentsDb.child(key).setValue(assignment);
+    public static void createAssignment(Assignments assignment) {
+        if (assignment.getPercentComplete() == 100) {
+            String key = dueAssignmentsDb.push().getKey();
+            assignment.setID(key);
+            allAssignmentsDb.child(key).setValue(assignment);
+            doneAssignmentsDb.child(key).setValue(assignment);
+        } else {
+            String key = doneAssignmentsDb.push().getKey();
+            assignment.setID(key);
+            allAssignmentsDb.child(key).setValue(assignment);
+            dueAssignmentsDb.child(key).setValue(assignment);
+        }
     }
 
     public static void createClass(Classes mClass) {

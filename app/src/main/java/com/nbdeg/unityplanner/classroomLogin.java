@@ -358,7 +358,7 @@ public class classroomLogin extends AppCompatActivity implements EasyPermissions
                                 for (StudentSubmission submission : studentSubmissionResponse.getStudentSubmissions()) {
                                     Calendar cal = Calendar.getInstance();
                                     if (courseWork.getDueDate() != null) {
-                                        cal.set(courseWork.getDueDate().getYear(), courseWork.getDueDate().getMonth(), courseWork.getDueDate().getDay());
+                                        cal.set(courseWork.getDueDate().getYear(), courseWork.getDueDate().getMonth()-1, courseWork.getDueDate().getDay()-1);
                                     } else {
                                         cal.setTimeInMillis(System.currentTimeMillis());
                                     }
@@ -369,14 +369,14 @@ public class classroomLogin extends AppCompatActivity implements EasyPermissions
                                         courseName = course.getName();
                                     }
                                     if (submission.getState().equalsIgnoreCase("RETURNED") || submission.getState().equalsIgnoreCase("TURNED_IN")) {
-                                        Database.createFinishedAssignment(new Assignments(cal.getTimeInMillis(),
+                                        Database.createAssignment(new Assignments(cal.getTimeInMillis(),
                                                 courseWork.getTitle(),
                                                 courseWork.getDescription(),
                                                 courseName,
                                                 100,
                                                 courseWork));
                                     } else {
-                                        Database.createDueAssignment(new Assignments(cal.getTimeInMillis(),
+                                        Database.createAssignment(new Assignments(cal.getTimeInMillis(),
                                                 courseWork.getTitle(),
                                                 courseWork.getDescription(),
                                                 courseName,
