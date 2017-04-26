@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -14,12 +13,7 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.ValueEventListener;
 import com.nbdeg.unityplanner.data.Assignments;
-import com.nbdeg.unityplanner.data.Classes;
 import com.nbdeg.unityplanner.utils.Database;
 import com.nbdeg.unityplanner.utils.EditTextDatePicker;
 
@@ -32,7 +26,6 @@ public class addAssignment extends AppCompatActivity  {
     private EditText mExtraInfo;
     private Spinner mDueClass;
     private int percentComplete = 0;
-    private ArrayList<String> classListNames = new ArrayList<>();
     private EditTextDatePicker datePicker;
 
     @Override
@@ -65,26 +58,10 @@ public class addAssignment extends AppCompatActivity  {
             }
         });
 
-        DatabaseReference classDb = Database.classDb;
-        classDb.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                classListNames.clear();
-                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
-                    Classes mClass = userSnapshot.getValue(Classes.class);
-                    classListNames.add(mClass.getName());
-                    Log.i("Database", "Class loaded: " + mClass.getName());
-                }
-                ArrayAdapter<String> adapter = new ArrayAdapter<String>(addAssignment.this, R.layout.spinner_layout, classListNames);
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                mDueClass.setAdapter(adapter);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Log.e("Database", "Error loading classes: " + databaseError.getMessage());
-            }
-        });
+        ArrayList<String> classListNames = Database.classNames;
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(addAssignment.this, R.layout.spinner_layout, classListNames);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mDueClass.setAdapter(adapter);
     }
 
     // Adds a SAVE button to the Action Bar
@@ -100,12 +77,6 @@ public class addAssignment extends AppCompatActivity  {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Boolean isValidAssignment = true;
-
-        // Getting information from views
-        Long dueDate = datePicker.date.getTime();
-        String assignmentName = mAssignmentName.getText().toString();
-        String extraInfo = mExtraInfo.getText().toString();
-
         Assignments newAssignment = new Assignments();
 
         if (datePicker.date != null) {
@@ -122,6 +93,7 @@ public class addAssignment extends AppCompatActivity  {
 
         newAssignment.setExtraInfo(mExtraInfo.getText().toString());
         newAssignment.setDueClass(mDueClass.getItemAtPosition(mDueClass.getSelectedItemPosition()).toString());
+        newAssignment.setPercentComplete(percentComplete);
 
         if (isValidAssignment) {
             // Bring user back to MainActivity

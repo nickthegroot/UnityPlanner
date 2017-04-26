@@ -1,3 +1,4 @@
+apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.android.application'
 
 //noinspection GroovyMissingReturnStatement
@@ -8,8 +9,8 @@ android {
         applicationId "com.nbdeg.unityplanner"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 7
-        versionName "0.6.0"
+        versionCode 8
+        versionName "0.6.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
 
@@ -17,12 +18,6 @@ android {
             resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
         }
         vectorDrawables.useSupportLibrary = true
-    }
-    buildTypes {
-        release {
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
-        }
     }
 }
 
