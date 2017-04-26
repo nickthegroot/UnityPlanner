@@ -78,23 +78,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         final ImageView userPhoto = (ImageView) headerView.findViewById(R.id.user_photo);
 
         userName.setText(Database.user.getDisplayName());
-        userEmail.setText(Database.user.getEmail());
-        Picasso.with(this).load(Database.user.getPhotoUrl())
-                .resize(150, 150)
-                .into(userPhoto, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        Bitmap imageBitmap = ((BitmapDrawable) userPhoto.getDrawable()).getBitmap();
-                        RoundedBitmapDrawable imageDrawable = RoundedBitmapDrawableFactory.create(getResources(), imageBitmap);
-                        imageDrawable.setCircular(true);
-                        imageDrawable.setCornerRadius(Math.max(imageBitmap.getWidth(), imageBitmap.getHeight()) / 2.0f);
-                        userPhoto.setImageDrawable(imageDrawable);
-                    }
-                    @Override
-                    public void onError() {
-                        userPhoto.setImageResource(R.mipmap.ic_launcher);
-                    }
-                });
+        if (Database.user.getPhotoUrl() != null) {
+            userEmail.setText(Database.user.getEmail());
+            Picasso.with(this).load(Database.user.getPhotoUrl())
+                    .resize(150, 150)
+                    .into(userPhoto, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            Bitmap imageBitmap = ((BitmapDrawable) userPhoto.getDrawable()).getBitmap();
+                            RoundedBitmapDrawable imageDrawable = RoundedBitmapDrawableFactory.create(getResources(), imageBitmap);
+                            imageDrawable.setCircular(true);
+                            imageDrawable.setCornerRadius(Math.max(imageBitmap.getWidth(), imageBitmap.getHeight()) / 2.0f);
+                            userPhoto.setImageDrawable(imageDrawable);
+                        }
+
+                        @Override
+                        public void onError() {
+                            userPhoto.setImageResource(R.mipmap.ic_launcher);
+                        }
+                    });
+        }
 
         // Set Up Notifications
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
