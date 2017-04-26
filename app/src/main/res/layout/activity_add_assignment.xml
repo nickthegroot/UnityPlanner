@@ -37,7 +37,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="43dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_below="@id/assignment_name_view"
         android:layout_alignParentStart="true"
@@ -45,10 +45,13 @@
 
         <Spinner
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/class_spinner"
             android:theme="@android:style/Theme.Holo.Light.DarkActionBar"
             android:layout_weight="1"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:gravity="center"
             android:background="@null"/>
             <!--android:layout_marginBottom="3dp"/>-->
 
@@ -57,22 +60,16 @@
             android:layout_height="match_parent"
             android:background="#c0c0c0"/>
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/assignment_duedate_view"
-            android:layout_width="0dp"
+        <android.support.design.widget.TextInputEditText
             android:layout_height="match_parent"
+            android:layout_width="0dp"
             android:layout_weight="1"
-            android:padding="5dp">
-            <EditText
-                android:layout_height="match_parent"
-                android:layout_width="match_parent"
-                android:id="@+id/due_date_edittext"
-                android:focusable="false"
-                android:hint="@string/due_date"
-                android:textSize="16sp"
-                android:background="@null"
-                tools:ignore="TextFields" />
-        </android.support.design.widget.TextInputLayout>
+            android:id="@+id/due_date_edittext"
+            android:focusable="false"
+            android:hint="@string/due_date"
+            android:textSize="16sp"
+            android:background="@null"
+            tools:ignore="TextFields" />
     </LinearLayout>
 
     <View

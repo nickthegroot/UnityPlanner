@@ -33,7 +33,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="43dp"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_below="@id/assignment_edit_name"
         android:layout_alignParentStart="true"
@@ -41,7 +41,9 @@
 
         <Spinner
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:id="@+id/class_edit_spinner"
             android:theme="@android:style/Theme.Holo.Light.DarkActionBar"
             android:layout_weight="1"
@@ -57,8 +59,9 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:id="@+id/due_date_edit_edittext"
-            android:padding="5dp"
             android:focusable="false"
             android:hint="@string/due_date"
             android:textSize="16sp"
