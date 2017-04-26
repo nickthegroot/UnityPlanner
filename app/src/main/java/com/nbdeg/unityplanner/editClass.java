@@ -115,23 +115,17 @@ public class editClass extends AppCompatActivity {
             String name = className.getText().toString();
             newClass.setName(name);
 
-            String teacherName = classTeacher.getText().toString();
-            newClass.setTeacher(teacherName);
+            newClass.setTeacher(classTeacher.getText().toString());
 
             if (mStartDate.date != null) {
-                Long startDate = mStartDate.date.getTime();
-                newClass.setStartDate(startDate);
+                newClass.setStartDate(mStartDate.date.getTime());
             }
             if (mEndDate.date != null) {
-                Long endDate = mEndDate.date.getTime();
-                newClass.setEndDate(endDate);
+                newClass.setEndDate(mEndDate.date.getTime());
             }
 
-            String roomNumber = classRoomNumber.getText().toString();
-            newClass.setRoomNumber(roomNumber);
-
-            String buildingName = classBuildingName.getText().toString();
-            newClass.setBuildingName(buildingName);
+            newClass.setRoomNumber(classRoomNumber.getText().toString());
+            newClass.setBuildingName(classBuildingName.getText().toString());
 
             Database.editClass(newClass, oldClass);
             startActivity(new Intent(editClass.this, MainActivity.class));

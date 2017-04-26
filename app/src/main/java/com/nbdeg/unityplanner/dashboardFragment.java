@@ -16,7 +16,7 @@ import com.nbdeg.unityplanner.data.Assignments;
 import com.nbdeg.unityplanner.utils.AssignmentHolder;
 import com.nbdeg.unityplanner.utils.Database;
 
-public class homeScreen extends Fragment {
+public class dashboardFragment extends Fragment {
     private FirebaseRecyclerAdapter mAdapter;
 
     TextView haveAssignmentsDueView;
@@ -24,7 +24,7 @@ public class homeScreen extends Fragment {
 
     boolean haveAssignmentsDue = false;
 
-    public homeScreen() {
+    public dashboardFragment() {
         // Required empty public constructor
     }
 

@@ -17,6 +17,8 @@ import com.nbdeg.unityplanner.MainActivity;
 import com.nbdeg.unityplanner.R;
 import com.nbdeg.unityplanner.data.Assignments;
 
+import java.util.Calendar;
+
 public class AlarmReceiver extends BroadcastReceiver {
     private int NOTIFICATION_ID = 803;
 
@@ -32,11 +34,18 @@ public class AlarmReceiver extends BroadcastReceiver {
                 Notification.Builder builder = new Notification.Builder(context);
                 Notification.InboxStyle inboxStyle = new Notification.InboxStyle();
 
+                Calendar cal = Calendar.getInstance();
+                cal.setTimeInMillis(System.currentTimeMillis());
+                cal.add(Calendar.DATE, 1);
+                cal.set(Calendar.HOUR_OF_DAY, 23);
+
                 for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
                     Assignments assignment = userSnapshot.getValue(Assignments.class);
-                    // Assignment due next day, notify user about that
-                    numberOfAssignments++;
-                    inboxStyle.addLine(assignment.getAssignmentName());
+                    if (assignment.getDueDate() < cal.getTimeInMillis()) {
+                        // Assignment due next day, notify user about that
+                        numberOfAssignments++;
+                        inboxStyle.addLine(assignment.getAssignmentName());
+                    }
                 }
 
                 if (numberOfAssignments != 0) {
@@ -54,8 +63,8 @@ public class AlarmReceiver extends BroadcastReceiver {
                         builder.setVibrate(new long[]{0});
                     }
 
-                    inboxStyle.setBigContentTitle("Assignments Due Soon");
-                    inboxStyle.setSummaryText(numberOfAssignments + " assignments due soon");
+                    inboxStyle.setBigContentTitle(numberOfAssignments + " assignments due tomorrow");
+                    inboxStyle.setSummaryText(numberOfAssignments + " assignments due tomorrow");
                     builder.setStyle(inboxStyle);
 
                     NotificationManagerCompat managerCompat = NotificationManagerCompat.from(context);

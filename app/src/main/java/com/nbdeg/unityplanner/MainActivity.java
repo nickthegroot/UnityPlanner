@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void onClick(View view) {
                 android.support.v4.app.Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-                if (currentFragment instanceof assignmentFragment || currentFragment instanceof homeScreen) {
+                if (currentFragment instanceof assignmentFragment || currentFragment instanceof dashboardFragment) {
                     startActivity(new Intent(MainActivity.this, addAssignment.class));
                 } else if (currentFragment instanceof classFragment){
                     startActivity(new Intent(MainActivity.this, addClass.class));
@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
             // Create a new Fragment to be placed in the activity layout
-            homeScreen firstFragment = new homeScreen();
+            dashboardFragment firstFragment = new dashboardFragment();
 
             // Add the fragment to the 'fragment_container' FrameLayout
             getSupportFragmentManager().beginTransaction()
@@ -177,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             transaction.addToBackStack(null);
             transaction.commit();
         } else if (id == R.id.nav_home) {
-            homeScreen newFragment = new homeScreen();
+            dashboardFragment newFragment = new dashboardFragment();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
             transaction.replace(R.id.fragment_container, newFragment);
@@ -206,22 +206,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.action_logout) {
-            AuthUI.getInstance()
-                    .signOut(this)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        public void onComplete(@NonNull Task<Void> task) {
-                            // user is now signed out
-                            startActivity(new Intent(MainActivity.this, loginActivity.class));
-                            finish();
-                        }
-                    });
-        } else if (id == R.id.action_sync) {
-            Database.refreshDatabase();
-            startActivity(new Intent(MainActivity.this, classroomLogin.class));
-        } else if (id == R.id.action_tutorial) {
-            startActivity(new Intent(MainActivity.this, IntroActivity.class));
+        switch (id) {
+            case R.id.action_logout:
+                AuthUI.getInstance()
+                        .signOut(this)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            public void onComplete(@NonNull Task<Void> task) {
+                                // user is now signed out
+                                startActivity(new Intent(MainActivity.this, loginActivity.class));
+                                finish();
+                            }
+                        });
+                return super.onOptionsItemSelected(item);
+
+            case R.id.action_sync:
+                Database.refreshDatabase();
+                startActivity(new Intent(MainActivity.this, classroomLogin.class));
+                return super.onOptionsItemSelected(item);
+
+            case R.id.action_tutorial:
+                startActivity(new Intent(MainActivity.this, IntroActivity.class));
+                return super.onOptionsItemSelected(item);
         }
+
         return super.onOptionsItemSelected(item);
     }
 }
