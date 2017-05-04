@@ -190,8 +190,8 @@ public class Database {
             changeCourseDb.push().setValue(new ChangedCourseName(oldCourse.getName(), newCourse.getName()));
             // Update All Assignments Under That Name
             for (Assignment assignment : assignments) {
-                if (assignment.getDueClass().equals(oldCourse.getName())) {
-                    assignment.setDueClass(newCourse.getName());
+                if (assignment.getDueCourse().equals(oldCourse)) {
+                    assignment.setDueCourse(newCourse);
                     if (assignment.getPercentComplete() == 100) {
                         doneAssignmentDb.child(assignment.getID()).setValue(assignment);
                     } else {
@@ -204,6 +204,26 @@ public class Database {
 
         // Updates values in database
         courseDb.child(oldCourse.getID()).setValue(newCourse);
+        refreshDatabase();
+    }
+
+    /**
+     * Deletes an existing course and all assignments associated with it
+     * @param course The existing course
+     */
+    public static void deleteCourse(final Course course) {
+        // Find all assignments under that name and delete them
+        for (Assignment assignment : assignments) {
+            if (assignment.getDueCourse().equals(course)) {
+                if (assignment.getPercentComplete() == 100) {
+                    doneAssignmentDb.child(assignment.getID()).removeValue();
+                } else {
+                    dueAssignmentDb.child(assignment.getID()).removeValue();
+                }
+                allAssignmentDb.child(assignment.getID()).removeValue();
+            }
+        }
+        courseDb.child(course.getID()).removeValue();
         refreshDatabase();
     }
 }

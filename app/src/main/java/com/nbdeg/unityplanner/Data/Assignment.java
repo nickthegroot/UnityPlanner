@@ -6,7 +6,7 @@ public class Assignment {
 
     private String assignmentName;
     private Long dueDate;
-    private String dueClass;
+    private Course dueCourse;
     private int percentComplete;
     private String extraInfo;
     private CourseWork classroomCourse;
@@ -22,15 +22,15 @@ public class Assignment {
      * @see CourseWork
      * @param assignmentName Name of assignment
      * @param dueDate Due date of assignment stored in milliseconds
-     * @param dueClass Name of due class
+     * @param dueCourse The due course
      * @param percentComplete Percent complete
      * @param extraInfo Any extra info stored
      * @param classroomCourse The Google Classroom stored class
      */
-    public Assignment(String assignmentName, Long dueDate, String dueClass, int percentComplete, String extraInfo, CourseWork classroomCourse) {
+    public Assignment(String assignmentName, Long dueDate, Course dueCourse, int percentComplete, String extraInfo, CourseWork classroomCourse) {
         this.assignmentName = assignmentName;
         this.dueDate = dueDate;
-        this.dueClass = dueClass;
+        this.dueCourse = dueCourse;
         this.percentComplete = percentComplete;
         this.extraInfo = extraInfo;
         this.classroomCourse = classroomCourse;
@@ -59,11 +59,11 @@ public class Assignment {
         this.extraInfo = extraInfo;
     }
 
-    public String getDueClass() {
-        return dueClass;
+    public Course getDueCourse() {
+        return dueCourse;
     }
-    public void setDueClass(String dueClass) {
-        this.dueClass = dueClass;
+    public void setDueCourse(Course dueCourse) {
+        this.dueCourse = dueCourse;
     }
 
     public int getPercentComplete() {

@@ -5,6 +5,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -241,6 +243,21 @@ public class ClassroomSync extends AppCompatActivity {
         dialog.show();
     }
 
+    private int getMatColor(String typeColor)
+    {
+        int returnColor = Color.BLACK;
+        int arrayId = getResources().getIdentifier("mdcolor_" + typeColor, "array", getApplicationContext().getPackageName());
+
+        if (arrayId != 0)
+        {
+            TypedArray colors = getResources().obtainTypedArray(arrayId);
+            int index = (int) (Math.random() * colors.length());
+            returnColor = colors.getColor(index, Color.BLACK);
+            colors.recycle();
+        }
+        return returnColor;
+    }
+
     /**
      * An asynchronous task that handles the Classroom API call.
      * Placing the API calls in their own task ensures the UI stays responsive.
@@ -309,15 +326,19 @@ public class ClassroomSync extends AppCompatActivity {
                 }
 
                 if (course.getCourseState().equals("ACTIVE")) {
+                    com.nbdeg.unityplanner.Data.Course dbCourse = new com.nbdeg.unityplanner.Data.Course(
+                            course.getName(),
+                            mService.userProfiles().get(course.getOwnerId()).execute().getName().getFullName(),
+                            startDate,
+                            course.getRoom(),
+                            course,
+                            getMatColor("200"));
+                    if (Database.changedCourseNames.containsKey(dbCourse.getName())) {
+                        dbCourse.setName(Database.changedCourseNames.get(course.getName()));
+                    }
                     if (!courseIDs.contains(course.getId())) {
                         // Add class to database
-                        Database.createCourse(new com.nbdeg.unityplanner.Data.Course(
-                                course.getName(),
-                                mService.userProfiles().get(course.getOwnerId()).execute().getName().getFullName(),
-                                startDate,
-                                course.getRoom(),
-                                course
-                        ));
+                        Database.createCourse(dbCourse);
                     }
 
                     // Add assignments to database
@@ -343,7 +364,7 @@ public class ClassroomSync extends AppCompatActivity {
                                         Database.createAssignment(new Assignment(
                                                 courseWork.getTitle(),
                                                 cal.getTimeInMillis(),
-                                                courseName,
+                                                dbCourse,
                                                 100,
                                                 courseWork.getDescription(),
                                                 courseWork));
@@ -351,7 +372,7 @@ public class ClassroomSync extends AppCompatActivity {
                                         Database.createAssignment(new Assignment(
                                                 courseWork.getTitle(),
                                                 cal.getTimeInMillis(),
-                                                courseName,
+                                                dbCourse,
                                                 0,
                                                 courseWork.getDescription(),
                                                 courseWork));

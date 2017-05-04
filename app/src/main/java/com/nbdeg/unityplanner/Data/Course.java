@@ -1,6 +1,5 @@
 package com.nbdeg.unityplanner.Data;
 
-
 public class Course {
 
     private String name;
@@ -9,13 +8,16 @@ public class Course {
     private Long endDate;
     private String roomNumber;
     private String buildingName;
+    private int color;
     private String ID;
     private com.google.api.services.classroom.model.Course classroomCourse;
 
     /**
      * Empty Constructor
      */
-    public Course() {}
+    public Course() {
+    }
+
 
     /**
      * Constructor for Google Classroom assignments
@@ -25,12 +27,13 @@ public class Course {
      * @param roomNumber Room number of classroom
      * @param classroomCourse Google Classroom course
      */
-    public Course(String name, String teacher, Long startDate, String roomNumber, com.google.api.services.classroom.model.Course classroomCourse) {
+    public Course(String name, String teacher, Long startDate, String roomNumber, com.google.api.services.classroom.model.Course classroomCourse, int color) {
         this.name = name;
         this.teacher = teacher;
         this.startDate = startDate;
         this.roomNumber = roomNumber;
         this.classroomCourse = classroomCourse;
+        this.color = color;
     }
 
 
@@ -90,5 +93,12 @@ public class Course {
     }
     public void setClassroomCourse(com.google.api.services.classroom.model.Course classroomCourse) {
         this.classroomCourse = classroomCourse;
+    }
+
+    public int getColor() {
+        return color;
+    }
+    public void setColor(int color) {
+        this.color = color;
     }
 }
