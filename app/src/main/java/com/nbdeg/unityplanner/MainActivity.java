@@ -1,17 +1,21 @@
 package com.nbdeg.unityplanner;
 
 import android.app.AlarmManager;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -28,17 +32,46 @@ import android.widget.TextView;
 
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.appinvite.AppInviteInvitation;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
+import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.util.ExponentialBackOff;
+import com.google.api.services.classroom.ClassroomScopes;
+import com.google.api.services.classroom.model.Course;
+import com.google.api.services.classroom.model.CourseWork;
+import com.google.api.services.classroom.model.ListCourseWorkResponse;
+import com.google.api.services.classroom.model.ListCoursesResponse;
+import com.google.api.services.classroom.model.ListStudentSubmissionsResponse;
+import com.google.api.services.classroom.model.StudentSubmission;
+import com.nbdeg.unityplanner.data.Assignments;
+import com.nbdeg.unityplanner.data.Classes;
 import com.nbdeg.unityplanner.utils.AlarmReceiver;
 import com.nbdeg.unityplanner.utils.Database;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 
 @SuppressWarnings({"CanBeFinal", "MismatchedQueryAndUpdateOfCollection"})
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+
+    GoogleAccountCredential mCredential;
+    private static final String[] SCOPES = { ClassroomScopes.CLASSROOM_COURSES_READONLY, ClassroomScopes.CLASSROOM_ROSTERS_READONLY, ClassroomScopes.CLASSROOM_COURSEWORK_ME_READONLY };
+
+    DrawerLayout mainLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,12 +81,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         Database.refreshDatabase();
 
+        // Initialize credentials and service object.
+        mCredential = GoogleAccountCredential.usingOAuth2(
+                this, Arrays.asList(SCOPES))
+                .setBackOff(new ExponentialBackOff());
+
         // Sets button to send user to add assignment page when clicked
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                android.support.v4.app.Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
                 if (currentFragment instanceof assignmentFragment || currentFragment instanceof dashboardFragment) {
                     startActivity(new Intent(MainActivity.this, addAssignment.class));
                 } else if (currentFragment instanceof classFragment){
@@ -62,10 +100,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         });
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mainLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
+                this, mainLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        mainLayout.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -224,7 +262,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.action_sync:
                 Database.refreshDatabase();
-                startActivity(new Intent(MainActivity.this, classroomLogin.class));
+                if (mCredential.getSelectedAccountName() != null) {
+                    new MakeRequestTask(mCredential).execute();
+                } else {
+                    showSnackbar("Please log into a classroom account in settings first.");
+                }
                 return super.onOptionsItemSelected(item);
 
             case R.id.action_tutorial:
@@ -233,5 +275,158 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    /**
+     * An asynchronous task that handles the Classroom API call.
+     * Placing the API calls in their own task ensures the UI stays responsive.
+     */
+    private class MakeRequestTask extends AsyncTask<Void, Void, Void> {
+        private com.google.api.services.classroom.Classroom mService = null;
+        private Exception mLastError = null;
+
+        MakeRequestTask(GoogleAccountCredential credential) {
+            HttpTransport transport = AndroidHttp.newCompatibleTransport();
+            JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+            mService = new com.google.api.services.classroom.Classroom.Builder(
+                    transport, jsonFactory, credential)
+                    .setApplicationName("Unity Planner")
+                    .build();
+        }
+
+        /**
+         * Background task to call Classroom API.
+         * @param params no parameters needed for this task.
+         */
+        @Override
+        protected Void doInBackground(Void... params) {
+            try {
+                getDataFromApi();
+            } catch (Exception e) {
+                e.printStackTrace();
+                mLastError = e;
+                cancel(true);
+            }
+            return null;
+        }
+
+        /**
+         * Fetch a list of the names of the first 10 courses the user has access to.
+         * @return List course names, or a simple error message if no courses are
+         *         found.
+         * @throws IOException
+         */
+        private void getDataFromApi() throws IOException {
+            ListCoursesResponse courseResponse = mService.courses().list()
+                    .setPageSize(10)
+                    .execute();
+
+            ArrayList<String> courseIDs = Database.courseIDs;
+            ArrayList<String> courseWorkIDs = Database.courseWorkIDs;
+
+            for (Course course : courseResponse.getCourses()) {
+                SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                long startDate = System.currentTimeMillis();
+                try {
+                    startDate = f.parse(course.getCreationTime()).getTime();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                if (course.getCourseState().equals("ACTIVE")) {
+                    if (!courseIDs.contains(course.getId())) {
+                        // Add class to database
+                        Database.createClass(new Classes(
+                                course.getName(),
+                                mService.userProfiles().get(course.getOwnerId()).execute().getName().getFullName(),
+                                startDate,
+                                course.getRoom(),
+                                course.getDescription(),
+                                course.getSection(),
+                                course
+                        ));
+                    }
+
+                    // Add assignments to database
+                    ListCourseWorkResponse courseworkResponse = mService.courses().courseWork().list(course.getId()).execute();
+                    if (courseworkResponse.getCourseWork() != null) {
+                        for (CourseWork courseWork : courseworkResponse.getCourseWork()) {
+                            if (!courseWorkIDs.contains(courseWork.getId())) {
+                                ListStudentSubmissionsResponse studentSubmissionResponse = mService.courses().courseWork().studentSubmissions().list(course.getId(), courseWork.getId()).execute();
+                                for (StudentSubmission submission : studentSubmissionResponse.getStudentSubmissions()) {
+                                    Calendar cal = Calendar.getInstance();
+                                    if (courseWork.getDueDate() != null) {
+                                        cal.set(courseWork.getDueDate().getYear(), courseWork.getDueDate().getMonth()-1, courseWork.getDueDate().getDay()-1);
+                                    } else {
+                                        cal.setTimeInMillis(System.currentTimeMillis());
+                                    }
+                                    String courseName;
+                                    if (Database.changedClassNames.containsKey(course.getName())) {
+                                        courseName = Database.changedClassNames.get(course.getName());
+                                    } else {
+                                        courseName = course.getName();
+                                    }
+                                    if (submission.getState().equalsIgnoreCase("RETURNED") || submission.getState().equalsIgnoreCase("TURNED_IN")) {
+                                        Database.createAssignment(new Assignments(cal.getTimeInMillis(),
+                                                courseWork.getTitle(),
+                                                courseWork.getDescription(),
+                                                courseName,
+                                                100,
+                                                courseWork));
+                                    } else {
+                                        Database.createAssignment(new Assignments(cal.getTimeInMillis(),
+                                                courseWork.getTitle(),
+                                                courseWork.getDescription(),
+                                                courseName,
+                                                0,
+                                                courseWork));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            Database.refreshDatabase();
+        }
+
+        @Override
+        protected void onCancelled() {
+            if (mLastError != null) {
+                if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
+                    GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+                    Dialog dialog = apiAvailability.getErrorDialog(
+                            MainActivity.this,
+                            ((GooglePlayServicesAvailabilityIOException) mLastError).getConnectionStatusCode(),
+                            1002);
+                    dialog.show();
+                } else if (mLastError instanceof UserRecoverableAuthIOException) {
+                    startActivityForResult(
+                            ((UserRecoverableAuthIOException) mLastError).getIntent(),
+                            classroomLogin.REQUEST_AUTHORIZATION);
+                } else {
+                    showSnackbar("The following error occurred:\n"
+                            + mLastError.getMessage());
+                }
+            } else {
+                showSnackbar("Request cancelled.");
+            }
+        }
+    }
+
+    private void showSnackbar(String message) {
+        Snackbar snackbar = Snackbar.make(mainLayout, message, Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 }

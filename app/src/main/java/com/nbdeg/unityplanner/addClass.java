@@ -57,9 +57,10 @@ public class addClass extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Classes newClass = new Classes();
+        boolean isValidClass = true;
 
         if (className.getText().toString().equals("")) {
-            showSnackbar("A class name is needed");
+            isValidClass = false;
         } else {
             newClass.setName(className.getText().toString());
         }
@@ -70,6 +71,7 @@ public class addClass extends AppCompatActivity {
 
         if (mStartDate.date != null) {
             newClass.setStartDate(mStartDate.date.getTime());
+            isValidClass = false;
         }
         if (mEndDate.date != null) {
             newClass.setEndDate(mEndDate.date.getTime());
@@ -78,8 +80,12 @@ public class addClass extends AppCompatActivity {
         newClass.setRoomNumber(classRoomNumber.getText().toString());
         newClass.setBuildingName(classBuildingName.getText().toString());
 
-        Database.createClass(newClass);
-        startActivity(new Intent(addClass.this, MainActivity.class));
+        if (isValidClass) {
+            Database.createClass(newClass);
+            startActivity(new Intent(addClass.this, MainActivity.class));
+        } else {
+            showSnackbar("Some essential fields are not filled out!");
+        }
         return super.onOptionsItemSelected(item);
     }
 

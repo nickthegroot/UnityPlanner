@@ -76,7 +76,7 @@ public class addAssignment extends AppCompatActivity  {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Boolean isValidAssignment = true;
+        boolean isValidAssignment = true;
         Assignments newAssignment = new Assignments();
 
         if (datePicker.date != null) {
