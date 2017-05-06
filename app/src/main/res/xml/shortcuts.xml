@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="addAssignment"
+        android:enabled="true"
+        android:icon="@mipmap/ic_shortcut_assignment"
+        android:shortcutShortLabel="@string/shortcut_assignment_short_label"
+        android:shortcutLongLabel="@string/shortcut_assignment_short_label">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.nbdeg.unityplanner"
+            android:targetClass="com.nbdeg.unityplanner.CreateAssignment" />
+    </shortcut>
+    <shortcut
+        android:shortcutId="addCourse"
+        android:enabled="true"
+        android:icon="@mipmap/ic_shortcut_course"
+        android:shortcutShortLabel="@string/shortcut_course_short_label"
+        android:shortcutLongLabel="@string/shortcut_course_short_label">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.nbdeg.unityplanner"
+            android:targetClass="com.nbdeg.unityplanner.CreateCourse" />
+    </shortcut>
+</shortcuts>

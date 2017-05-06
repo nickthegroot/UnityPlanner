@@ -12,9 +12,12 @@
         <activity android:name=".LauncherLogin">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+
         </activity>
         <activity android:name=".AppIntro.IntroActivity" />
         <activity
@@ -47,8 +50,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.nbdeg.unityplanner.Dashboard" />
         </activity>
-        <activity android:name=".CreateAssignment" />
-        <activity android:name=".CreateCourse" />
+        <activity
+            android:name=".CreateAssignment"
+            android:label="@string/title_activity_create_assignment"/>
+        <activity
+            android:name=".CreateCourse"
+            android:label="@string/title_activity_create_course"/>
         <activity android:name=".Utils.ClassroomSync"></activity>
     </application>
 
