@@ -15,30 +15,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "1084759978628-utgn08dcdetjhqdflauv587btagaparb.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.nbdeg.unityplanner",
-            "certificate_hash": "e04bb1c25deeafcd423a79ad8bc23122422b4dc9"
-          }
-        },
-        {
-          "client_id": "1084759978628-1oetrnf5frt1geosvifu4vb7kv9a5sgf.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.nbdeg.unityplanner",
-            "certificate_hash": "e97e9cb98bff2afa430ef70f409470ef4fea3516"
-          }
-        },
-        {
-          "client_id": "1084759978628-u1v41osthqro6jsjlkqandk5r74nn5bq.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.nbdeg.unityplanner",
-            "certificate_hash": "811ae0664716b15b4460221435df7a7e573b4b81"
-          }
-        },
-        {
           "client_id": "1084759978628-qu0fcoads4anhekqgvqkifo8sd368j9g.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

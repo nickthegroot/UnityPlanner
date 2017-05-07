@@ -186,14 +186,6 @@ public class Dashboard extends AppCompatActivity
                     .setBackOff(new ExponentialBackOff());
 
             getResultsFromApi();
-        } else if (id == R.id.action_change_account) {
-            mCredential = GoogleAccountCredential.usingOAuth2(
-                    this, Arrays.asList(SCOPES))
-                    .setBackOff(new ExponentialBackOff());
-
-            startActivityForResult(
-                    mCredential.newChooseAccountIntent(),
-                    REQUEST_ACCOUNT_PICKER);
         }
 
         return super.onOptionsItemSelected(item);

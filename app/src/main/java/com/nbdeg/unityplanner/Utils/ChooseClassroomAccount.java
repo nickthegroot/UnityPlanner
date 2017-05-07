@@ -10,7 +10,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.util.ExponentialBackOff;
+import com.google.api.services.classroom.ClassroomScopes;
 import com.nbdeg.unityplanner.Dashboard;
+
+import java.util.Arrays;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -19,8 +23,13 @@ public class ChooseClassroomAccount extends AppCompatActivity {
 
     static final int REQUEST_ACCOUNT_PICKER = 1000;
     static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
+
     private static final String PREF_ACCOUNT_NAME = "accountName";
-    GoogleAccountCredential mCredential;
+    private static final String[] SCOPES = { ClassroomScopes.CLASSROOM_COURSES_READONLY, ClassroomScopes.CLASSROOM_ROSTERS_READONLY, ClassroomScopes.CLASSROOM_COURSEWORK_ME_READONLY };
+
+    GoogleAccountCredential mCredential = GoogleAccountCredential.usingOAuth2(
+            this, Arrays.asList(SCOPES))
+            .setBackOff(new ExponentialBackOff());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

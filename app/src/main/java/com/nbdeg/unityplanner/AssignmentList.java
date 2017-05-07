@@ -12,7 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseListAdapter;
-import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.Query;
 import com.nbdeg.unityplanner.Data.Assignment;
 import com.nbdeg.unityplanner.Utils.Database;
 
@@ -46,7 +46,7 @@ public class AssignmentList extends Fragment {
 
         View mView = inflater.inflate(R.layout.fragment_assignment_list, container, false);
         ListView assignmentView = (ListView) mView.findViewById(R.id.assignment_list_view);
-        DatabaseReference ref = Database.dueAssignmentDb;
+        Query ref = Database.dueAssignmentDb.orderByChild("dueDate");
 
         mAdapter = new FirebaseListAdapter<Assignment>(getActivity(), Assignment.class, R.layout.database_assignment_view, ref) {
             @Override
