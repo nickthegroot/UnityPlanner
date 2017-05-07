@@ -27,6 +27,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.mikepenz.aboutlibraries.Libs;
+import com.mikepenz.aboutlibraries.LibsBuilder;
 import com.nbdeg.unityplanner.Utils.AppCompatPreferenceActivity;
 
 import java.util.List;
@@ -185,6 +187,7 @@ public class Settings extends AppCompatPreferenceActivity {
                 || NotificationPreferenceFragment.class.getName().equals(fragmentName);
     }
 
+
     /**
      * This fragment show infomation about the app.
      */
@@ -198,6 +201,18 @@ public class Settings extends AppCompatPreferenceActivity {
             // TODO: 5/3/2017 Change Beta Opt-In URL
             betaOptIn.setData(Uri.parse("https://play.google.com/apps/testing/com.nbdeg.unityplanner"));
 
+            Element usedLibraries = new Element();
+            usedLibraries.setTitle("Used Libraries");
+            usedLibraries.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new LibsBuilder()
+                            .withActivityStyle(Libs.ActivityStyle.LIGHT)
+                            //start the activity
+                            .start(getActivity());
+                }
+            });
+
             Element versionElement = new Element();
             versionElement.setTitle("Version 0.7.0");
             versionElement.setIntent(betaOptIn);
@@ -207,6 +222,7 @@ public class Settings extends AppCompatPreferenceActivity {
                     .setImage(R.mipmap.ic_launcher_round)
                     .setDescription(getString(R.string.settings_about_description))
                     .addItem(versionElement)
+                    .addItem(usedLibraries)
                     .addGroup("Connect with us")
                     .addEmail("unityplanner@nbdeg.com")
                     .addWebsite("http://nbdeg.com/")

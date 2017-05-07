@@ -9,6 +9,12 @@ public class ChangedCourseName {
     String oldCourseName;
     String newCourseName;
 
+    /*
+    Required empty constructor
+     */
+    public ChangedCourseName() {
+    }
+
     public ChangedCourseName(String oldCourseName, String newCourseName) {
         this.oldCourseName = oldCourseName;
         this.newCourseName = newCourseName;

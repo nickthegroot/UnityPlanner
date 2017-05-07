@@ -11,6 +11,8 @@ import android.view.View;
 import com.nbdeg.unityplanner.Data.Assignment;
 import com.nbdeg.unityplanner.Utils.Database;
 
+import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
+
 public class AssignmentViewer extends AppCompatActivity {
 
     Assignment assignment;
@@ -19,7 +21,8 @@ public class AssignmentViewer extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assignment_viewer);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.assignment_toolbar);
+        CollapsingToolbarLayout toolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.assignment_toolbar_layout);
         setSupportActionBar(toolbar);
 
         CoordinatorLayout layout = (CoordinatorLayout) findViewById(R.id.assignment_viewer_view);
@@ -32,6 +35,7 @@ public class AssignmentViewer extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         String assignmentID = getIntent().getStringExtra("ID");
@@ -41,8 +45,8 @@ public class AssignmentViewer extends AppCompatActivity {
                 layout.setVisibility(View.VISIBLE);
 
                 // TODO: 5/4/2017 Set all assignment info here
-                toolbar.setBackgroundColor(assignment.getDueCourse().getColor());
-                toolbar.setTitle(assignment.getName());
+                toolbarLayout.setBackgroundColor(assignment.getDueCourse().getColor());
+                toolbarLayout.setTitle(assignment.getName());
             }
         }
     }

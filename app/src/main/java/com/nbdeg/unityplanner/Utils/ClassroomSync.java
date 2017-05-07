@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -339,6 +340,7 @@ public class ClassroomSync extends AppCompatActivity {
                     if (!courseIDs.contains(course.getId())) {
                         // Add class to database
                         Database.createCourse(dbCourse);
+                        Log.i("Classroom", "Course Created: " + dbCourse.getName());
                     }
 
                     // Add assignments to database
@@ -354,12 +356,6 @@ public class ClassroomSync extends AppCompatActivity {
                                     } else {
                                         cal.setTimeInMillis(System.currentTimeMillis());
                                     }
-                                    String courseName;
-                                    if (Database.changedCourseNames.containsKey(course.getName())) {
-                                        courseName = Database.changedCourseNames.get(course.getName());
-                                    } else {
-                                        courseName = course.getName();
-                                    }
                                     if (submission.getState().equalsIgnoreCase("RETURNED") || submission.getState().equalsIgnoreCase("TURNED_IN")) {
                                         Database.createAssignment(new Assignment(
                                                 courseWork.getTitle(),
@@ -368,6 +364,7 @@ public class ClassroomSync extends AppCompatActivity {
                                                 100,
                                                 courseWork.getDescription(),
                                                 courseWork));
+                                        Log.i("Classroom", "Assignment Created: " + courseWork.getTitle());
                                     } else {
                                         Database.createAssignment(new Assignment(
                                                 courseWork.getTitle(),
@@ -376,6 +373,7 @@ public class ClassroomSync extends AppCompatActivity {
                                                 0,
                                                 courseWork.getDescription(),
                                                 courseWork));
+                                        Log.i("Classroom", "Assignment Created: " + courseWork.getTitle());
                                     }
                                 }
                             }

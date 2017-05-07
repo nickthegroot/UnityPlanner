@@ -21,13 +21,13 @@ public class Database {
 
     public static FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-    private static DatabaseReference userDb;
-    public static DatabaseReference courseDb;
-    private static DatabaseReference assignmentDb;
-    public static DatabaseReference allAssignmentDb;
-    public static DatabaseReference dueAssignmentDb;
-    public static DatabaseReference doneAssignmentDb;
-    private static DatabaseReference changeCourseDb;
+    private static DatabaseReference userDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid());
+    public static DatabaseReference courseDb = userDb.child("classes");
+    private static DatabaseReference assignmentDb = userDb.child("assignments");
+    public static DatabaseReference allAssignmentDb = assignmentDb.child("all");
+    public static DatabaseReference dueAssignmentDb = assignmentDb.child("due");
+    public static DatabaseReference doneAssignmentDb = assignmentDb.child("done");
+    private static DatabaseReference changeCourseDb = userDb.child("changedClasses");
 
     // Saved as <Original name, new name>
     public static HashMap<String, String> changedCourseNames = new HashMap<>();

@@ -4,10 +4,10 @@
     android:layout_height="match_parent"
     tools:context="com.nbdeg.unityplanner.AssignmentList">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:id="@+id/assignment_list_view">
+    </ListView>
 
 </FrameLayout>

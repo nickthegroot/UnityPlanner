@@ -139,7 +139,10 @@
 
     <string name="shortcut_assignment_short_label">Create assignment</string>
     <string name="shortcut_course_short_label">Create course</string>
+    <string name="shortcut_sync_short_label">Sync</string>
 
     <string name="title_activity_create_assignment">Create an assignment</string>
     <string name="title_activity_create_course">Create a course</string>
+
+    <string name="late">Late</string>
 </resources>
