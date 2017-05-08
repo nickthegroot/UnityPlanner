@@ -21,6 +21,26 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_dashboard"
-        app:menu="@menu/activity_dashboard_drawer" />
+        app:menu="@menu/activity_dashboard_drawer" >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="bottom"
+                android:visibility="invisible"
+                android:id="@+id/dashboard_sync">
+                <ProgressBar
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:indeterminate="true"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:text="@string/sync"
+                    android:gravity="center"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+        </android.support.design.widget.NavigationView>
 
 </android.support.v4.widget.DrawerLayout>

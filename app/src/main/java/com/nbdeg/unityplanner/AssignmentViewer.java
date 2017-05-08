@@ -1,9 +1,9 @@
 package com.nbdeg.unityplanner;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -26,16 +26,6 @@ public class AssignmentViewer extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         CoordinatorLayout layout = (CoordinatorLayout) findViewById(R.id.assignment_viewer_view);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.assignment_edit_button);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         String assignmentID = getIntent().getStringExtra("ID");
@@ -49,5 +39,15 @@ public class AssignmentViewer extends AppCompatActivity {
                 toolbarLayout.setTitle(assignment.getName());
             }
         }
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.assignment_viewer_button);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(AssignmentViewer.this, EditAssignment.class);
+                intent.putExtra("ID", assignment.getID());
+                startActivity(intent);
+            }
+        });
     }
 }

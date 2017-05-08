@@ -12,6 +12,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
@@ -26,6 +27,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,15 +69,16 @@ import pub.devrel.easypermissions.EasyPermissions;
 public class Dashboard extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    LinearLayout syncLayout;
     int FragmentLayoutID;
     GoogleAccountCredential mCredential;
 
-    static final int REQUEST_ACCOUNT_PICKER = 1000;
+    private static final String PREF_ACCOUNT_NAME = "accountName";
+
     static final int REQUEST_AUTHORIZATION = 1001;
     static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
     static final int REQUEST_INVITE = 4001;
 
-    private static final String PREF_ACCOUNT_NAME = "accountName";
     private static final String[] SCOPES = { ClassroomScopes.CLASSROOM_COURSES_READONLY, ClassroomScopes.CLASSROOM_ROSTERS_READONLY, ClassroomScopes.CLASSROOM_COURSEWORK_ME_READONLY };
 
 
@@ -84,6 +87,8 @@ public class Dashboard extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.dashboard_fab);
+        syncLayout = (LinearLayout) findViewById(R.id.dashboard_sync);
         setSupportActionBar(toolbar);
 
         Database.refreshDatabase();
@@ -139,6 +144,18 @@ public class Dashboard extends AppCompatActivity
                         }
                     });
         }
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                android.support.v4.app.Fragment currentFragment = getSupportFragmentManager().findFragmentById(FragmentLayoutID);
+                if (currentFragment instanceof DashboardFragment || currentFragment instanceof AssignmentList) {
+                    startActivity(new Intent(Dashboard.this, CreateAssignment.class));
+                } else if (currentFragment instanceof CourseList){
+                    startActivity(new Intent(Dashboard.this, CreateCourse.class));
+                }
+            }
+        });
     }
 
     @Override
@@ -177,15 +194,20 @@ public class Dashboard extends AppCompatActivity
                         }
                     });
         } else if (id == R.id.action_intro) {
-            // TODO: 5/3/2017 Start App Intro
+            // TODO: 5/3/2017 Create App Intro
             Toast.makeText(this, "Work In Progress", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.action_sync) {
             // Initialize credentials and service object.
             mCredential = GoogleAccountCredential.usingOAuth2(
                     this, Arrays.asList(SCOPES))
                     .setBackOff(new ExponentialBackOff());
-
-            getResultsFromApi();
+            String accountName = getSharedPreferences("accounts", 0).getString(PREF_ACCOUNT_NAME, null);
+            if (accountName == null) {
+                Toast.makeText(this, "Please select a Google Account to sync from in settings first.", Toast.LENGTH_LONG).show();
+            } else {
+                mCredential.setSelectedAccountName(accountName);
+                getResultsFromApi();
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -501,14 +523,16 @@ public class Dashboard extends AppCompatActivity
         @Override
         protected void onPreExecute() {
             // Start Spinner
+            syncLayout.setVisibility(View.VISIBLE);
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             // Hide spinner
+            syncLayout.setVisibility(View.INVISIBLE);
+            Toast.makeText(Dashboard.this, "Sync finished", Toast.LENGTH_SHORT).show();
             Database.refreshDatabase();
-            startActivity(new Intent(Dashboard.this, Dashboard.class));
         }
 
         @Override

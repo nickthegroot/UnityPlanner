@@ -40,6 +40,14 @@
                 android:value="com.nbdeg.unityplanner.Dashboard" />
         </activity>
         <activity
+            android:name=".Utils.ChooseClassroomAccount"
+            android:label="Choose a Classroom Account"
+            android:parentActivityName=".Dashboard" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.nbdeg.unityplanner.Dashboard" />
+        </activity>
+        <activity
             android:name=".CourseViewer"
             android:label="@string/title_activity_course_viewer"
             android:parentActivityName=".Dashboard"
@@ -62,8 +70,7 @@
         <activity
             android:name=".CreateCourse"
             android:label="@string/title_activity_create_course" />
-        <activity android:name=".Utils.ClassroomSync" />
-        <activity android:name=".Utils.ChooseClassroomAccount"></activity>
+        <activity android:name=".EditAssignment" />
     </application>
 
 </manifest>

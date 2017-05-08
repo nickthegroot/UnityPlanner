@@ -1,7 +1,6 @@
 package com.nbdeg.unityplanner.Utils;
 
 import android.accounts.AccountManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -27,13 +26,14 @@ public class ChooseClassroomAccount extends AppCompatActivity {
     private static final String PREF_ACCOUNT_NAME = "accountName";
     private static final String[] SCOPES = { ClassroomScopes.CLASSROOM_COURSES_READONLY, ClassroomScopes.CLASSROOM_ROSTERS_READONLY, ClassroomScopes.CLASSROOM_COURSEWORK_ME_READONLY };
 
-    GoogleAccountCredential mCredential = GoogleAccountCredential.usingOAuth2(
-            this, Arrays.asList(SCOPES))
-            .setBackOff(new ExponentialBackOff());
+    GoogleAccountCredential mCredential;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mCredential = GoogleAccountCredential.usingOAuth2(
+                this, Arrays.asList(SCOPES))
+                .setBackOff(new ExponentialBackOff());
         chooseAccount();
     }
 
@@ -94,12 +94,10 @@ public class ChooseClassroomAccount extends AppCompatActivity {
                     String accountName =
                             data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
                     if (accountName != null) {
-                        SharedPreferences settings =
-                                getPreferences(Context.MODE_PRIVATE);
+                        SharedPreferences settings = getSharedPreferences("accounts", 0);
                         SharedPreferences.Editor editor = settings.edit();
                         editor.putString(PREF_ACCOUNT_NAME, accountName);
                         editor.apply();
-                        mCredential.setSelectedAccountName(accountName);
                         Toast.makeText(this, "Account " + accountName + " has successfully been linked!", Toast.LENGTH_SHORT).show();
                         startActivity(new Intent(ChooseClassroomAccount.this, Dashboard.class));
                     }

@@ -36,7 +36,7 @@
     <include layout="@layout/content_assignment_viewer" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/assignment_edit_button"
+        android:id="@+id/assignment_viewer_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"

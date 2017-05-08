@@ -145,4 +145,12 @@
     <string name="title_activity_create_course">Create a course</string>
 
     <string name="late">Late</string>
+    <string name="delete">Delete</string>
+    <string name="completed">Completed</string>
+    <string name="extra_info">Extra Info</string>
+    <string name="date">Date</string>
+    <string name="assignment_name">Assignment Name</string>
+    <string name="assignment_logo_description">Assignment Logo</string>
+    <string name="title_activity_test">Test</string>
+    <string name="sync">Syncing...</string>
 </resources>

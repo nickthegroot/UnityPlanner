@@ -14,11 +14,6 @@
         android:title="Sync"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_change_account"
-        android:orderInCategory="75"
-        android:title="Change Account"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/action_logout"
         android:orderInCategory="100"
         android:title="@string/dashboard_logout"
