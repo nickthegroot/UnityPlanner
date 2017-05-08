@@ -5,17 +5,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.nbdeg.unityplanner.CreateAssignment"
-    android:padding="10dp">
+    android:padding="15dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@mipmap/ic_shortcut_assignment"/>
+
         <android.support.design.widget.TextInputLayout
             android:id="@+id/textInputLayout"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="4">
+            android:paddingLeft="10dp">
 
             <EditText
                 android:id="@+id/assignment_create_name"
@@ -25,12 +31,6 @@
 
         </android.support.design.widget.TextInputLayout>
 
-        <CheckBox
-            android:id="@+id/assignment_create_completed"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:text="Completed"
-            android:layout_weight="2"/>
     </LinearLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -62,5 +62,11 @@
         android:id="@+id/assignment_create_course"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
+    <CheckBox
+        android:id="@+id/assignment_create_completed"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Completed" />
 
 </LinearLayout>
