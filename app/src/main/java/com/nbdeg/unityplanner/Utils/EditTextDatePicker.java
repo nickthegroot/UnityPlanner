@@ -59,7 +59,8 @@ public class EditTextDatePicker implements View.OnClickListener, DatePickerDialo
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        _editText.setText(strDate);
+        SimpleDateFormat niceFormatter = new SimpleDateFormat("MMMM d, yyyy", java.util.Locale.getDefault());
+        _editText.setText(niceFormatter.format(date));
     }
 
     public void setDisplay(Date date) {
