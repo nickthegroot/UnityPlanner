@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference
+        android:title="Link another account">
+        <intent
+            android:targetPackage="com.nbdeg.unityplanner.Utils"
+            android:targetClass="com.nbdeg.unityplanner.Utils.LinkLogin" />
+    </Preference>
+
+    <ListPreference
+        android:title="Google Classroom sync rate"
+        android:key="sync_classroom_rate"
+        android:entryValues="@array/pref_sync_classroom_values"
+        android:entries="@array/pref_sync_classroom"
+        android:defaultValue="2" />
+
+</PreferenceScreen>

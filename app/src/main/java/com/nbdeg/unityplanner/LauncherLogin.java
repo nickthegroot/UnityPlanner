@@ -9,6 +9,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
+import com.google.api.services.classroom.ClassroomScopes;
 import com.google.firebase.auth.FirebaseAuth;
 import com.nbdeg.unityplanner.Utils.Database;
 
@@ -16,6 +17,7 @@ import java.util.Arrays;
 
 public class LauncherLogin extends AppCompatActivity {
 
+    public static final String[] SCOPES = { ClassroomScopes.CLASSROOM_COURSES_READONLY, ClassroomScopes.CLASSROOM_ROSTERS_READONLY, ClassroomScopes.CLASSROOM_COURSEWORK_ME_READONLY };
     private static final int RC_SIGN_IN = 145;
 
     @Override
@@ -36,13 +38,18 @@ public class LauncherLogin extends AppCompatActivity {
      * Launches AuthUI sign-in activity.
      */
     private void signIn() {
+        AuthUI.IdpConfig googleIdp = new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER)
+                .setPermissions(Arrays.asList(SCOPES))
+                .build();
+
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setProviders(Arrays.asList(
                                 new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
-                                new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
+                                googleIdp,
                                 new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
+                        .setLogo(R.mipmap.ic_launcher_round)
                         .build(),
                 RC_SIGN_IN);
     }

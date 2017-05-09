@@ -27,7 +27,8 @@
                 android:id="@+id/assignment_create_name"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="Assignment Name" />
+                android:hint="Assignment Name"
+                android:inputType="textCapWords|textAutoCorrect" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -55,7 +56,8 @@
             android:id="@+id/assignment_create_extra"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:hint="Extra Info" />
+            android:hint="Extra Info"
+            android:inputType="textCapSentences|textAutoCorrect" />
     </android.support.design.widget.TextInputLayout>
 
     <Spinner

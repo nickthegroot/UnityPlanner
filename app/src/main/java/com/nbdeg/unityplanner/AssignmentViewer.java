@@ -7,11 +7,15 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 
 import com.nbdeg.unityplanner.Data.Assignment;
 import com.nbdeg.unityplanner.Utils.Database;
 
 import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class AssignmentViewer extends AppCompatActivity {
 
@@ -28,15 +32,36 @@ public class AssignmentViewer extends AppCompatActivity {
         CoordinatorLayout layout = (CoordinatorLayout) findViewById(R.id.assignment_viewer_view);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        SimpleDateFormat formatter = new SimpleDateFormat("MMMM d, yyyy", java.util.Locale.getDefault());
+
+        TextView viewCourseName = (TextView) findViewById(R.id.assignment_viewer_course_name);
+        TextView viewDueDate = (TextView) findViewById(R.id.assignment_viewer_due_date);
+        TextView viewComplete = (TextView) findViewById(R.id.assignment_viewer_complete);
+        TextView viewDescription = (TextView) findViewById(R.id.assignment_viewer_description);
+
         String assignmentID = getIntent().getStringExtra("ID");
         for (Assignment assignment : Database.assignments) {
             if (assignment.getID().equals(assignmentID)) {
                 this.assignment = assignment;
                 layout.setVisibility(View.VISIBLE);
 
-                // TODO: 5/4/2017 Set all assignment info here
                 toolbarLayout.setBackgroundColor(assignment.getDueCourse().getColor());
                 toolbarLayout.setTitle(assignment.getName());
+
+                viewCourseName.setText(assignment.getDueCourse().getName());
+                viewDueDate.setText(formatter.format(new Date(assignment.getDueDate())));
+                if (assignment.getPercentComplete() == 100) {
+                    viewComplete.setText(R.string.assignment_viewer_done);
+                } else {
+                    viewComplete.setText(R.string.assignment_viewer_not_done);
+                }
+                if (assignment.getExtraInfo() == null) {
+                    viewDescription.setText(R.string.assignment_viewer_none);
+                } else if (assignment.getExtraInfo().equals("")) {
+                    viewDescription.setText(R.string.assignment_viewer_none);
+                } else {
+                    viewDescription.setText(assignment.getExtraInfo());
+                }
             }
         }
 

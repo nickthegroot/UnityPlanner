@@ -37,10 +37,4 @@
         android:title="@string/pref_notifications_daysadvance"
         android:entryValues="@array/pref_notification_daysadvance_values"
         android:entries="@array/pref_notification_daysadvance"/>
-
-    <Preference android:title="Change Google Classroom synced account">
-        <intent android:action="android.intent.action.VIEW"
-            android:targetClass="com.nbdeg.unityplanner.Utils.ChooseClassroomAccount"
-            android:targetPackage="com.nbdeg.unityplanner"/>
-    </Preference>
 </PreferenceScreen>

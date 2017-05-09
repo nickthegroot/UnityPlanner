@@ -45,13 +45,14 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.ExponentialBackOff;
-import com.google.api.services.classroom.ClassroomScopes;
 import com.google.api.services.classroom.model.Course;
 import com.google.api.services.classroom.model.CourseWork;
 import com.google.api.services.classroom.model.ListCourseWorkResponse;
 import com.google.api.services.classroom.model.ListCoursesResponse;
 import com.google.api.services.classroom.model.ListStudentSubmissionsResponse;
 import com.google.api.services.classroom.model.StudentSubmission;
+import com.google.firebase.auth.UserInfo;
+import com.google.firebase.crash.FirebaseCrash;
 import com.nbdeg.unityplanner.Data.Assignment;
 import com.nbdeg.unityplanner.Utils.Database;
 import com.squareup.picasso.Callback;
@@ -64,6 +65,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 
+import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class Dashboard extends AppCompatActivity
@@ -73,13 +75,12 @@ public class Dashboard extends AppCompatActivity
     int FragmentLayoutID;
     GoogleAccountCredential mCredential;
 
-    private static final String PREF_ACCOUNT_NAME = "accountName";
-
     static final int REQUEST_AUTHORIZATION = 1001;
     static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
+    static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
     static final int REQUEST_INVITE = 4001;
 
-    private static final String[] SCOPES = { ClassroomScopes.CLASSROOM_COURSES_READONLY, ClassroomScopes.CLASSROOM_ROSTERS_READONLY, ClassroomScopes.CLASSROOM_COURSEWORK_ME_READONLY };
+    private static final String[] SCOPES = LauncherLogin.SCOPES;
 
 
     @Override
@@ -121,6 +122,8 @@ public class Dashboard extends AppCompatActivity
 
         if (Database.user.getDisplayName() != null) {
             userName.setText(Database.user.getDisplayName());
+        } else {
+            userName.setVisibility(View.INVISIBLE);
         }
         if (Database.user.getEmail() != null) {
             userEmail.setText(Database.user.getEmail());
@@ -201,13 +204,24 @@ public class Dashboard extends AppCompatActivity
             mCredential = GoogleAccountCredential.usingOAuth2(
                     this, Arrays.asList(SCOPES))
                     .setBackOff(new ExponentialBackOff());
-            String accountName = getSharedPreferences("accounts", 0).getString(PREF_ACCOUNT_NAME, null);
-            if (accountName == null) {
-                Toast.makeText(this, "Please select a Google Account to sync from in settings first.", Toast.LENGTH_LONG).show();
-            } else {
-                mCredential.setSelectedAccountName(accountName);
-                getResultsFromApi();
+
+            for (UserInfo info : Database.user.getProviderData()) {
+                if (info.getProviderId().equals("google.com")) {
+                    if (EasyPermissions.hasPermissions(this, android.Manifest.permission.GET_ACCOUNTS)) {
+                        signInGoogleCredential(Database.user.getEmail());
+                        getResultsFromApi();
+                        return super.onOptionsItemSelected(item);
+                    } else {
+                        EasyPermissions.requestPermissions(
+                                this,
+                                "This app needs to access your Google account (via Contacts).",
+                                REQUEST_PERMISSION_GET_ACCOUNTS,
+                                android.Manifest.permission.GET_ACCOUNTS);
+                    }
+                }
             }
+
+            Toast.makeText(this, "Please link a Google Account first.", Toast.LENGTH_SHORT).show();
         }
 
         return super.onOptionsItemSelected(item);
@@ -258,6 +272,11 @@ public class Dashboard extends AppCompatActivity
         return true;
     }
 
+    @AfterPermissionGranted(REQUEST_PERMISSION_GET_ACCOUNTS)
+    private void signInGoogleCredential(String email) {
+        mCredential.setSelectedAccountName(email);
+    }
+
     /**
      * Attempt to call the API, after verifying that all the preconditions are
      * satisfied. The preconditions are: Google Play Services installed, an
@@ -269,7 +288,8 @@ public class Dashboard extends AppCompatActivity
         if (! isGooglePlayServicesAvailable()) {
             acquireGooglePlayServices();
         } else if (mCredential.getSelectedAccountName() == null) {
-            Toast.makeText(this, "Please select a Google Account to sync from in settings first.", Toast.LENGTH_LONG).show();
+            FirebaseCrash.log("Sync bug");
+            Toast.makeText(this, "Something went wrong. Please try again.", Toast.LENGTH_LONG).show();
         } else if (! isDeviceOnline()) {
             Toast.makeText(this, "No network connection available.", Toast.LENGTH_SHORT).show();
         } else {
@@ -380,8 +400,7 @@ public class Dashboard extends AppCompatActivity
         dialog.show();
     }
 
-    private int getMatColor(String typeColor)
-    {
+    private int getMatColor(String typeColor) {
         int returnColor = Color.BLACK;
         int arrayId = getResources().getIdentifier("mdcolor_" + typeColor, "array", getApplicationContext().getPackageName());
 
