@@ -40,7 +40,7 @@ public class LinkLogin extends AppCompatActivity {
                 .setPermissions(Arrays.asList(LauncherLogin.SCOPES))
                 .build();
 
-        for (UserInfo info : Database.user.getProviderData()) {
+        for (UserInfo info : Database.getUser().getProviderData()) {
             if (info.getProviderId().equals("google.com")) {
                 googleExisting = true;
             } else if (info.getProviderId().equals("facebook.com")) {

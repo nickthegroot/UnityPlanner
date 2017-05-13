@@ -54,9 +54,7 @@ public class AssignmentList extends Fragment {
                 SimpleDateFormat formatter = new SimpleDateFormat("MMMM d, yyyy", java.util.Locale.getDefault());
                 ((TextView)view.findViewById(R.id.assignment_name)).setText(assignment.getName());
                 ((TextView)view.findViewById(R.id.assignment_date)).setText(formatter.format(new Date(assignment.getDueDate())));
-                if (assignment.getDueCourse() != null) {
-                    ((TextView) view.findViewById(R.id.assignment_class)).setText(assignment.getDueCourse().getName());
-                }
+                ((TextView) view.findViewById(R.id.assignment_class)).setText(assignment.getDueCourse().getName());
                 if (assignment.getDueDate() < System.currentTimeMillis()) {
                     view.findViewById(R.id.assignment_late).setVisibility(View.VISIBLE);
                 } else {

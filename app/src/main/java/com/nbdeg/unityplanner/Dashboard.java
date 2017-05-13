@@ -54,6 +54,7 @@ import com.google.api.services.classroom.model.StudentSubmission;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.crash.FirebaseCrash;
 import com.nbdeg.unityplanner.Data.Assignment;
+import com.nbdeg.unityplanner.Data.Time;
 import com.nbdeg.unityplanner.Utils.Database;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -120,16 +121,16 @@ public class Dashboard extends AppCompatActivity
         final TextView userName = (TextView) hView.findViewById(R.id.nav_header_user);
         final TextView userEmail = (TextView) hView.findViewById(R.id.nav_header_email);
 
-        if (Database.user.getDisplayName() != null) {
-            userName.setText(Database.user.getDisplayName());
+        if (Database.getUser().getDisplayName() != null) {
+            userName.setText(Database.getUser().getDisplayName());
         } else {
             userName.setVisibility(View.INVISIBLE);
         }
-        if (Database.user.getEmail() != null) {
-            userEmail.setText(Database.user.getEmail());
+        if (Database.getUser().getEmail() != null) {
+            userEmail.setText(Database.getUser().getEmail());
         }
-        if (Database.user.getPhotoUrl() != null) {
-            Picasso.with(this).load(Database.user.getPhotoUrl())
+        if (Database.getUser().getPhotoUrl() != null) {
+            Picasso.with(this).load(Database.getUser().getPhotoUrl())
                     .resize(150, 150)
                     .into(userPhoto, new Callback() {
                         @Override
@@ -201,14 +202,11 @@ public class Dashboard extends AppCompatActivity
             Toast.makeText(this, "Work In Progress", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.action_sync) {
             // Initialize credentials and service object.
-            mCredential = GoogleAccountCredential.usingOAuth2(
-                    this, Arrays.asList(SCOPES))
-                    .setBackOff(new ExponentialBackOff());
 
-            for (UserInfo info : Database.user.getProviderData()) {
+            for (UserInfo info : Database.getUser().getProviderData()) {
                 if (info.getProviderId().equals("google.com")) {
                     if (EasyPermissions.hasPermissions(this, android.Manifest.permission.GET_ACCOUNTS)) {
-                        signInGoogleCredential(Database.user.getEmail());
+                        signInGoogleCredential();
                         getResultsFromApi();
                         return super.onOptionsItemSelected(item);
                     } else {
@@ -273,8 +271,11 @@ public class Dashboard extends AppCompatActivity
     }
 
     @AfterPermissionGranted(REQUEST_PERMISSION_GET_ACCOUNTS)
-    private void signInGoogleCredential(String email) {
-        mCredential.setSelectedAccountName(email);
+    private void signInGoogleCredential() {
+        mCredential = GoogleAccountCredential.usingOAuth2(
+                this, Arrays.asList(SCOPES))
+                .setBackOff(new ExponentialBackOff());
+        mCredential.setSelectedAccountName(Database.getUser().getEmail());
     }
 
     /**
@@ -293,6 +294,7 @@ public class Dashboard extends AppCompatActivity
         } else if (! isDeviceOnline()) {
             Toast.makeText(this, "No network connection available.", Toast.LENGTH_SHORT).show();
         } else {
+            Toast.makeText(Dashboard.this, "Sync Started", Toast.LENGTH_SHORT).show();
             new MakeRequestTask(mCredential).execute();
         }
     }
@@ -461,19 +463,19 @@ public class Dashboard extends AppCompatActivity
             ArrayList<String> courseIDs = new ArrayList<>();
             ArrayList<String> courseWorkIDs = new ArrayList<>();
 
-            for (Assignment assignment : Database.assignments) {
+            for (Assignment assignment : Database.getAssignments()) {
                 if (assignment.getClassroomCourseWork() != null) {
                     courseWorkIDs.add(assignment.getClassroomCourseWork().getId());
                 }
             }
-            for (com.nbdeg.unityplanner.Data.Course course : Database.courses) {
+            for (com.nbdeg.unityplanner.Data.Course course : Database.getCourses()) {
                 if (course.getClassroomCourse() != null) {
                     courseIDs.add(course.getClassroomCourse().getId());
                 }
             }
 
             for (Course course : courseResponse.getCourses()) {
-                SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                SimpleDateFormat f = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", java.util.Locale.getDefault());
                 long startDate = System.currentTimeMillis();
                 try {
                     startDate = f.parse(course.getCreationTime()).getTime();
@@ -485,12 +487,13 @@ public class Dashboard extends AppCompatActivity
                     com.nbdeg.unityplanner.Data.Course dbCourse = new com.nbdeg.unityplanner.Data.Course(
                             course.getName(),
                             mService.userProfiles().get(course.getOwnerId()).execute().getName().getFullName(),
-                            startDate,
+                            new Time(startDate),
                             course.getRoom(),
+                            course.getDescription(),
                             course,
                             getMatColor("200"));
-                    if (Database.changedCourseNames.containsKey(dbCourse.getName())) {
-                        dbCourse.setName(Database.changedCourseNames.get(course.getName()));
+                    if (Database.getChangedCourseNames().containsKey(dbCourse.getName())) {
+                        dbCourse.setName(Database.getChangedCourseNames().get(course.getName()));
                     }
                     if (!courseIDs.contains(course.getId())) {
                         // Add class to database
@@ -557,6 +560,7 @@ public class Dashboard extends AppCompatActivity
         @Override
         protected void onCancelled() {
             // Hide spinner
+            syncLayout.setVisibility(View.INVISIBLE);
             if (mLastError != null) {
                 if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
                     showGooglePlayServicesAvailabilityErrorDialog(

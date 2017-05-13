@@ -1,5 +1,6 @@
 package com.nbdeg.unityplanner;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -37,7 +38,7 @@ public class CreateAssignment extends AppCompatActivity {
         viewDate = new EditTextDatePicker(this, R.id.assignment_create_date);
 
         ArrayList<String> courseNames = new ArrayList<>();
-        for (Course course : Database.courses) {
+        for (Course course : Database.getCourses()) {
             courseNames.add(course.getName());
         }
         if (courseNames.isEmpty()) {
@@ -80,7 +81,7 @@ public class CreateAssignment extends AppCompatActivity {
             Toast.makeText(this, "Please create a course first", Toast.LENGTH_SHORT).show();
             return super.onOptionsItemSelected(item);
         } else {
-            for (Course course : Database.courses) {
+            for (Course course : Database.getCourses()) {
                 if (course.getName().equals(viewCourse.getSelectedItem().toString())) {
                     assignment.setDueCourse(course);
                 }
@@ -99,6 +100,7 @@ public class CreateAssignment extends AppCompatActivity {
 
         // Creating assignment if all went well
         Database.createAssignment(assignment);
+        startActivity(new Intent(CreateAssignment.this, Dashboard.class));
 
         return super.onOptionsItemSelected(item);
     }

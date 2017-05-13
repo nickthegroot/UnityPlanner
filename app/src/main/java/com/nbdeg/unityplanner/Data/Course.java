@@ -4,10 +4,9 @@ public class Course {
 
     private String name;
     private String teacher;
-    private Long startDate;
-    private Long endDate;
     private String roomNumber;
-    private String buildingName;
+    private String description;
+    private Time time;
     private int color;
     private String ID;
     private com.google.api.services.classroom.model.Course classroomCourse;
@@ -23,15 +22,16 @@ public class Course {
      * Constructor for Google Classroom assignments
      * @param name Name of class
      * @param teacher Full name of teacher
-     * @param startDate Starting date of class in milliseconds
      * @param roomNumber Room number of classroom
+     * @param description Description of class
      * @param classroomCourse Google Classroom course
      */
-    public Course(String name, String teacher, Long startDate, String roomNumber, com.google.api.services.classroom.model.Course classroomCourse, int color) {
+    public Course(String name, String teacher, Time time, String roomNumber, String description, com.google.api.services.classroom.model.Course classroomCourse, int color) {
         this.name = name;
         this.teacher = teacher;
-        this.startDate = startDate;
+        this.time = time;
         this.roomNumber = roomNumber;
+        this.description = description;
         this.classroomCourse = classroomCourse;
         this.color = color;
     }
@@ -53,18 +53,12 @@ public class Course {
         this.teacher = teacher;
     }
 
-    public Long getStartDate() {
-        return startDate;
-    }
-    public void setStartDate(Long startDate) {
-        this.startDate = startDate;
+    public Time getTime() {
+        return time;
     }
 
-    public Long getEndDate() {
-        return endDate;
-    }
-    public void setEndDate(Long endDate) {
-        this.endDate = endDate;
+    public void setTime(Time time) {
+        this.time = time;
     }
 
     public String getRoomNumber() {
@@ -72,13 +66,6 @@ public class Course {
     }
     public void setRoomNumber(String roomNumber) {
         this.roomNumber = roomNumber;
-    }
-
-    public String getBuildingName() {
-        return buildingName;
-    }
-    public void setBuildingName(String buildingName) {
-        this.buildingName = buildingName;
     }
 
     public String getID() {
@@ -93,6 +80,13 @@ public class Course {
     }
     public void setClassroomCourse(com.google.api.services.classroom.model.Course classroomCourse) {
         this.classroomCourse = classroomCourse;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public int getColor() {

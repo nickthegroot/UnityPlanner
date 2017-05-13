@@ -9,6 +9,10 @@
         <intent
             android:action="android.intent.action.VIEW"
             android:targetPackage="com.nbdeg.unityplanner"
+            android:targetClass="com.nbdeg.unityplanner.LauncherLogin" />
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.nbdeg.unityplanner"
             android:targetClass="com.nbdeg.unityplanner.CreateAssignment" />
     </shortcut>
     <shortcut
@@ -17,6 +21,10 @@
         android:icon="@mipmap/ic_shortcut_course"
         android:shortcutShortLabel="@string/shortcut_course_short_label"
         android:shortcutLongLabel="@string/shortcut_course_short_label">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="com.nbdeg.unityplanner"
+            android:targetClass="com.nbdeg.unityplanner.LauncherLogin" />
         <intent
             android:action="android.intent.action.VIEW"
             android:targetPackage="com.nbdeg.unityplanner"

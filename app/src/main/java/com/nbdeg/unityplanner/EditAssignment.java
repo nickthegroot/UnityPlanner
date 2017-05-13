@@ -1,11 +1,13 @@
 package com.nbdeg.unityplanner;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -36,6 +38,7 @@ public class EditAssignment extends AppCompatActivity {
         setContentView(R.layout.activity_edit_assignment);
 
         RelativeLayout viewLayout = (RelativeLayout) findViewById(R.id.assignment_edit_view);
+        Button viewDelete = (Button) findViewById(R.id.assignment_edit_delete);
         viewName = (EditText) findViewById(R.id.assignment_edit_name);
         viewExtra = (EditText) findViewById(R.id.assignment_edit_extra);
         viewCourse = (Spinner) findViewById(R.id.assignment_edit_course);
@@ -43,7 +46,7 @@ public class EditAssignment extends AppCompatActivity {
         viewDate = new EditTextDatePicker(this, R.id.assignment_edit_date);
 
         ArrayList<String> courseNames = new ArrayList<>();
-        for (Course course : Database.courses) {
+        for (Course course : Database.getCourses()) {
             courseNames.add(course.getName());
         }
         if (courseNames.isEmpty()) {
@@ -57,7 +60,7 @@ public class EditAssignment extends AppCompatActivity {
 
         /* Setting values to previous assignment */
         String ID = getIntent().getStringExtra("ID");
-        for (Assignment assignment : Database.assignments) {
+        for (Assignment assignment : Database.getAssignments()) {
             if (assignment.getID().equals(ID)) {
                 oldAssignment = assignment;
 
@@ -72,6 +75,13 @@ public class EditAssignment extends AppCompatActivity {
                 }
 
                 viewLayout.setVisibility(View.VISIBLE);
+
+                viewDelete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Database.deleteAssignment(oldAssignment);
+                    }
+                });
             }
         }
     }
@@ -117,7 +127,7 @@ public class EditAssignment extends AppCompatActivity {
             Toast.makeText(this, "Please create a course first", Toast.LENGTH_SHORT).show();
             return super.onOptionsItemSelected(item);
         } else {
-            for (Course course : Database.courses) {
+            for (Course course : Database.getCourses()) {
                 if (course.getName().equals(viewCourse.getSelectedItem().toString())) {
                     newAssignment.setDueCourse(course);
                 }
@@ -134,8 +144,8 @@ public class EditAssignment extends AppCompatActivity {
         // Setting any extra info
         newAssignment.setExtraInfo(viewExtra.getText().toString());
 
-        // Creating assignment if all went well
-        Database.createAssignment(newAssignment);
+        Database.editAssignment(newAssignment, oldAssignment);
+        startActivity(new Intent(EditAssignment.this, Dashboard.class));
 
         return super.onOptionsItemSelected(item);
     }

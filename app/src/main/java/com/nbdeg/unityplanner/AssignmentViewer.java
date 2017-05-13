@@ -40,7 +40,7 @@ public class AssignmentViewer extends AppCompatActivity {
         TextView viewDescription = (TextView) findViewById(R.id.assignment_viewer_description);
 
         String assignmentID = getIntent().getStringExtra("ID");
-        for (Assignment assignment : Database.assignments) {
+        for (Assignment assignment : Database.getAssignments()) {
             if (assignment.getID().equals(assignmentID)) {
                 this.assignment = assignment;
                 layout.setVisibility(View.VISIBLE);

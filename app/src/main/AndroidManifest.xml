@@ -63,7 +63,15 @@
             android:name=".CreateCourse"
             android:label="@string/title_activity_create_course" />
         <activity android:name=".EditAssignment" />
-        <activity android:name=".Utils.LinkLogin"></activity>
+        <activity android:name=".Utils.LinkLogin" />
+        <activity android:name=".Utils.CourseAddTime"
+            android:label="@string/activity_course_add_time_title"
+            android:parentActivityName=".CreateCourse"
+            android:theme="@style/AppTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.nbdeg.unityplanner.Dashboard" />
+        </activity>
     </application>
 
 </manifest>

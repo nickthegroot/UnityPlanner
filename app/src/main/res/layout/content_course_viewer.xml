@@ -37,7 +37,6 @@
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_toEndOf="@id/course_viewer_teacher_name_logo"
                 android:layout_toRightOf="@id/course_viewer_teacher_name_logo"
-                android:text="(123) 456-7890"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#212121" />
 
@@ -80,7 +79,6 @@
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_toEndOf="@id/course_viewer_time_title"
                 android:layout_toRightOf="@id/course_viewer_time_title"
-                android:text="(123) 456-7890"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#212121" />
 
@@ -123,7 +121,6 @@
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_toEndOf="@id/course_viewer_room_number_logo"
                 android:layout_toRightOf="@id/course_viewer_room_number_logo"
-                android:text="(123) 456-7890"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#212121" />
 
@@ -166,7 +163,6 @@
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_toEndOf="@id/course_viewer_description_logo"
                 android:layout_toRightOf="@id/course_viewer_description_logo"
-                android:text="(123) 456-7890"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textColor="#212121" />
 

@@ -19,7 +19,7 @@ import java.util.HashMap;
  */
 public class Database {
 
-    public static FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private static FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
     private static DatabaseReference userDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid());
     public static DatabaseReference courseDb = userDb.child("classes");
@@ -30,10 +30,23 @@ public class Database {
     private static DatabaseReference changeCourseDb = userDb.child("changedClasses");
 
     // Saved as <Original name, new name>
-    public static HashMap<String, String> changedCourseNames = new HashMap<>();
-    public static ArrayList<Assignment> assignments = new ArrayList<>();
-    public static ArrayList<Course> courses = new ArrayList<>();
+    private static HashMap<String, String> changedCourseNames = new HashMap<>();
+    private static ArrayList<Assignment> assignments = new ArrayList<>();
+    private static ArrayList<Course> courses = new ArrayList<>();
 
+    /* -- Getters -- */
+    public static  HashMap<String, String> getChangedCourseNames() {
+        return changedCourseNames;
+    }
+    public static ArrayList<Assignment>    getAssignments() {
+        return assignments;
+    }
+    public static ArrayList<Course>        getCourses() {
+        return courses;
+    }
+    public static FirebaseUser             getUser() {
+        return user;
+    }
 
     /**
      * Refreshes DatabaseReferences and updates ArrayLists
@@ -51,7 +64,7 @@ public class Database {
         assignments.clear();
         courses.clear();
         changedCourseNames.clear();
-        allAssignmentDb.addListenerForSingleValueEvent(new ValueEventListener() {
+        allAssignmentDb.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
@@ -65,7 +78,7 @@ public class Database {
 
             }
         });
-        courseDb.addListenerForSingleValueEvent(new ValueEventListener() {
+        courseDb.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
@@ -79,7 +92,7 @@ public class Database {
 
             }
         });
-        changeCourseDb.addListenerForSingleValueEvent(new ValueEventListener() {
+        changeCourseDb.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
@@ -204,7 +217,6 @@ public class Database {
 
         // Updates values in database
         courseDb.child(oldCourse.getID()).setValue(newCourse);
-        refreshDatabase();
     }
 
     /**
@@ -224,6 +236,5 @@ public class Database {
             }
         }
         courseDb.child(course.getID()).removeValue();
-        refreshDatabase();
     }
 }
