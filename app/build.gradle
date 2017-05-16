@@ -34,9 +34,6 @@ dependencies {
     compile('com.google.apis:google-api-services-classroom:v1-rev24-1.22.0') {
         exclude group: 'org.apache.httpcomponents'
     }
-    compile('com.google.apis:google-api-services-calendar:v3-rev243-1.22.0') {
-        exclude group: 'org.apache.httpcomponents'
-    }
     compile('com.mikepenz:aboutlibraries:5.9.6@aar') {
         transitive = true
     }
@@ -60,6 +57,7 @@ dependencies {
     compile 'com.google.firebase:firebase-crash:10.0.1'
     testCompile 'junit:junit:4.12'
 }
+
 
 
 

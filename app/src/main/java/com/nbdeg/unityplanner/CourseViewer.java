@@ -1,5 +1,6 @@
 package com.nbdeg.unityplanner;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -31,6 +32,8 @@ public class CourseViewer extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        final String courseID = getIntent().getStringExtra("ID");
+
         TextView viewTeacherName = (TextView) findViewById(R.id.course_viewer_teacher_name);
         TextView viewTime = (TextView) findViewById(R.id.course_viewer_time);
         TextView viewRoomNumber = (TextView) findViewById(R.id.course_viewer_room_number);
@@ -40,11 +43,12 @@ public class CourseViewer extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: 5/10/2017 create edit course
+                Intent editCourse = new Intent(CourseViewer.this, EditCourse.class);
+                editCourse.putExtra("ID", courseID);
+                startActivity(editCourse);
             }
         });
 
-        String courseID = getIntent().getStringExtra("ID");
         for (Course course : Database.getCourses()) {
             if (course.getID().equals(courseID)) {
                 SimpleDateFormat formatter = new SimpleDateFormat("MMMM d, yyyy", java.util.Locale.getDefault());
@@ -58,7 +62,7 @@ public class CourseViewer extends AppCompatActivity {
                 viewTeacherName.setText(course.getTeacher());
 
                 String date;
-                if (course.getTime().getCalEvent() != null) {
+                if (course.getTime().getCalEventID() != null) {
                     date = formatter.format(new Date(course.getTime().getStartLong())) + " - " + formatter.format(new Date(course.getTime().getFinish()));
                 } else {
                     date = formatter.format(new Date(course.getTime().getStartLong())) + " - " + "???";

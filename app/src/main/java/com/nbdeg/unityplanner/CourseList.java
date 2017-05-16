@@ -57,7 +57,7 @@ public class CourseList extends Fragment {
                 ((TextView)view.findViewById(R.id.course_room_number)).setText(course.getRoomNumber());
 
                 String date;
-                if (course.getTime().getCalEvent() != null) {
+                if (course.getTime().getCalEventID() != null) {
                     date = formatter.format(new Date(course.getTime().getStartLong())) + " - " + formatter.format(new Date(course.getTime().getFinish()));
                 } else {
                     date = formatter.format(new Date(course.getTime().getStartLong())) + " - " + "???";

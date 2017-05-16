@@ -201,17 +201,18 @@ public class Database {
         // If name changed, add to database
         if (!newCourse.getName().equals(oldCourse.getName())) {
             changeCourseDb.push().setValue(new ChangedCourseName(oldCourse.getName(), newCourse.getName()));
-            // Update All Assignments Under That Name
-            for (Assignment assignment : assignments) {
-                if (assignment.getDueCourse().equals(oldCourse)) {
-                    assignment.setDueCourse(newCourse);
-                    if (assignment.getPercentComplete() == 100) {
-                        doneAssignmentDb.child(assignment.getID()).setValue(assignment);
-                    } else {
-                        dueAssignmentDb.child(assignment.getID()).setValue(assignment);
-                    }
-                    allAssignmentDb.child(assignment.getID()).setValue(assignment);
+        }
+
+        // Update All Assignments Under That Name
+        for (Assignment assignment : assignments) {
+            if (assignment.getDueCourse().getID().equals(oldCourse.getID())) {
+                assignment.setDueCourse(newCourse);
+                if (assignment.getPercentComplete() == 100) {
+                    doneAssignmentDb.child(assignment.getID()).setValue(assignment);
+                } else {
+                    dueAssignmentDb.child(assignment.getID()).setValue(assignment);
                 }
+                allAssignmentDb.child(assignment.getID()).setValue(assignment);
             }
         }
 

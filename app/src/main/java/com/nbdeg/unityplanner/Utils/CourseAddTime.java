@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.nbdeg.unityplanner.Data.Time;
 import com.nbdeg.unityplanner.R;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class CourseAddTime extends AppCompatActivity {
@@ -66,19 +67,24 @@ public class CourseAddTime extends AppCompatActivity {
         viewDayThu = (CheckBox) findViewById(R.id.course_add_time_per_day_schedule_thu);
         viewDayFri = (CheckBox) findViewById(R.id.course_add_time_per_day_schedule_fri);
 
+        final SimpleDateFormat formatter = new SimpleDateFormat("h:mm a", java.util.Locale.getDefault());
+
         viewStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Calendar mcurrentTime = Calendar.getInstance();
-                int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-                int minute = mcurrentTime.get(Calendar.MINUTE);
+                final Calendar cal = Calendar.getInstance();
+                int hour = cal.get(Calendar.HOUR_OF_DAY);
+                int minute = cal.get(Calendar.MINUTE);
                 TimePickerDialog mTimePicker;
                 mTimePicker = new TimePickerDialog(CourseAddTime.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        viewStartTime.setText( selectedHour + ":" + selectedMinute);
                         startHour = selectedHour;
                         startMin = selectedMinute;
+
+                        cal.set(Calendar.HOUR_OF_DAY, selectedHour);
+                        cal.set(Calendar.MINUTE, selectedMinute);
+                        viewStartTime.setText(formatter.format(cal.getTime()));
                     }
                 }, hour, minute, false);
 
@@ -90,20 +96,19 @@ public class CourseAddTime extends AppCompatActivity {
         viewEndTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Calendar mcurrentTime = Calendar.getInstance();
-                int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
-                int minute = mcurrentTime.get(Calendar.MINUTE);
+                final Calendar cal = Calendar.getInstance();
+                int hour = cal.get(Calendar.HOUR_OF_DAY);
+                int minute = cal.get(Calendar.MINUTE);
                 TimePickerDialog mTimePicker;
                 mTimePicker = new TimePickerDialog(CourseAddTime.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        if (selectedMinute < 10) {
-                            viewEndTime.setText( selectedHour + ":0" + selectedMinute);
-                        } else {
-                            viewEndTime.setText(selectedHour + ":" + selectedMinute);
-                        }
                         endHour = selectedHour;
                         endMin = selectedMinute;
+
+                        cal.set(Calendar.HOUR_OF_DAY, selectedHour);
+                        cal.set(Calendar.MINUTE, selectedMinute);
+                        viewEndTime.setText(formatter.format(cal.getTime()));
                     }
                 }, hour, minute, false);
 
@@ -132,7 +137,21 @@ public class CourseAddTime extends AppCompatActivity {
             }
         });
 
+        viewADay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewADay.setChecked(true);
+                viewBDay.setChecked(false);
+            }
+        });
 
+        viewBDay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewADay.setChecked(false);
+                viewBDay.setChecked(true);
+            }
+        });
     }
 
     @Override

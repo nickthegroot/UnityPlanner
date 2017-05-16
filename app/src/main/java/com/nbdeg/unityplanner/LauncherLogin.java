@@ -9,7 +9,6 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
-import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.classroom.ClassroomScopes;
 import com.google.firebase.auth.FirebaseAuth;
 import com.nbdeg.unityplanner.Utils.Database;
@@ -18,7 +17,7 @@ import java.util.Arrays;
 
 public class LauncherLogin extends AppCompatActivity {
 
-    public static final String[] SCOPES = { ClassroomScopes.CLASSROOM_COURSES_READONLY, ClassroomScopes.CLASSROOM_ROSTERS_READONLY, ClassroomScopes.CLASSROOM_COURSEWORK_ME_READONLY, CalendarScopes.CALENDAR};
+    public static final String[] SCOPES = { ClassroomScopes.CLASSROOM_COURSES_READONLY, ClassroomScopes.CLASSROOM_ROSTERS_READONLY, ClassroomScopes.CLASSROOM_COURSEWORK_ME_READONLY };
     private static final int RC_SIGN_IN = 145;
 
     @Override

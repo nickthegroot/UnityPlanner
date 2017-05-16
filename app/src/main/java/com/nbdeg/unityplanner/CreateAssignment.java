@@ -11,6 +11,9 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.nbdeg.unityplanner.Data.Assignment;
 import com.nbdeg.unityplanner.Data.Course;
 import com.nbdeg.unityplanner.Utils.Database;
@@ -37,17 +40,30 @@ public class CreateAssignment extends AppCompatActivity {
         viewCompleted = (CheckBox) findViewById(R.id.assignment_create_completed);
         viewDate = new EditTextDatePicker(this, R.id.assignment_create_date);
 
-        ArrayList<String> courseNames = new ArrayList<>();
-        for (Course course : Database.getCourses()) {
-            courseNames.add(course.getName());
-        }
-        if (courseNames.isEmpty()) {
-            courseNames.add("Please create a course");
-        }
-        ArrayAdapter<String> courseAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, courseNames);
+        final ArrayList<String> courseNames = new ArrayList<>();
+        Database.courseDb.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    Course course = userSnapshot.getValue(Course.class);
+                    courseNames.add(course.getName());
+                }
 
-        viewCourse.setAdapter(courseAdapter);
+                if (courseNames.isEmpty()) {
+                    courseNames.add("Please create a course");
+                }
+
+                ArrayAdapter<String> courseAdapter = new ArrayAdapter<String>(CreateAssignment.this,
+                        android.R.layout.simple_spinner_item, courseNames);
+
+                viewCourse.setAdapter(courseAdapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override

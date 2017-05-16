@@ -6,6 +6,8 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
 
     <application
         android:allowBackup="true"
@@ -63,8 +65,8 @@
             android:name=".CreateCourse"
             android:label="@string/title_activity_create_course" />
         <activity android:name=".EditAssignment" />
-        <activity android:name=".Utils.LinkLogin" />
-        <activity android:name=".Utils.CourseAddTime"
+        <activity
+            android:name=".Utils.CourseAddTime"
             android:label="@string/activity_course_add_time_title"
             android:parentActivityName=".CreateCourse"
             android:theme="@style/AppTheme">
@@ -72,6 +74,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.nbdeg.unityplanner.Dashboard" />
         </activity>
+        <activity android:name=".EditCourse"
+            android:theme="@style/AppTheme"/>
     </application>
 
 </manifest>

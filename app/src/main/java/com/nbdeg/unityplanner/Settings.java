@@ -184,7 +184,8 @@ public class Settings extends AppCompatPreferenceActivity {
     protected boolean isValidFragment(String fragmentName) {
         return PreferenceFragment.class.getName().equals(fragmentName)
                 || AboutFragment.class.getName().equals(fragmentName)
-                || NotificationPreferenceFragment.class.getName().equals(fragmentName);
+                || NotificationPreferenceFragment.class.getName().equals(fragmentName)
+                || SyncPreferenceFragment.class.getName().equals(fragmentName);
     }
 
 
@@ -280,8 +281,6 @@ public class Settings extends AppCompatPreferenceActivity {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_sync);
             setHasOptionsMenu(true);
-
-            bindPreferenceSummaryToValue(findPreference("sync_classroom_rate"));
         }
 
         @Override

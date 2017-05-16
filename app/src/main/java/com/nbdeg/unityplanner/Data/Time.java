@@ -1,11 +1,9 @@
 package com.nbdeg.unityplanner.Data;
 
-import com.google.api.services.calendar.model.Event;
-
 import java.io.Serializable;
 
 public class Time implements Serializable {
-    private Event calEvent;
+    private Long calEventID;
     private boolean isBlockSchedule;
     private boolean isADay;
     private boolean isBDay;
@@ -24,7 +22,7 @@ public class Time implements Serializable {
 
     /**
      * Google Calendar Constructor
-     * @param calEvent Google Calendar Event
+     * @param calEventID Google Calendar Event
      * @param isBlockSchedule true if event is block schedule
      * @param isADay true if event lies on A days
      * @param isBDay true if event lies on B days
@@ -34,8 +32,8 @@ public class Time implements Serializable {
      * @param endLong milliseconds value of end
      * @param finish milliseconds value of when event finishes repetition
      */
-    public Time(Event calEvent, boolean isBlockSchedule, boolean isADay, boolean isBDay, boolean isDaySchedule, String days, Long startLong, Long endLong, Long finish) {
-        this.calEvent = calEvent;
+    public Time(Long calEventID, boolean isBlockSchedule, boolean isADay, boolean isBDay, boolean isDaySchedule, String days, Long startLong, Long endLong, Long finish) {
+        this.calEventID = calEventID;
         this.isBlockSchedule = isBlockSchedule;
         this.isADay = isADay;
         this.isBDay = isBDay;
@@ -77,11 +75,11 @@ public class Time implements Serializable {
         this.finish = finish;
     }
 
-    public Event getCalEvent() {
-        return calEvent;
+    public Long getCalEventID() {
+        return calEventID;
     }
-    public void setCalEvent(Event calEvent) {
-        this.calEvent = calEvent;
+    public void setCalEventID(Long calEventID) {
+        this.calEventID = calEventID;
     }
 
     public boolean isBlockSchedule() {

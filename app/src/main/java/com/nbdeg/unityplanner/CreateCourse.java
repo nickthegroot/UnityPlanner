@@ -1,14 +1,22 @@
 package com.nbdeg.unityplanner;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
+import android.database.Cursor;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.provider.CalendarContract;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,26 +25,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.client.util.DateTime;
-import com.google.api.client.util.ExponentialBackOff;
-import com.google.api.services.calendar.model.Event;
-import com.google.api.services.calendar.model.EventDateTime;
-import com.google.firebase.auth.UserInfo;
-import com.google.firebase.crash.FirebaseCrash;
-import com.google.firebase.database.DatabaseException;
 import com.nbdeg.unityplanner.Data.Course;
 import com.nbdeg.unityplanner.Data.Time;
 import com.nbdeg.unityplanner.Utils.CourseAddTime;
 import com.nbdeg.unityplanner.Utils.Database;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -45,14 +39,10 @@ import eltos.simpledialogfragment.color.SimpleColorDialog;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
-import static com.nbdeg.unityplanner.Dashboard.REQUEST_PERMISSION_GET_ACCOUNTS;
-
 public class CreateCourse extends AppCompatActivity implements SimpleDialog.OnDialogResultListener {
 
-    private static final String TAG = "CreateCourse";
+    private static final int REQUEST_CALENDAR = 1060;
     private static final int COURSE_GET_TIME = 1050;
-    private GoogleAccountCredential gCredential;
-    private static com.google.api.services.calendar.Calendar calService;
     private static Course course;
     private Time time;
 
@@ -115,12 +105,8 @@ public class CreateCourse extends AppCompatActivity implements SimpleDialog.OnDi
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG, "onActivityResult: Activity Result");
-
         if (requestCode == COURSE_GET_TIME) {
-            Log.d(TAG, "onActivityResult: Activity Result = course get time");
             if (resultCode == Activity.RESULT_OK) {
-                Log.d(TAG, "onActivityResult: Activity Result result OK");
                 SimpleDateFormat formatter = new SimpleDateFormat("h:mm a", java.util.Locale.getDefault());
 
                 time = (Time) data.getSerializableExtra("time");
@@ -176,22 +162,37 @@ public class CreateCourse extends AppCompatActivity implements SimpleDialog.OnDi
         course.setDescription(viewCourseDescription.getText().toString());
         course.setColor(courseColor);
 
-        for (UserInfo info : Database.getUser().getProviderData()) {
-            if (info.getProviderId().equals("google.com")) {
-                if (EasyPermissions.hasPermissions(this, android.Manifest.permission.GET_ACCOUNTS)) {
-                    signInGoogleCredential();
-                } else {
-                    EasyPermissions.requestPermissions(
-                            this,
-                            "This app needs to access your Google account (via Contacts).",
-                            REQUEST_PERMISSION_GET_ACCOUNTS,
-                            android.Manifest.permission.GET_ACCOUNTS);
-                }
-            }
-        }
 
-        new CreateCalEvent(gCredential).execute();
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("preference_sync_gcalendar", true)) {
+            callCalEvent();
+        } else {
+            course.setTime(time);
+            Database.createCourse(course);
+            startActivity(new Intent(CreateCourse.this, Dashboard.class));
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    @AfterPermissionGranted(REQUEST_CALENDAR)
+    private void callCalEvent() {
+        String[] perms = {Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR};
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            new CreateCalEvent().execute();
+        } else {
+            EasyPermissions.requestPermissions(
+                    this,
+                    "This app needs to access your calendar.",
+                    REQUEST_CALENDAR,
+                    perms);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // Forward results to EasyPermissions
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
     }
 
     private int getMatColor(String typeColor) {
@@ -218,28 +219,7 @@ public class CreateCourse extends AppCompatActivity implements SimpleDialog.OnDi
     }
 
 
-    @AfterPermissionGranted(REQUEST_PERMISSION_GET_ACCOUNTS)
-    private void signInGoogleCredential() {
-        gCredential = GoogleAccountCredential.usingOAuth2(
-                this, Arrays.asList(LauncherLogin.SCOPES))
-                .setBackOff(new ExponentialBackOff());
-        gCredential.setSelectedAccountName(Database.getUser().getEmail());
-    }
-
-
-
     private class CreateCalEvent extends AsyncTask<Void, Void, Time> {
-        private com.google.api.services.classroom.Classroom mService = null;
-        private Exception mLastError = null;
-
-        CreateCalEvent(GoogleAccountCredential credential) {
-            HttpTransport transport = AndroidHttp.newCompatibleTransport();
-            JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-            calService = new com.google.api.services.calendar.Calendar.Builder(
-                    transport, jsonFactory, gCredential)
-                    .setApplicationName("Unity Planner")
-                    .build();
-        }
 
         @Override
         protected Time doInBackground(Void... params) {
@@ -249,33 +229,50 @@ public class CreateCourse extends AppCompatActivity implements SimpleDialog.OnDi
 
             SimpleDateFormat recurrenceFormatter = new SimpleDateFormat("yyyyMMdd", java.util.Locale.getDefault());
 
-            Event event = new Event();
-            event.setSummary(course.getName());
+            ContentResolver cr = getContentResolver();
+            ContentValues values = new ContentValues();
 
-            DateTime startDateTime = new DateTime(time.getStartLong());
-            EventDateTime start = new EventDateTime()
-                    .setDateTime(startDateTime)
-                    .setTimeZone(timezone);
-            event.setStart(start);
+            // Getting user cal
+            long calID = 0;
 
-            DateTime stopDateTime = new DateTime(time.getEndLong());
-            EventDateTime stop = new EventDateTime()
-                    .setDateTime(stopDateTime)
-                    .setTimeZone(timezone);
-            event.setEnd(stop);
+            final String[] EVENT_PROJECTION = new String[] {
+                    CalendarContract.Calendars._ID,                           // 0
+            };
 
-            if (time.isBlockSchedule()) {
-                event.setRecurrence(Arrays.asList("RRULE:FREQ=DAILY;INTERVAL=2;BYDAY=MO,TU,WE,TH,FR;UNTIL=" + recurrenceFormatter.format(new Date(time.getFinish()))));
-            } else if (time.isDaySchedule()) {
-                event.setRecurrence(Arrays.asList("RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=" + time.getDays() + ";UNTIL=" + recurrenceFormatter.format(new Date(time.getFinish()))));
+            // The indices for the projection array above.
+            final int PROJECTION_ID_INDEX = 0;
+
+            Cursor cur;
+            Uri calUri = CalendarContract.Calendars.CONTENT_URI;
+            String selection = "((" + CalendarContract.Calendars.OWNER_ACCOUNT + " = ?))";
+            String[] selectionArgs = new String[] {Database.getUser().getEmail()};
+            cur = cr.query(calUri, EVENT_PROJECTION, selection, selectionArgs, null);
+
+            while (cur.moveToNext()) {
+                calID = cur.getLong(PROJECTION_ID_INDEX);
+                if (calID != 0) {
+                    break;
+                }
             }
 
-            Event recurringEvent = null;
+            cur.close();
 
-            try {
-                time.setCalEvent(recurringEvent = calService.events().insert("primary", event).execute());
-            } catch (IOException e) {
-                e.printStackTrace();
+            // Setting event
+
+            values.put(CalendarContract.Events.DTSTART, time.getStartLong());
+            values.put(CalendarContract.Events.DTEND, time.getEndLong());
+            values.put(CalendarContract.Events.TITLE, course.getName());
+            values.put(CalendarContract.Events.EVENT_TIMEZONE, timezone);
+            values.put(CalendarContract.Events.CALENDAR_ID, calID);
+            if (time.isBlockSchedule()) {
+                values.put(CalendarContract.Events.RRULE, "FREQ=DAILY;INTERVAL=2;BYDAY=MO,TU,WE,TH,FR;UNTIL=" + recurrenceFormatter.format(new Date(time.getFinish())));
+            } else if (time.isDaySchedule()) {
+                values.put(CalendarContract.Events.RRULE, "FREQ=WEEKLY;INTERVAL=1;BYDAY=" + time.getDays() + ";UNTIL=" + recurrenceFormatter.format(new Date(time.getFinish())));
+            }
+
+            if (ActivityCompat.checkSelfPermission(CreateCourse.this, Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
+                Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
+                time.setCalEventID(Long.parseLong(uri.getLastPathSegment()));
             }
 
             return time;
@@ -285,11 +282,8 @@ public class CreateCourse extends AppCompatActivity implements SimpleDialog.OnDi
         protected void onPostExecute(Time time) {
             super.onPostExecute(time);
             course.setTime(time);
-            try {
-                Database.createCourse(course);
-            } catch (DatabaseException e) {
-                FirebaseCrash.log("Google Calendar v Firebase crash");
-            }
+
+            Database.createCourse(course);
             startActivity(new Intent(CreateCourse.this, Dashboard.class));
         }
     }
