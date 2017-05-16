@@ -15,13 +15,13 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.CalendarContract;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,10 +49,10 @@ public class CreateCourse extends AppCompatActivity implements SimpleDialog.OnDi
     private View viewColor;
     private Button viewAddTime;
     private TextView viewCourseTime;
-    private EditText viewCourseName;
-    private EditText viewCourseTeacher;
-    private EditText viewCourseRoomNumber;
-    private EditText viewCourseDescription;
+    private TextInputEditText viewCourseName;
+    private TextInputEditText viewCourseTeacher;
+    private TextInputEditText viewCourseRoomNumber;
+    private TextInputEditText viewCourseDescription;
 
     final static private String COLOR_DIALOG = "colorDialog";
     static private int courseColor;
@@ -66,10 +66,10 @@ public class CreateCourse extends AppCompatActivity implements SimpleDialog.OnDi
         viewAddTime = (Button) findViewById(R.id.course_create_add_time);
         viewCourseTime = (TextView) findViewById(R.id.course_create_time);
         viewColor = findViewById(R.id.course_create_view_color);
-        viewCourseName = (EditText) findViewById(R.id.course_create_name);
-        viewCourseTeacher = (EditText) findViewById(R.id.course_create_teacher);
-        viewCourseRoomNumber = (EditText) findViewById(R.id.course_create_room_number);
-        viewCourseDescription = (EditText) findViewById(R.id.course_create_description);
+        viewCourseName = (TextInputEditText) findViewById(R.id.course_create_name);
+        viewCourseTeacher = (TextInputEditText) findViewById(R.id.course_create_teacher);
+        viewCourseRoomNumber = (TextInputEditText) findViewById(R.id.course_create_room_number);
+        viewCourseDescription = (TextInputEditText) findViewById(R.id.course_create_description);
 
         courseColor = getMatColor("200");
         viewColor.setBackgroundColor(courseColor);
@@ -264,6 +264,7 @@ public class CreateCourse extends AppCompatActivity implements SimpleDialog.OnDi
             values.put(CalendarContract.Events.TITLE, course.getName());
             values.put(CalendarContract.Events.EVENT_TIMEZONE, timezone);
             values.put(CalendarContract.Events.CALENDAR_ID, calID);
+            values.put(CalendarContract.Events.CALENDAR_COLOR, course.getColor());
             if (time.isBlockSchedule()) {
                 values.put(CalendarContract.Events.RRULE, "FREQ=DAILY;INTERVAL=2;BYDAY=MO,TU,WE,TH,FR;UNTIL=" + recurrenceFormatter.format(new Date(time.getFinish())));
             } else if (time.isDaySchedule()) {
