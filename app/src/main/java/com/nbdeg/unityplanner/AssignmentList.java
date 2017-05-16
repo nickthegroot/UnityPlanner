@@ -1,22 +1,22 @@
 package com.nbdeg.unityplanner;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.TextView;
 
-import com.firebase.ui.database.FirebaseListAdapter;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.Query;
 import com.nbdeg.unityplanner.Data.Assignment;
+import com.nbdeg.unityplanner.Utils.AssignmentHolder;
 import com.nbdeg.unityplanner.Utils.Database;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
@@ -25,7 +25,7 @@ import java.util.Date;
  */
 public class AssignmentList extends Fragment {
 
-    FirebaseListAdapter mAdapter;
+    FirebaseRecyclerAdapter mAdapter;
 
     public AssignmentList() {
         // Required empty public constructor
@@ -45,32 +45,32 @@ public class AssignmentList extends Fragment {
                              Bundle savedInstanceState) {
 
         View mView = inflater.inflate(R.layout.fragment_assignment_list, container, false);
-        ListView assignmentView = (ListView) mView.findViewById(R.id.assignment_list_view);
+        RecyclerView assignmentView = (RecyclerView) mView.findViewById(R.id.assignment_list_view);
+        LinearLayoutManager assignmentLayoutManager = new LinearLayoutManager(getContext());
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(assignmentView.getContext(),
+                assignmentLayoutManager.getOrientation());
+
+        assignmentView.addItemDecoration(dividerItemDecoration);
+        assignmentView.setLayoutManager(assignmentLayoutManager);
+
+
         Query ref = Database.dueAssignmentDb.orderByChild("dueDate");
 
-        mAdapter = new FirebaseListAdapter<Assignment>(getActivity(), Assignment.class, R.layout.database_assignment_view, ref) {
+        mAdapter = new FirebaseRecyclerAdapter<Assignment, AssignmentHolder>(Assignment.class, R.layout.database_assignment_view, AssignmentHolder.class, ref) {
             @Override
-            protected void populateView(View view, final Assignment assignment, int position) {
-                SimpleDateFormat formatter = new SimpleDateFormat("MMMM d, yyyy", java.util.Locale.getDefault());
-                ((TextView)view.findViewById(R.id.assignment_name)).setText(assignment.getName());
-                ((TextView)view.findViewById(R.id.assignment_date)).setText(formatter.format(new Date(assignment.getDueDate())));
-                ((TextView) view.findViewById(R.id.assignment_class)).setText(assignment.getDueCourse().getName());
+            protected void populateViewHolder(AssignmentHolder viewHolder, Assignment assignment, int position) {
+                viewHolder.setName(assignment.getName());
+                viewHolder.setDate(new Date(assignment.getDueDate()));
+                viewHolder.setCourse(assignment.getDueCourse().getName());
                 if (assignment.getDueDate() < System.currentTimeMillis()) {
-                    view.findViewById(R.id.assignment_late).setVisibility(View.VISIBLE);
+                    viewHolder.setLate(true);
                 } else {
-                    view.findViewById(R.id.assignment_late).setVisibility(View.INVISIBLE);
+                    viewHolder.setLate(false);
                 }
-
-                view.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getActivity(), AssignmentViewer.class);
-                        intent.putExtra("ID", assignment.getID());
-                        startActivity(intent);
-                    }
-                });
             }
         };
+
         assignmentView.setAdapter(mAdapter);
 
         // Inflate the layout for this fragment
