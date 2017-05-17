@@ -20,6 +20,7 @@ import com.nbdeg.unityplanner.Utils.Database;
 import com.nbdeg.unityplanner.Utils.EditTextDatePicker;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class CreateAssignment extends AppCompatActivity {
 
@@ -39,6 +40,10 @@ public class CreateAssignment extends AppCompatActivity {
         viewCourse = (Spinner) findViewById(R.id.assignment_create_course);
         viewCompleted = (CheckBox) findViewById(R.id.assignment_create_completed);
         viewDate = new EditTextDatePicker(this, R.id.assignment_create_date);
+
+        if (getIntent().getLongExtra("date", 0) != 0) {
+            viewDate.setDisplay(new Date(getIntent().getLongExtra("date", 0)));
+        }
 
         final ArrayList<String> courseNames = new ArrayList<>();
         Database.courseDb.addListenerForSingleValueEvent(new ValueEventListener() {

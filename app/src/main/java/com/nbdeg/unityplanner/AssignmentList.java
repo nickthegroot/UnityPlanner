@@ -17,6 +17,7 @@ import com.nbdeg.unityplanner.Data.Assignment;
 import com.nbdeg.unityplanner.Utils.AssignmentHolder;
 import com.nbdeg.unityplanner.Utils.Database;
 
+import java.util.Calendar;
 import java.util.Date;
 
 
@@ -57,13 +58,18 @@ public class AssignmentList extends Fragment {
 
         Query ref = Database.dueAssignmentDb.orderByChild("dueDate");
 
+        final Calendar dueCal = Calendar.getInstance();
+        dueCal.set(Calendar.HOUR_OF_DAY, 0);
+        dueCal.set(Calendar.MINUTE, 0);
+        dueCal.set(Calendar.SECOND, -1);
+
         mAdapter = new FirebaseRecyclerAdapter<Assignment, AssignmentHolder>(Assignment.class, R.layout.database_assignment_view, AssignmentHolder.class, ref) {
             @Override
             protected void populateViewHolder(AssignmentHolder viewHolder, Assignment assignment, int position) {
                 viewHolder.setName(assignment.getName());
                 viewHolder.setDate(new Date(assignment.getDueDate()));
                 viewHolder.setCourse(assignment.getDueCourse().getName());
-                if (assignment.getDueDate() < System.currentTimeMillis()) {
+                if (assignment.getDueDate() < dueCal.getTimeInMillis()) {
                     viewHolder.setLate(true);
                 } else {
                     viewHolder.setLate(false);

@@ -80,6 +80,7 @@ public class EditAssignment extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         Database.deleteAssignment(oldAssignment);
+                        startActivity(new Intent(EditAssignment.this, Dashboard.class));
                     }
                 });
             }

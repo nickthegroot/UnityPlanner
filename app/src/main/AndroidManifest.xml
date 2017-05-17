@@ -27,8 +27,7 @@
 
         <activity
             android:name=".LauncherLogin"
-            android:theme="@style/LoginTheme"
-            android:label="Login">
+            android:theme="@style/LoginTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
