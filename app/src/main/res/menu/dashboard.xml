@@ -2,16 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!--Todo change title of "app introduction"-->
     <item
-        android:id="@+id/action_intro"
+        android:id="@+id/action_old_assignments"
         android:orderInCategory="0"
-        android:title="App Introduction"
+        android:title="@string/finished_assignments"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_sync"
         android:orderInCategory="50"
-        android:title="Sync"
+        android:title="@string/dashboard_sync"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_logout"

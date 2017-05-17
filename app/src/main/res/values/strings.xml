@@ -89,4 +89,6 @@
     <string name="assignment_viewer_done">All done!</string>
     <string name="assignment_viewer_none">None</string>
     <string name="activity_course_add_time_title">Add times</string>
+    <string name="finished_assignments">Finished Assignments</string>
+    <string name="dashboard_sync">Sync</string>
 </resources>

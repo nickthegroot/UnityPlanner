@@ -45,6 +45,7 @@ public class LauncherLogin extends AppCompatActivity {
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
+                        .setIsSmartLockEnabled(false)
                         .setProviders(Arrays.asList(
                                 new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
                                 googleIdp,
@@ -74,7 +75,6 @@ public class LauncherLogin extends AppCompatActivity {
                 Database.refreshDatabase();
                 // TODO: 5/3/2017 When Intro Complete set activity back to Intro
                 startActivity(new Intent(LauncherLogin.this, Dashboard.class));
-//                startActivity(new Intent(getApplicationContext(), IntroActivity.class));
                 finish();
                 return;
 

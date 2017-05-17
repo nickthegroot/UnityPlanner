@@ -1,8 +1,11 @@
 package com.nbdeg.unityplanner;
 
+import android.app.AlarmManager;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -11,6 +14,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -35,8 +39,6 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.api.client.extensions.android.http.AndroidHttp;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GooglePlayServicesAvailabilityIOException;
@@ -52,9 +54,9 @@ import com.google.api.services.classroom.model.ListCoursesResponse;
 import com.google.api.services.classroom.model.ListStudentSubmissionsResponse;
 import com.google.api.services.classroom.model.StudentSubmission;
 import com.google.firebase.auth.UserInfo;
-import com.google.firebase.crash.FirebaseCrash;
 import com.nbdeg.unityplanner.Data.Assignment;
 import com.nbdeg.unityplanner.Data.Time;
+import com.nbdeg.unityplanner.Utils.AlarmReceiver;
 import com.nbdeg.unityplanner.Utils.Database;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -104,6 +106,31 @@ public class Dashboard extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        // Set Up Notifications
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (prefs.getBoolean("firstTime", true)) {
+            Intent alarmIntent = new Intent(this, AlarmReceiver.class);
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
+
+            AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+
+            Calendar hourCal = Calendar.getInstance();
+            hourCal.setTimeInMillis(prefs.getLong("notification_time", 90000000));
+
+            calendar.set(Calendar.HOUR_OF_DAY, hourCal.get(Calendar.HOUR_OF_DAY));
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 1);
+
+            manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                    AlarmManager.INTERVAL_DAY, pendingIntent);
+
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("firstTime", false);
+            editor.apply();
+        }
 
         // Adding Dashboard Fragment as primary fragment
         FragmentLayoutID = R.id.dashboard_fragments;
@@ -189,17 +216,10 @@ public class Dashboard extends AppCompatActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_logout) {
             AuthUI.getInstance()
-                    .signOut(this)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            startActivity(new Intent(Dashboard.this, LauncherLogin.class));
-                            finish();
-                        }
-                    });
-        } else if (id == R.id.action_intro) {
-            // TODO: 5/3/2017 Create App Intro
-            Toast.makeText(this, "Work In Progress", Toast.LENGTH_SHORT).show();
+                    .signOut(this);
+            startActivity(new Intent(Dashboard.this, LauncherLogin.class));
+        } else if (id == R.id.action_old_assignments) {
+            startActivity(new Intent(Dashboard.this, DoneAssignmentList.class));
         } else if (id == R.id.action_sync) {
             // Initialize credentials and service object.
 
@@ -289,7 +309,6 @@ public class Dashboard extends AppCompatActivity
         if (! isGooglePlayServicesAvailable()) {
             acquireGooglePlayServices();
         } else if (mCredential.getSelectedAccountName() == null) {
-            FirebaseCrash.log("Sync bug");
             Toast.makeText(this, "Something went wrong. Please try again.", Toast.LENGTH_LONG).show();
         } else if (! isDeviceOnline()) {
             Toast.makeText(this, "No network connection available.", Toast.LENGTH_SHORT).show();

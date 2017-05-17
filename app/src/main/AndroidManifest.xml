@@ -8,6 +8,8 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
@@ -16,7 +18,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".LauncherLogin">
+        <receiver android:name=".Utils.DeviceBootReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".Utils.AlarmReceiver" />
+
+        <activity
+            android:name=".LauncherLogin"
+            android:theme="@style/LoginTheme"
+            android:label="Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -27,7 +39,6 @@
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
-        <activity android:name=".AppIntro.IntroActivity" />
         <activity
             android:name=".Dashboard"
             android:label="@string/title_activity_dashboard"
@@ -74,8 +85,17 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.nbdeg.unityplanner.Dashboard" />
         </activity>
-        <activity android:name=".EditCourse"
-            android:theme="@style/AppTheme"/>
+        <activity
+            android:name=".EditCourse"
+            android:theme="@style/AppTheme"
+            android:label="Edit a Course"/>
+        <activity
+            android:name=".DoneAssignmentList"
+            android:label="Finished Assignments">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.nbdeg.unityplanner.Dashboard" />
+        </activity>
     </application>
 
 </manifest>
