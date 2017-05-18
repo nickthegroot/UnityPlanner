@@ -36,6 +36,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -53,7 +55,11 @@ import com.google.api.services.classroom.model.ListCourseWorkResponse;
 import com.google.api.services.classroom.model.ListCoursesResponse;
 import com.google.api.services.classroom.model.ListStudentSubmissionsResponse;
 import com.google.api.services.classroom.model.StudentSubmission;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.UserInfo;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.nbdeg.unityplanner.Data.Assignment;
 import com.nbdeg.unityplanner.Data.Time;
 import com.nbdeg.unityplanner.Utils.AlarmReceiver;
@@ -74,9 +80,11 @@ import pub.devrel.easypermissions.EasyPermissions;
 public class Dashboard extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    LinearLayout syncLayout;
-    int FragmentLayoutID;
-    GoogleAccountCredential mCredential;
+    private LinearLayout syncLayout;
+    private AdView mAdView;
+
+    private int FragmentLayoutID;
+    private GoogleAccountCredential mCredential;
 
     static final int REQUEST_AUTHORIZATION = 1001;
     static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
@@ -95,6 +103,8 @@ public class Dashboard extends AppCompatActivity
         syncLayout = (LinearLayout) findViewById(R.id.dashboard_sync);
         setSupportActionBar(toolbar);
 
+        mAdView = (AdView) findViewById(R.id.adView);
+
         Database.refreshDatabase();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -109,13 +119,14 @@ public class Dashboard extends AppCompatActivity
         // Set Up Notifications
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         if (prefs.getBoolean("firstTime", true)) {
+            Database.userDb.child("ads").setValue(true);
+
             Intent alarmIntent = new Intent(this, AlarmReceiver.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
 
             AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
             Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(System.currentTimeMillis());
 
             Calendar hourCal = Calendar.getInstance();
             hourCal.setTimeInMillis(prefs.getLong("notification_time", 90000000));
@@ -185,6 +196,21 @@ public class Dashboard extends AppCompatActivity
                 } else if (currentFragment instanceof CourseList){
                     startActivity(new Intent(Dashboard.this, CreateCourse.class));
                 }
+            }
+        });
+
+        Database.userDb.child("settings").child("ads").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                if ((Boolean)snapshot.getValue(true)) {
+                    AdRequest adRequest = new AdRequest.Builder().build();
+                    mAdView.setVisibility(View.VISIBLE);
+                    mAdView.loadAd(adRequest);
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
             }
         });
     }
@@ -517,6 +543,7 @@ public class Dashboard extends AppCompatActivity
                     if (!courseIDs.contains(course.getId())) {
                         // Add class to database
                         Database.createCourse(dbCourse);
+                        FirebaseAnalytics.getInstance(getApplicationContext()).logEvent("course_created", null);
                         Log.i("Classroom", "Course Created: " + dbCourse.getName());
                     }
 
@@ -541,6 +568,7 @@ public class Dashboard extends AppCompatActivity
                                                 100,
                                                 courseWork.getDescription(),
                                                 courseWork));
+                                        FirebaseAnalytics.getInstance(getApplicationContext()).logEvent("assignment_created", null);
                                         Log.i("Classroom", "Assignment Created: " + courseWork.getTitle());
                                     } else {
                                         Database.createAssignment(new Assignment(
@@ -550,6 +578,7 @@ public class Dashboard extends AppCompatActivity
                                                 0,
                                                 courseWork.getDescription(),
                                                 courseWork));
+                                        FirebaseAnalytics.getInstance(getApplicationContext()).logEvent("assignment_created", null);
                                         Log.i("Classroom", "Assignment Created: " + courseWork.getTitle());
                                     }
                                 }

@@ -31,7 +31,7 @@ public class DeviceBootReceiver extends BroadcastReceiver {
 
                 calendar.set(Calendar.HOUR_OF_DAY, hourCal.get(Calendar.HOUR_OF_DAY));
                 calendar.set(Calendar.MINUTE, 0);
-                calendar.set(Calendar.SECOND, 1);
+                calendar.set(Calendar.SECOND, 0);
 
                 manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                         AlarmManager.INTERVAL_DAY, pendingIntent);

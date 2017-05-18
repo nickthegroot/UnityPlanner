@@ -25,7 +25,7 @@
         android:title="@string/pref_title_vibrate" />
 
     <com.nbdeg.unityplanner.Utils.TimePreference
-        android:defaultValue="61200000"
+        android:defaultValue="90000000"
         android:dependency="notifications"
         android:key="notifications_time"
         android:title="@string/pref_notification_notifytime" />

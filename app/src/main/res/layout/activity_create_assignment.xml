@@ -57,7 +57,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="Extra Info"
-            android:inputType="textCapSentences|textAutoCorrect" />
+            android:inputType="textCapSentences|textAutoCorrect|textMultiLine" />
     </android.support.design.widget.TextInputLayout>
 
     <Spinner

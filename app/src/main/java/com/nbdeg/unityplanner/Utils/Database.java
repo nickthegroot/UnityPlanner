@@ -21,7 +21,7 @@ public class Database {
 
     private static FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-    private static DatabaseReference userDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid());
+    public static DatabaseReference userDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid());
     public static DatabaseReference courseDb = userDb.child("classes");
     private static DatabaseReference assignmentDb = userDb.child("assignments");
     public static DatabaseReference allAssignmentDb = assignmentDb.child("all");

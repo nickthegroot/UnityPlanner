@@ -51,7 +51,7 @@ public class DashboardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        final View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
         final TextView todayTitle = (TextView) view.findViewById(R.id.dashboard_today_title);
         final TextView tomorrowTitle = (TextView) view.findViewById(R.id.dashboard_tomorrow_title);
@@ -88,11 +88,21 @@ public class DashboardFragment extends Fragment {
                     }
                 }
 
-                ArrayAdapter<Assignment> todayAdapter = new TodayAssignmentHolder(getContext(), todayAssignments);
-                ArrayAdapter<Assignment> tomorrowAdapter = new TomorrowAssignmentHolder(getContext(), tomorrowAssignments);
+                if (!todayAssignments.isEmpty()) {
+                    view.findViewById(R.id.dashboard_today_none).setVisibility(View.GONE);
+                    todayList.setVisibility(View.VISIBLE);
 
-                todayList.setAdapter(todayAdapter);
-                tomorrowList.setAdapter(tomorrowAdapter);
+                    ArrayAdapter<Assignment> todayAdapter = new TodayAssignmentHolder(getContext(), todayAssignments);
+                    todayList.setAdapter(todayAdapter);
+                }
+
+                if (!tomorrowAssignments.isEmpty()) {
+                    view.findViewById(R.id.dashboard_tomorrow_none).setVisibility(View.GONE);
+                    tomorrowList.setVisibility(View.VISIBLE);
+
+                    ArrayAdapter<Assignment> tomorrowAdapter = new TomorrowAssignmentHolder(getContext(), tomorrowAssignments);
+                    tomorrowList.setAdapter(tomorrowAdapter);
+                }
             }
 
             @Override

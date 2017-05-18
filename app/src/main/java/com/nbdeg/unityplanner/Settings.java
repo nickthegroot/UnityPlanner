@@ -1,6 +1,5 @@
 package com.nbdeg.unityplanner;
 
-
 import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.content.Context;
@@ -13,7 +12,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
@@ -36,17 +34,6 @@ import java.util.List;
 import mehdi.sakout.aboutpage.AboutPage;
 import mehdi.sakout.aboutpage.Element;
 
-/**
- * A {@link PreferenceActivity} that presents a set of application settings. On
- * handset devices, settings are presented as a single list. On tablets,
- * settings are split by category, with category headers shown to the left of
- * the list of settings.
- * <p>
- * See <a href="http://developer.android.com/design/patterns/settings.html">
- * Android Design: Settings</a> for design guidelines and the <a
- * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
- * API Guide</a> for more information on developing a Settings UI.
- */
 public class Settings extends AppCompatPreferenceActivity {
     /**
      * A preference value change listener that updates the preference's summary
@@ -199,7 +186,6 @@ public class Settings extends AppCompatPreferenceActivity {
             LinearLayout layout = new LinearLayout(getActivity());
 
             Intent betaOptIn = new Intent(Intent.ACTION_VIEW);
-            // TODO: 5/3/2017 Change Beta Opt-In URL
             betaOptIn.setData(Uri.parse("https://play.google.com/apps/testing/com.nbdeg.unityplanner"));
 
             Element usedLibraries = new Element();
@@ -215,7 +201,7 @@ public class Settings extends AppCompatPreferenceActivity {
             });
 
             Element versionElement = new Element();
-            versionElement.setTitle("Version 0.7.0");
+            versionElement.setTitle("Version 1.0.0-beta");
             versionElement.setIntent(betaOptIn);
 
             View aboutPage = new AboutPage(getActivity())

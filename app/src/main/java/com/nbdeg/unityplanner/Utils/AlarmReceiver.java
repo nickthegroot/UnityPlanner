@@ -15,6 +15,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.nbdeg.unityplanner.AssignmentViewer;
 import com.nbdeg.unityplanner.Data.Assignment;
+import com.nbdeg.unityplanner.R;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -59,6 +60,7 @@ public class AlarmReceiver extends BroadcastReceiver {
                             }
 
                             builder.setAutoCancel(true);
+                            builder.setSmallIcon(R.drawable.ic_notification);
                             builder.setContentIntent(pendingIntent);
                             builder.setSound(Uri.parse(prefs.getString("notifications_ringtone", "content://settings/system/notification_sound")));
                             if (prefs.getBoolean("notifications_vibrate", true)) {

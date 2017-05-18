@@ -45,7 +45,7 @@ public class TodayAssignmentHolder extends ArrayAdapter<Assignment> {
         if (assignment.getDueDate() < dueCal.getTimeInMillis()) {
             view.findViewById(R.id.assignment_late).setVisibility(View.VISIBLE);
         } else {
-            view.findViewById(R.id.assignment_late).setVisibility(View.GONE);
+            view.findViewById(R.id.assignment_late).setVisibility(View.INVISIBLE);
         }
 
         view.setOnClickListener(new View.OnClickListener() {

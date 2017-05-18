@@ -66,6 +66,7 @@ public class AssignmentList extends Fragment {
         mAdapter = new FirebaseRecyclerAdapter<Assignment, AssignmentHolder>(Assignment.class, R.layout.database_assignment_view, AssignmentHolder.class, ref) {
             @Override
             protected void populateViewHolder(AssignmentHolder viewHolder, Assignment assignment, int position) {
+                viewHolder.setOnClick(assignment.getID());
                 viewHolder.setName(assignment.getName());
                 viewHolder.setDate(new Date(assignment.getDueDate()));
                 viewHolder.setCourse(assignment.getDueCourse().getName());

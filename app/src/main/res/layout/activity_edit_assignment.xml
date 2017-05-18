@@ -63,7 +63,8 @@
                 android:id="@+id/assignment_edit_extra"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="@string/extra_info" />
+                android:hint="@string/extra_info"
+                android:singleLine="false" />
         </android.support.design.widget.TextInputLayout>
 
         <Spinner

@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
@@ -121,6 +122,7 @@ public class CreateAssignment extends AppCompatActivity {
 
         // Creating assignment if all went well
         Database.createAssignment(assignment);
+        FirebaseAnalytics.getInstance(getApplicationContext()).logEvent("assignment_created", null);
         startActivity(new Intent(CreateAssignment.this, Dashboard.class));
 
         return super.onOptionsItemSelected(item);

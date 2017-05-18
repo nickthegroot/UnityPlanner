@@ -25,6 +25,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.nbdeg.unityplanner.Data.Course;
 import com.nbdeg.unityplanner.Data.Time;
 import com.nbdeg.unityplanner.Utils.CourseAddTime;
@@ -285,6 +286,7 @@ public class CreateCourse extends AppCompatActivity implements SimpleDialog.OnDi
             course.setTime(time);
 
             Database.createCourse(course);
+            FirebaseAnalytics.getInstance(getApplicationContext()).logEvent("course_created", null);
             startActivity(new Intent(CreateCourse.this, Dashboard.class));
         }
     }

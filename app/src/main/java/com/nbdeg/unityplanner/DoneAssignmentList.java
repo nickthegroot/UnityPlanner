@@ -43,6 +43,7 @@ public class DoneAssignmentList extends AppCompatActivity {
                 viewHolder.setName(assignment.getName());
                 viewHolder.setDate(new Date(assignment.getDueDate()));
                 viewHolder.setCourse(assignment.getDueCourse().getName());
+                viewHolder.setOnClick(assignment.getID());
             }
         };
 
