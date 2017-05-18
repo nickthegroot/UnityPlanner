@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.nbdeg.unityplanner.CreateAssignment"
+    android:padding="15dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@mipmap/ic_shortcut_assignment"/>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/textInputLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp">
+
+            <EditText
+                android:id="@+id/assignment_create_name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="Assignment Name"
+                android:inputType="textCapWords|textAutoCorrect" />
+
+        </android.support.design.widget.TextInputLayout>
+
+    </LinearLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="62dp"
+        android:focusable="false">
+
+        <EditText
+            android:id="@+id/assignment_create_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Date"
+            android:focusable="false"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="111dp"
+        android:id="@+id/textInputLayout2">
+
+        <EditText
+            android:id="@+id/assignment_create_extra"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Extra Info"
+            android:inputType="textCapSentences|textAutoCorrect|textMultiLine" />
+    </android.support.design.widget.TextInputLayout>
+
+    <Spinner
+        android:id="@+id/assignment_create_course"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <CheckBox
+        android:id="@+id/assignment_create_completed"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Completed" />
+
+</LinearLayout>
