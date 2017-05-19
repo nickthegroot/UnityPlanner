@@ -63,6 +63,10 @@ public class CreateCourse extends AppCompatActivity implements SimpleDialog.OnDi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_course);
 
+        if (Database.getUser() == null) {
+            startActivity(new Intent(CreateCourse.this, LauncherLogin.class));
+        }
+
         Button colorSelector = (Button) findViewById(R.id.course_create_button);
         viewAddTime = (Button) findViewById(R.id.course_create_add_time);
         viewCourseTime = (TextView) findViewById(R.id.course_create_time);

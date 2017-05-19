@@ -119,7 +119,7 @@ public class Dashboard extends AppCompatActivity
         // Set Up Notifications
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         if (prefs.getBoolean("firstTime", true)) {
-            Database.userDb.child("ads").setValue(true);
+            Database.userDb.child("settings").child("ads").setValue(true);
 
             Intent alarmIntent = new Intent(this, AlarmReceiver.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
