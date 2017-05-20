@@ -1,14 +1,14 @@
 package com.nbdeg.unityplanner;
 
-import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -159,7 +159,6 @@ public class Settings extends AppCompatPreferenceActivity {
      * {@inheritDoc}
      */
     @Override
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void onBuildHeaders(List<Header> target) {
         loadHeadersFromResource(R.xml.pref_headers, target);
     }
@@ -185,9 +184,29 @@ public class Settings extends AppCompatPreferenceActivity {
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
             LinearLayout layout = new LinearLayout(getActivity());
 
+            AboutPage aboutPage = new AboutPage(getActivity())
+                    .isRTL(false)
+                    .setImage(R.mipmap.ic_launcher_round)
+                    .setDescription(getString(R.string.settings_about_description));
+
+            // Version Tag
             Intent betaOptIn = new Intent(Intent.ACTION_VIEW);
             betaOptIn.setData(Uri.parse("https://play.google.com/apps/testing/com.nbdeg.unityplanner"));
 
+            try {
+                PackageInfo pInfo = getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0);
+
+                Element versionElement = new Element();
+                versionElement.setTitle("Version " + pInfo.versionName);
+                versionElement.setIntent(betaOptIn);
+
+                aboutPage.addItem(versionElement);
+
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            // Used Libraries Tag
             Element usedLibraries = new Element();
             usedLibraries.setTitle("Used Libraries");
             usedLibraries.setOnClickListener(new View.OnClickListener() {
@@ -199,27 +218,17 @@ public class Settings extends AppCompatPreferenceActivity {
                             .start(getActivity());
                 }
             });
+            aboutPage.addItem(usedLibraries);
 
-            Element versionElement = new Element();
-            versionElement.setTitle("Version 1.0.0-beta");
-            versionElement.setIntent(betaOptIn);
-
-            View aboutPage = new AboutPage(getActivity())
-                    .isRTL(false)
-                    .setImage(R.mipmap.ic_launcher_round)
-                    .setDescription(getString(R.string.settings_about_description))
-                    .addItem(versionElement)
-                    .addItem(usedLibraries)
-                    .addGroup("Connect with us")
+            // Connect Tab
+                aboutPage.addGroup("Connect with us")
                     .addEmail("unityplanner@nbdeg.com")
                     .addWebsite("http://nbdeg.com/")
                     .addTwitter("OfficalNbd9")
                     .addPlayStore("com.nbdeg.unityplanner")
-                    .addGitHub("nbd9")
-                    .create();
+                    .addGitHub("nbd9");
 
-            layout.addView(aboutPage);
-
+            layout.addView(aboutPage.create());
             return layout;
         }
     }
@@ -228,7 +237,6 @@ public class Settings extends AppCompatPreferenceActivity {
      * This fragment shows notification preferences only. It is used when the
      * activity is showing a two-pane settings UI.
      */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class NotificationPreferenceFragment extends PreferenceFragment {
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -241,7 +249,6 @@ public class Settings extends AppCompatPreferenceActivity {
             // updated to reflect the new value, per the Android Design
             // guidelines.
             bindPreferenceSummaryToValue(findPreference("notifications_ringtone"));
-            bindPreferenceSummaryToValue(findPreference("notifications_time"));
             bindPreferenceSummaryToValue(findPreference("notifications_days"));
         }
 
@@ -260,7 +267,6 @@ public class Settings extends AppCompatPreferenceActivity {
      * This fragment shows sync preferences only. It is used when the
      * activity is showing a two-pane settings UI.
      */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class SyncPreferenceFragment extends PreferenceFragment {
         @Override
         public void onCreate(Bundle savedInstanceState) {

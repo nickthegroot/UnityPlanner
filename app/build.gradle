@@ -5,7 +5,7 @@ android {
         release {
             keyAlias 'unitykey'
             keyPassword 's61uPqjYNcoF'
-            storeFile file('C:/Users/nbdeg/Documents/Coding/Android/Unity Planner APKs/UnityPlannerReleaseKeystore.jks')
+            storeFile file('C:/Users/nbdeg/Documents/Coding/Android/Unity Planner Play Store/UnityPlannerReleaseKeystore.jks')
             storePassword 'r4D2yo4Eo8E6'
         }
     }
@@ -15,8 +15,8 @@ android {
         applicationId "com.nbdeg.unityplanner"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 12
-        versionName "1.0.1-beta"
+        versionCode 13
+        versionName "1.0.2-beta"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }

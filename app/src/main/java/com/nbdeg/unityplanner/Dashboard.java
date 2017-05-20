@@ -133,7 +133,7 @@ public class Dashboard extends AppCompatActivity
 
             calendar.set(Calendar.HOUR_OF_DAY, hourCal.get(Calendar.HOUR_OF_DAY));
             calendar.set(Calendar.MINUTE, 0);
-            calendar.set(Calendar.SECOND, 1);
+            calendar.set(Calendar.SECOND, 0);
 
             manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                     AlarmManager.INTERVAL_DAY, pendingIntent);
@@ -199,10 +199,16 @@ public class Dashboard extends AppCompatActivity
             }
         });
 
-        Database.userDb.child("settings").child("ads").addListenerForSingleValueEvent(new ValueEventListener() {
+        Database.userDb.child("settings").child("ads").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                if ((Boolean)snapshot.getValue(true)) {
+                Boolean ads = true;
+                if (snapshot.exists()) {
+                    ads = snapshot.getValue(Boolean.class);
+
+                }
+
+                if (ads) {
                     AdRequest adRequest = new AdRequest.Builder().build();
                     mAdView.setVisibility(View.VISIBLE);
                     mAdView.loadAd(adRequest);
