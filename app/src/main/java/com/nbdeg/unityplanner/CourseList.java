@@ -68,6 +68,7 @@ public class CourseList extends Fragment {
                 viewHolder.setRoomNumber(course.getRoomNumber());
                 viewHolder.setTime(course.getTime());
                 viewHolder.setOnTouch(course.getID());
+                viewHolder.setColor(course.getColor());
             }
         };
 

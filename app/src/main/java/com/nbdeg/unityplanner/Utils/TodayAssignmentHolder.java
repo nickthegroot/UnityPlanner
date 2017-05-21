@@ -47,6 +47,7 @@ public class TodayAssignmentHolder extends ArrayAdapter<Assignment> {
         } else {
             view.findViewById(R.id.assignment_late).setVisibility(View.INVISIBLE);
         }
+        (view.findViewById(R.id.assignment_color)).setBackgroundColor(assignment.getDueCourse().getColor());
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override

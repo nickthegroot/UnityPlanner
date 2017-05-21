@@ -4,7 +4,6 @@ package com.nbdeg.unityplanner;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -49,10 +48,6 @@ public class AssignmentList extends Fragment {
         RecyclerView assignmentView = (RecyclerView) mView.findViewById(R.id.assignment_list_view);
         LinearLayoutManager assignmentLayoutManager = new LinearLayoutManager(getContext());
 
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(assignmentView.getContext(),
-                assignmentLayoutManager.getOrientation());
-
-        assignmentView.addItemDecoration(dividerItemDecoration);
         assignmentView.setLayoutManager(assignmentLayoutManager);
 
 
@@ -70,6 +65,7 @@ public class AssignmentList extends Fragment {
                 viewHolder.setName(assignment.getName());
                 viewHolder.setDate(new Date(assignment.getDueDate()));
                 viewHolder.setCourse(assignment.getDueCourse().getName());
+                viewHolder.setColor(assignment.getDueCourse().getColor());
                 if (assignment.getDueDate() < dueCal.getTimeInMillis()) {
                     viewHolder.setLate(true);
                 } else {

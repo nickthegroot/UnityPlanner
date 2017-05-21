@@ -119,8 +119,6 @@ public class Dashboard extends AppCompatActivity
         // Set Up Notifications
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         if (prefs.getBoolean("firstTime", true)) {
-            Database.userDb.child("settings").child("ads").setValue(true);
-
             Intent alarmIntent = new Intent(this, AlarmReceiver.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
 
@@ -205,7 +203,8 @@ public class Dashboard extends AppCompatActivity
                 Boolean ads = true;
                 if (snapshot.exists()) {
                     ads = snapshot.getValue(Boolean.class);
-
+                } else {
+                    Database.userDb.child("settings").child("ads").setValue(true);
                 }
 
                 if (ads) {
@@ -245,33 +244,37 @@ public class Dashboard extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_logout) {
-            AuthUI.getInstance()
-                    .signOut(this);
-            startActivity(new Intent(Dashboard.this, LauncherLogin.class));
-        } else if (id == R.id.action_old_assignments) {
-            startActivity(new Intent(Dashboard.this, DoneAssignmentList.class));
-        } else if (id == R.id.action_sync) {
-            // Initialize credentials and service object.
+        switch (id) {
+            case R.id.action_logout:
+                AuthUI.getInstance()
+                        .signOut(this);
+                startActivity(new Intent(Dashboard.this, LauncherLogin.class));
+                break;
 
-            for (UserInfo info : Database.getUser().getProviderData()) {
-                if (info.getProviderId().equals("google.com")) {
-                    if (EasyPermissions.hasPermissions(this, android.Manifest.permission.GET_ACCOUNTS)) {
-                        signInGoogleCredential();
-                        getResultsFromApi();
-                        return super.onOptionsItemSelected(item);
-                    } else {
-                        EasyPermissions.requestPermissions(
-                                this,
-                                "This app needs to access your Google account (via Contacts).",
-                                REQUEST_PERMISSION_GET_ACCOUNTS,
-                                android.Manifest.permission.GET_ACCOUNTS);
+            case R.id.action_old_assignments:
+                startActivity(new Intent(Dashboard.this, DoneAssignmentList.class));
+                break;
+
+            case R.id.action_sync:
+                // Initialize credentials and service object.
+                for (UserInfo info : Database.getUser().getProviderData()) {
+                    if (info.getProviderId().equals("google.com")) {
+                        if (EasyPermissions.hasPermissions(this, android.Manifest.permission.GET_ACCOUNTS)) {
+                            signInGoogleCredential();
+                            getResultsFromApi();
+                            break;
+                        } else {
+                            EasyPermissions.requestPermissions(
+                                    this,
+                                    "This app needs to access your Google account (via Contacts).",
+                                    REQUEST_PERMISSION_GET_ACCOUNTS,
+                                    android.Manifest.permission.GET_ACCOUNTS);
+                        }
                     }
                 }
-            }
 
-            Toast.makeText(this, "Please link a Google Account first.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Please log in with a Google Education account.", Toast.LENGTH_SHORT).show();
+                break;
         }
 
         return super.onOptionsItemSelected(item);

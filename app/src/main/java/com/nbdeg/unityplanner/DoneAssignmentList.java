@@ -2,7 +2,6 @@ package com.nbdeg.unityplanner;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -28,10 +27,6 @@ public class DoneAssignmentList extends AppCompatActivity {
         RecyclerView assignmentView = (RecyclerView) findViewById(R.id.old_assignment_list_view);
         LinearLayoutManager assignmentLayoutManager = new LinearLayoutManager(this);
 
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(assignmentView.getContext(),
-                assignmentLayoutManager.getOrientation());
-
-        assignmentView.addItemDecoration(dividerItemDecoration);
         assignmentView.setLayoutManager(assignmentLayoutManager);
 
 
@@ -44,6 +39,7 @@ public class DoneAssignmentList extends AppCompatActivity {
                 viewHolder.setDate(new Date(assignment.getDueDate()));
                 viewHolder.setCourse(assignment.getDueCourse().getName());
                 viewHolder.setOnClick(assignment.getID());
+                viewHolder.setColor(assignment.getDueCourse().getColor());
             }
         };
 
