@@ -15,8 +15,8 @@ android {
         applicationId "com.nbdeg.unityplanner"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 14
-        versionName "1.0.3"
+        versionCode 15
+        versionName "1.0.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
