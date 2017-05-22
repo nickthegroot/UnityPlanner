@@ -75,7 +75,7 @@ public class DashboardFragment extends Fragment {
         final ArrayList<Assignment> todayAssignments = new ArrayList<>();
         final ArrayList<Assignment> tomorrowAssignments = new ArrayList<>();
 
-        Database.dueAssignmentDb.addListenerForSingleValueEvent(new ValueEventListener() {
+        Database.dueAssignmentDb.orderByChild("dueDate").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
