@@ -113,8 +113,13 @@ public class CourseAddTime extends AppCompatActivity {
         }
 
         Time courseTime = null;
-        Calendar startCal = viewStartTime.myCalendar;
-        Calendar endCal = viewStopTime.myCalendar;
+        Calendar startCal = viewStartTime.cal;
+        Calendar endCal = viewStopTime.cal;
+
+        if (viewStartTime.cal.getTimeInMillis() > viewStopTime.cal.getTimeInMillis()) {
+            Toast.makeText(this, "The starting time must be before the ending time!", Toast.LENGTH_SHORT).show();
+            return super.onOptionsItemSelected(item);
+        }
 
 
         if (viewBlockSchedule.isChecked()) {

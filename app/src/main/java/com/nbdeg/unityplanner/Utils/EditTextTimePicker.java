@@ -12,7 +12,7 @@ import java.util.Calendar;
 class EditTextTimePicker implements View.OnFocusChangeListener, TimePickerDialog.OnTimeSetListener {
 
     private EditText editText;
-    public Calendar myCalendar;
+    public Calendar cal;
     private Context __context;
 
     private final SimpleDateFormat formatter = new SimpleDateFormat("h:mm a", java.util.Locale.getDefault());
@@ -20,7 +20,8 @@ class EditTextTimePicker implements View.OnFocusChangeListener, TimePickerDialog
     public EditTextTimePicker(EditText editText, Context ctx){
         this.editText = editText;
         this.editText.setOnFocusChangeListener(this);
-        this.myCalendar = Calendar.getInstance();
+        this.editText.setKeyListener(null);
+        this.cal = Calendar.getInstance();
 
         __context = ctx;
     }
@@ -28,18 +29,17 @@ class EditTextTimePicker implements View.OnFocusChangeListener, TimePickerDialog
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if(hasFocus){
-            int hour = myCalendar.get(Calendar.HOUR_OF_DAY);
-            int minute = myCalendar.get(Calendar.MINUTE);
+            int hour = cal.get(Calendar.HOUR_OF_DAY);
+            int minute = cal.get(Calendar.MINUTE);
             new TimePickerDialog(__context, this, hour, minute, false).show();
         }
     }
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        myCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-        myCalendar.set(Calendar.MINUTE, minute);
+        cal.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        cal.set(Calendar.MINUTE, minute);
 
-        this.editText.setText(formatter.format(myCalendar));
+        this.editText.setText(formatter.format(cal.getTime()));
     }
-
 }
