@@ -1,8 +1,11 @@
 package com.nbdeg.unityplanner;
 
+import android.app.AlarmManager;
 import android.app.Fragment;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -19,6 +22,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,8 +31,11 @@ import android.widget.LinearLayout;
 
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
+import com.nbdeg.unityplanner.Utils.AlarmReceiver;
 import com.nbdeg.unityplanner.Utils.AppCompatPreferenceActivity;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 
 import mehdi.sakout.aboutpage.AboutPage;
@@ -244,12 +251,48 @@ public class Settings extends AppCompatPreferenceActivity {
             addPreferencesFromResource(R.xml.pref_notification);
             setHasOptionsMenu(true);
 
+            Preference.OnPreferenceChangeListener notifChangeList = new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy.MM.dd G 'at' HH:mm:ss z", java.util.Locale.getDefault());
+
+                    SharedPreferences.Editor prefs = PreferenceManager.getDefaultSharedPreferences(preference.getContext()).edit();
+                    prefs.putLong("notifications_time", (Long)newValue);
+                    prefs.apply();
+
+                    Intent alarmIntent = new Intent(preference.getContext(), AlarmReceiver.class);
+                    PendingIntent pendingIntent = PendingIntent.getBroadcast(preference.getContext(), 0, alarmIntent, 0);
+
+                    AlarmManager manager = (AlarmManager) preference.getContext().getSystemService(Context.ALARM_SERVICE);
+
+                    Calendar calendar = Calendar.getInstance();
+
+                    Calendar hourCal = Calendar.getInstance();
+                    hourCal.setTimeInMillis((Long)newValue);
+
+                    calendar.set(Calendar.HOUR_OF_DAY, hourCal.get(Calendar.HOUR_OF_DAY));
+                    calendar.set(Calendar.MINUTE, hourCal.get(Calendar.MINUTE));
+                    calendar.set(Calendar.SECOND, 0);
+
+                    Log.d("Settings", "onPreferenceChange: " + format.format(calendar.getTime()));
+
+                    manager.setInexactRepeating(AlarmManager.RTC_WAKEUP,
+                            calendar.getTimeInMillis(),
+                            AlarmManager.INTERVAL_DAY,
+                            pendingIntent);
+
+                    return true;
+                }
+            };
+
             // Bind the summaries of EditText/List/Dialog/Ringtone preferences
             // to their values. When their values change, their summaries are
             // updated to reflect the new value, per the Android Design
             // guidelines.
             bindPreferenceSummaryToValue(findPreference("notifications_ringtone"));
             bindPreferenceSummaryToValue(findPreference("notifications_days"));
+
+            findPreference("notifications_time").setOnPreferenceChangeListener(notifChangeList);
         }
 
         @Override

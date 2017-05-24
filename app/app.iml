@@ -4,7 +4,28 @@
     <option name="myCloudPersistentConfigurations">
       <list>
         <CloudPersistentConfiguration>
-          <option name="name" value="Regular Testing" />
+          <option name="name" value="Old Virtual Test" />
+          <option name="devices">
+            <list>
+              <option value="Nexus6" />
+              <option value="Nexus5X" />
+            </list>
+          </option>
+          <option name="apiLevels">
+            <list>
+              <option value="19" />
+            </list>
+          </option>
+          <option name="languages">
+            <list>
+              <option value="en" />
+            </list>
+          </option>
+          <option name="orientations">
+            <list>
+              <option value="landscape" />
+            </list>
+          </option>
         </CloudPersistentConfiguration>
       </list>
     </option>

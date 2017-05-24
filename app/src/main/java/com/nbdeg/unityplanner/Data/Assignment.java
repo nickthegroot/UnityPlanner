@@ -36,6 +36,16 @@ public class Assignment {
         this.classroomCourse = classroomCourse;
     }
 
+    public Assignment(Assignment assignment) {
+        this.assignmentName = assignment.getName();
+        this.dueDate = assignment.getDueDate();
+        this.dueCourse = assignment.getDueCourse();
+        this.percentComplete = assignment.getPercentComplete();
+        this.extraInfo = assignment.getExtraInfo();
+        this.classroomCourse = assignment.getClassroomCourseWork();
+        this.ID = assignment.getID();
+    }
+
     /* -- Getters and setters -- */
 
     public Long getDueDate() {

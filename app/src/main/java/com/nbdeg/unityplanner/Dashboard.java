@@ -261,14 +261,14 @@ public class Dashboard extends AppCompatActivity
                     if (info.getProviderId().equals("google.com")) {
                         if (EasyPermissions.hasPermissions(this, android.Manifest.permission.GET_ACCOUNTS)) {
                             signInGoogleCredential();
-                            getResultsFromApi();
-                            break;
+                            return super.onOptionsItemSelected(item);
                         } else {
                             EasyPermissions.requestPermissions(
                                     this,
                                     "This app needs to access your Google account (via Contacts).",
                                     REQUEST_PERMISSION_GET_ACCOUNTS,
                                     android.Manifest.permission.GET_ACCOUNTS);
+                            return super.onOptionsItemSelected(item);
                         }
                     }
                 }
@@ -331,6 +331,8 @@ public class Dashboard extends AppCompatActivity
                 this, Arrays.asList(SCOPES))
                 .setBackOff(new ExponentialBackOff());
         mCredential.setSelectedAccountName(Database.getUser().getEmail());
+
+        getResultsFromApi();
     }
 
     /**
@@ -514,6 +516,7 @@ public class Dashboard extends AppCompatActivity
                     .setPageSize(10)
                     .execute();
 
+            ArrayList<com.nbdeg.unityplanner.Data.Course> classroomCourses = new ArrayList<>();
             ArrayList<String> courseIDs = new ArrayList<>();
             ArrayList<String> courseWorkIDs = new ArrayList<>();
 
@@ -524,6 +527,7 @@ public class Dashboard extends AppCompatActivity
             }
             for (com.nbdeg.unityplanner.Data.Course course : Database.getCourses()) {
                 if (course.getClassroomCourse() != null) {
+                    classroomCourses.add(course);
                     courseIDs.add(course.getClassroomCourse().getId());
                 }
             }
@@ -549,11 +553,18 @@ public class Dashboard extends AppCompatActivity
                     if (Database.getChangedCourseNames().containsKey(dbCourse.getName())) {
                         dbCourse.setName(Database.getChangedCourseNames().get(course.getName()));
                     }
+
                     if (!courseIDs.contains(course.getId())) {
                         // Add class to database
                         Database.createCourse(dbCourse);
                         FirebaseAnalytics.getInstance(getApplicationContext()).logEvent("course_created", null);
                         Log.i("Classroom", "Course Created: " + dbCourse.getName());
+                    } else {
+                        for (com.nbdeg.unityplanner.Data.Course mCourse : classroomCourses) {
+                            if (mCourse.getClassroomCourse().getId().equals(course.getId())) {
+                                dbCourse = mCourse;
+                            }
+                        }
                     }
 
                     // Add assignments to database
