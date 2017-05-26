@@ -269,7 +269,7 @@ public class CreateCourse extends AppCompatActivity implements SimpleDialog.OnDi
             values.put(CalendarContract.Events.TITLE, course.getName());
             values.put(CalendarContract.Events.EVENT_TIMEZONE, timezone);
             values.put(CalendarContract.Events.CALENDAR_ID, calID);
-            values.put(CalendarContract.Events.CALENDAR_COLOR, course.getColor());
+            values.put(CalendarContract.Events.EVENT_COLOR, course.getColor());
             if (time.isBlockSchedule()) {
                 values.put(CalendarContract.Events.RRULE, "FREQ=DAILY;INTERVAL=2;BYDAY=MO,TU,WE,TH,FR;UNTIL=" + recurrenceFormatter.format(new Date(time.getFinish())));
             } else if (time.isDaySchedule()) {
