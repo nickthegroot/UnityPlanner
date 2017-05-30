@@ -63,6 +63,10 @@ public class CreateCourse extends AppCompatActivity implements SimpleDialog.OnDi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_course);
 
+        if (Database.getUser() == null) {
+            startActivity(new Intent(CreateCourse.this, LauncherLogin.class));
+        }
+
         Button colorSelector = (Button) findViewById(R.id.course_create_button);
         viewAddTime = (Button) findViewById(R.id.course_create_add_time);
         viewCourseTime = (TextView) findViewById(R.id.course_create_time);
@@ -265,7 +269,7 @@ public class CreateCourse extends AppCompatActivity implements SimpleDialog.OnDi
             values.put(CalendarContract.Events.TITLE, course.getName());
             values.put(CalendarContract.Events.EVENT_TIMEZONE, timezone);
             values.put(CalendarContract.Events.CALENDAR_ID, calID);
-            values.put(CalendarContract.Events.CALENDAR_COLOR, course.getColor());
+            values.put(CalendarContract.Events.EVENT_COLOR, course.getColor());
             if (time.isBlockSchedule()) {
                 values.put(CalendarContract.Events.RRULE, "FREQ=DAILY;INTERVAL=2;BYDAY=MO,TU,WE,TH,FR;UNTIL=" + recurrenceFormatter.format(new Date(time.getFinish())));
             } else if (time.isDaySchedule()) {

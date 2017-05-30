@@ -24,13 +24,12 @@ public class DeviceBootReceiver extends BroadcastReceiver {
                 AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
                 Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(System.currentTimeMillis());
 
                 Calendar hourCal = Calendar.getInstance();
                 hourCal.setTimeInMillis(prefs.getLong("notification_time", 90000000));
 
                 calendar.set(Calendar.HOUR_OF_DAY, hourCal.get(Calendar.HOUR_OF_DAY));
-                calendar.set(Calendar.MINUTE, 0);
+                calendar.set(Calendar.MINUTE, hourCal.get(Calendar.MINUTE));
                 calendar.set(Calendar.SECOND, 0);
 
                 manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),

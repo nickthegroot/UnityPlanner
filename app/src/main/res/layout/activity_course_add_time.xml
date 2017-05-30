@@ -27,8 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:hint="Start Time"
-                android:focusable="false"/>
+                android:hint="Start Time" />
 
         </android.support.design.widget.TextInputLayout>
         
@@ -49,8 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:hint="End Time"
-                android:focusable="false"/>
+                android:hint="End Time" />
 
         </android.support.design.widget.TextInputLayout>
     </LinearLayout>
@@ -64,8 +62,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:hint="Start Date"
-            android:focusable="false"/>
+            android:hint="Start Date" />
 
     </android.support.design.widget.TextInputLayout>
 
@@ -78,8 +75,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:hint="Stop Date"
-            android:focusable="false"/>
+            android:hint="Stop Date" />
 
     </android.support.design.widget.TextInputLayout>
 

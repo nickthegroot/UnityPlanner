@@ -37,6 +37,7 @@ public class TomorrowAssignmentHolder extends ArrayAdapter<Assignment> {
         ((TextView)view.findViewById(R.id.assignment_name)).setText(assignment.getName());
         ((TextView)view.findViewById(R.id.assignment_class)).setText(assignment.getDueCourse().getName());
         ((TextView)view.findViewById(R.id.assignment_date)).setText(assignmentFormatter.format(assignment.getDueDate()));
+        (view.findViewById(R.id.assignment_color)).setBackgroundColor(assignment.getDueCourse().getColor());
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override

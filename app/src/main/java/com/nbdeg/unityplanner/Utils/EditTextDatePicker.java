@@ -13,7 +13,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-public class EditTextDatePicker implements View.OnClickListener, DatePickerDialog.OnDateSetListener {
+public class EditTextDatePicker implements View.OnFocusChangeListener, DatePickerDialog.OnDateSetListener {
 
     private final EditText _editText;
     private int _day;
@@ -26,7 +26,8 @@ public class EditTextDatePicker implements View.OnClickListener, DatePickerDialo
     {
         Activity act = (Activity) context;
         this._editText = (EditText)act.findViewById(editTextViewID);
-        this._editText.setOnClickListener(this);
+        this._editText.setKeyListener(null);
+        this._editText.setOnFocusChangeListener(this);
         this._context = context;
     }
 
@@ -39,14 +40,15 @@ public class EditTextDatePicker implements View.OnClickListener, DatePickerDialo
     }
 
     @Override
-    public void onClick(View v) {
-        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+    public void onFocusChange(View v, boolean hasFocus) {
+        if (hasFocus) {
+            Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
 
-        DatePickerDialog dialog = new DatePickerDialog(_context, this,
-                calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH));
-        dialog.show();
-
+            DatePickerDialog dialog = new DatePickerDialog(_context, this,
+                    calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH));
+            dialog.show();
+        }
     }
 
     // updates the date in the birth date EditText

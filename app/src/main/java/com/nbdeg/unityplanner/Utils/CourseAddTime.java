@@ -1,7 +1,6 @@
 package com.nbdeg.unityplanner.Utils;
 
 import android.app.Activity;
-import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -13,24 +12,19 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.nbdeg.unityplanner.Data.Time;
 import com.nbdeg.unityplanner.R;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class CourseAddTime extends AppCompatActivity {
 
-    private int startHour;
-    private int startMin;
-    private int endHour;
-    private int endMin;
-
     private EditTextDatePicker viewStartDate;
     private EditTextDatePicker viewStopDate;
+    private EditTextTimePicker viewStartTime;
+    private EditTextTimePicker viewStopTime;
     private RadioButton viewBlockSchedule;
     private RadioButton viewDaySchedule;
 
@@ -48,8 +42,9 @@ public class CourseAddTime extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_add_time);
 
-        final EditText viewStartTime = (EditText) findViewById(R.id.course_add_time_start_time);
-        final EditText viewEndTime = (EditText) findViewById(R.id.course_add_time_stop_time);
+        viewStartTime = new EditTextTimePicker((EditText) findViewById(R.id.course_add_time_start_time), this);
+        viewStopTime = new EditTextTimePicker((EditText) findViewById(R.id.course_add_time_stop_time), this);
+
         viewStartDate = new EditTextDatePicker(this, R.id.course_add_time_start_date);
         viewStopDate = new EditTextDatePicker(this, R.id.course_add_time_stop_date);
 
@@ -66,56 +61,6 @@ public class CourseAddTime extends AppCompatActivity {
         viewDayWen = (CheckBox) findViewById(R.id.course_add_time_per_day_schedule_wen);
         viewDayThu = (CheckBox) findViewById(R.id.course_add_time_per_day_schedule_thu);
         viewDayFri = (CheckBox) findViewById(R.id.course_add_time_per_day_schedule_fri);
-
-        final SimpleDateFormat formatter = new SimpleDateFormat("h:mm a", java.util.Locale.getDefault());
-
-        viewStartTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Calendar cal = Calendar.getInstance();
-                int hour = cal.get(Calendar.HOUR_OF_DAY);
-                int minute = cal.get(Calendar.MINUTE);
-                TimePickerDialog mTimePicker;
-                mTimePicker = new TimePickerDialog(CourseAddTime.this, new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        startHour = selectedHour;
-                        startMin = selectedMinute;
-
-                        cal.set(Calendar.HOUR_OF_DAY, selectedHour);
-                        cal.set(Calendar.MINUTE, selectedMinute);
-                        viewStartTime.setText(formatter.format(cal.getTime()));
-                    }
-                }, hour, minute, false);
-
-                mTimePicker.setTitle("Select Time");
-                mTimePicker.show();
-            }
-        });
-
-        viewEndTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Calendar cal = Calendar.getInstance();
-                int hour = cal.get(Calendar.HOUR_OF_DAY);
-                int minute = cal.get(Calendar.MINUTE);
-                TimePickerDialog mTimePicker;
-                mTimePicker = new TimePickerDialog(CourseAddTime.this, new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                        endHour = selectedHour;
-                        endMin = selectedMinute;
-
-                        cal.set(Calendar.HOUR_OF_DAY, selectedHour);
-                        cal.set(Calendar.MINUTE, selectedMinute);
-                        viewEndTime.setText(formatter.format(cal.getTime()));
-                    }
-                }, hour, minute, false);
-
-                mTimePicker.setTitle("Select Time");
-                mTimePicker.show();
-            }
-        });
 
         viewBlockSchedule.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,18 +113,17 @@ public class CourseAddTime extends AppCompatActivity {
         }
 
         Time courseTime = null;
+        Calendar startCal = viewStartTime.cal;
+        Calendar endCal = viewStopTime.cal;
+
+        if (viewStartTime.cal.getTimeInMillis() > viewStopTime.cal.getTimeInMillis()) {
+            Toast.makeText(this, "The starting time must be before the ending time!", Toast.LENGTH_SHORT).show();
+            return super.onOptionsItemSelected(item);
+        }
+
 
         if (viewBlockSchedule.isChecked()) {
             // Block Schedule
-            Calendar startCal = Calendar.getInstance();
-            Calendar endCal = Calendar.getInstance();
-            startCal.setTime(viewStartDate.date);
-            startCal.set(Calendar.HOUR_OF_DAY, startHour);
-            startCal.set(Calendar.MINUTE, startMin);
-
-            endCal.setTime(viewStartDate.date);
-            endCal.set(Calendar.HOUR_OF_DAY, endHour);
-            endCal.set(Calendar.MINUTE, endMin);
 
             courseTime = new Time(
                     true,
@@ -194,15 +138,6 @@ public class CourseAddTime extends AppCompatActivity {
 
         } else if (viewDaySchedule.isChecked()) {
             // Day Schedule
-            Calendar startCal = Calendar.getInstance();
-            Calendar endCal = Calendar.getInstance();
-            startCal.setTime(viewStartDate.date);
-            startCal.set(Calendar.HOUR_OF_DAY, startHour);
-            startCal.set(Calendar.MINUTE, startMin);
-
-            endCal.setTime(viewStartDate.date);
-            endCal.set(Calendar.HOUR_OF_DAY, endHour);
-            endCal.set(Calendar.MINUTE, endMin);
 
             StringBuilder dayBuilder = new StringBuilder();
             if (viewDayMon.isChecked()) {

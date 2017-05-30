@@ -43,15 +43,13 @@
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="62dp"
-            android:focusable="false">
+            android:layout_height="62dp">
 
             <EditText
                 android:id="@+id/assignment_edit_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/date"
-                android:focusable="false"/>
+                android:hint="@string/date" />
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout

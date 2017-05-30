@@ -21,11 +21,13 @@ public class CourseHolder extends RecyclerView.ViewHolder {
     TextView courseTeacher;
     TextView courseRoomNumber;
     TextView courseTime;
+    View courseColor;
     View course;
 
     public CourseHolder(View view) {
         super(view);
         course = view;
+        courseColor = view.findViewById(R.id.course_color);
         courseName = (TextView)view.findViewById(R.id.course_name);
         courseTeacher = (TextView)view.findViewById(R.id.course_teacher);
         courseRoomNumber = (TextView)view.findViewById(R.id.course_room_number);
@@ -63,5 +65,9 @@ public class CourseHolder extends RecyclerView.ViewHolder {
                 course.getContext().startActivity(intent);
             }
         });
+    }
+
+    public void setColor(final int color) {
+        courseColor.setBackgroundColor(color);
     }
 }

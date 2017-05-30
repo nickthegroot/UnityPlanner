@@ -25,6 +25,7 @@ import java.util.Date;
 
 public class CreateAssignment extends AppCompatActivity {
 
+    ArrayList<Course> courses = new ArrayList<>();
     EditText viewName;
     EditText viewExtra;
     EditTextDatePicker viewDate;
@@ -35,6 +36,10 @@ public class CreateAssignment extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_assignment);
+
+        if (Database.getUser() == null) {
+            startActivity(new Intent(CreateAssignment.this, LauncherLogin.class));
+        }
 
         viewName = (EditText) findViewById(R.id.assignment_create_name);
         viewExtra = (EditText) findViewById(R.id.assignment_create_extra);
@@ -52,6 +57,7 @@ public class CreateAssignment extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
                     Course course = userSnapshot.getValue(Course.class);
+                    courses.add(course);
                     courseNames.add(course.getName());
                 }
 
@@ -103,7 +109,7 @@ public class CreateAssignment extends AppCompatActivity {
             Toast.makeText(this, "Please create a course first", Toast.LENGTH_SHORT).show();
             return super.onOptionsItemSelected(item);
         } else {
-            for (Course course : Database.getCourses()) {
+            for (Course course : courses) {
                 if (course.getName().equals(viewCourse.getSelectedItem().toString())) {
                     assignment.setDueCourse(course);
                 }

@@ -119,8 +119,6 @@ public class Dashboard extends AppCompatActivity
         // Set Up Notifications
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         if (prefs.getBoolean("firstTime", true)) {
-            Database.userDb.child("ads").setValue(true);
-
             Intent alarmIntent = new Intent(this, AlarmReceiver.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
 
@@ -133,7 +131,7 @@ public class Dashboard extends AppCompatActivity
 
             calendar.set(Calendar.HOUR_OF_DAY, hourCal.get(Calendar.HOUR_OF_DAY));
             calendar.set(Calendar.MINUTE, 0);
-            calendar.set(Calendar.SECOND, 1);
+            calendar.set(Calendar.SECOND, 0);
 
             manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                     AlarmManager.INTERVAL_DAY, pendingIntent);
@@ -199,10 +197,17 @@ public class Dashboard extends AppCompatActivity
             }
         });
 
-        Database.userDb.child("settings").child("ads").addListenerForSingleValueEvent(new ValueEventListener() {
+        Database.userDb.child("settings").child("ads").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                if ((Boolean)snapshot.getValue(true)) {
+                Boolean ads = true;
+                if (snapshot.exists()) {
+                    ads = snapshot.getValue(Boolean.class);
+                } else {
+                    Database.userDb.child("settings").child("ads").setValue(true);
+                }
+
+                if (ads) {
                     AdRequest adRequest = new AdRequest.Builder().build();
                     mAdView.setVisibility(View.VISIBLE);
                     mAdView.loadAd(adRequest);
@@ -239,33 +244,37 @@ public class Dashboard extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_logout) {
-            AuthUI.getInstance()
-                    .signOut(this);
-            startActivity(new Intent(Dashboard.this, LauncherLogin.class));
-        } else if (id == R.id.action_old_assignments) {
-            startActivity(new Intent(Dashboard.this, DoneAssignmentList.class));
-        } else if (id == R.id.action_sync) {
-            // Initialize credentials and service object.
+        switch (id) {
+            case R.id.action_logout:
+                AuthUI.getInstance()
+                        .signOut(this);
+                startActivity(new Intent(Dashboard.this, LauncherLogin.class));
+                break;
 
-            for (UserInfo info : Database.getUser().getProviderData()) {
-                if (info.getProviderId().equals("google.com")) {
-                    if (EasyPermissions.hasPermissions(this, android.Manifest.permission.GET_ACCOUNTS)) {
-                        signInGoogleCredential();
-                        getResultsFromApi();
-                        return super.onOptionsItemSelected(item);
-                    } else {
-                        EasyPermissions.requestPermissions(
-                                this,
-                                "This app needs to access your Google account (via Contacts).",
-                                REQUEST_PERMISSION_GET_ACCOUNTS,
-                                android.Manifest.permission.GET_ACCOUNTS);
+            case R.id.action_old_assignments:
+                startActivity(new Intent(Dashboard.this, DoneAssignmentList.class));
+                break;
+
+            case R.id.action_sync:
+                // Initialize credentials and service object.
+                for (UserInfo info : Database.getUser().getProviderData()) {
+                    if (info.getProviderId().equals("google.com")) {
+                        if (EasyPermissions.hasPermissions(this, android.Manifest.permission.GET_ACCOUNTS)) {
+                            signInGoogleCredential();
+                            return super.onOptionsItemSelected(item);
+                        } else {
+                            EasyPermissions.requestPermissions(
+                                    this,
+                                    "This app needs to access your Google account (via Contacts).",
+                                    REQUEST_PERMISSION_GET_ACCOUNTS,
+                                    android.Manifest.permission.GET_ACCOUNTS);
+                            return super.onOptionsItemSelected(item);
+                        }
                     }
                 }
-            }
 
-            Toast.makeText(this, "Please link a Google Account first.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Please log in with a Google Education account.", Toast.LENGTH_SHORT).show();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -322,6 +331,8 @@ public class Dashboard extends AppCompatActivity
                 this, Arrays.asList(SCOPES))
                 .setBackOff(new ExponentialBackOff());
         mCredential.setSelectedAccountName(Database.getUser().getEmail());
+
+        getResultsFromApi();
     }
 
     /**
@@ -505,6 +516,7 @@ public class Dashboard extends AppCompatActivity
                     .setPageSize(10)
                     .execute();
 
+            ArrayList<com.nbdeg.unityplanner.Data.Course> classroomCourses = new ArrayList<>();
             ArrayList<String> courseIDs = new ArrayList<>();
             ArrayList<String> courseWorkIDs = new ArrayList<>();
 
@@ -515,6 +527,7 @@ public class Dashboard extends AppCompatActivity
             }
             for (com.nbdeg.unityplanner.Data.Course course : Database.getCourses()) {
                 if (course.getClassroomCourse() != null) {
+                    classroomCourses.add(course);
                     courseIDs.add(course.getClassroomCourse().getId());
                 }
             }
@@ -540,11 +553,18 @@ public class Dashboard extends AppCompatActivity
                     if (Database.getChangedCourseNames().containsKey(dbCourse.getName())) {
                         dbCourse.setName(Database.getChangedCourseNames().get(course.getName()));
                     }
+
                     if (!courseIDs.contains(course.getId())) {
                         // Add class to database
                         Database.createCourse(dbCourse);
                         FirebaseAnalytics.getInstance(getApplicationContext()).logEvent("course_created", null);
                         Log.i("Classroom", "Course Created: " + dbCourse.getName());
+                    } else {
+                        for (com.nbdeg.unityplanner.Data.Course mCourse : classroomCourses) {
+                            if (mCourse.getClassroomCourse().getId().equals(course.getId())) {
+                                dbCourse = mCourse;
+                            }
+                        }
                     }
 
                     // Add assignments to database

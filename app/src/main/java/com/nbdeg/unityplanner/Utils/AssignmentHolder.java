@@ -17,6 +17,7 @@ public class AssignmentHolder extends RecyclerView.ViewHolder {
     TextView assignmentName;
     TextView assignmentDate;
     TextView assignmentCourse;
+    View assignmentColor;
     View assignmentLate;
 
     SimpleDateFormat formatter = new SimpleDateFormat("MMMM d, yyyy", java.util.Locale.getDefault());
@@ -24,6 +25,7 @@ public class AssignmentHolder extends RecyclerView.ViewHolder {
     public AssignmentHolder(final View view) {
         super(view);
         assignment = view;
+        assignmentColor = view.findViewById(R.id.assignment_color);
         assignmentName = (TextView) view.findViewById(R.id.assignment_name);
         assignmentDate = (TextView) view.findViewById(R.id.assignment_date);
         assignmentCourse = (TextView) view.findViewById(R.id.assignment_class);
@@ -59,5 +61,9 @@ public class AssignmentHolder extends RecyclerView.ViewHolder {
                 assignment.getContext().startActivity(intent);
             }
         });
+    }
+
+    public void setColor(final int color) {
+        assignmentColor.setBackgroundColor(color);
     }
 }

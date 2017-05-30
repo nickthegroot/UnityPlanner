@@ -9,6 +9,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.nbdeg.unityplanner.Data.Assignment;
 import com.nbdeg.unityplanner.Utils.Database;
 
@@ -25,45 +28,64 @@ public class AssignmentViewer extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assignment_viewer);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.assignment_toolbar);
-        CollapsingToolbarLayout toolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.assignment_toolbar_layout);
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.assignment_toolbar);
+        final CollapsingToolbarLayout toolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.assignment_toolbar_layout);
         setSupportActionBar(toolbar);
 
-        CoordinatorLayout layout = (CoordinatorLayout) findViewById(R.id.assignment_viewer_view);
+        final CoordinatorLayout layout = (CoordinatorLayout) findViewById(R.id.assignment_viewer_view);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        SimpleDateFormat formatter = new SimpleDateFormat("MMMM d, yyyy", java.util.Locale.getDefault());
+        final SimpleDateFormat formatter = new SimpleDateFormat("MMMM d, yyyy", java.util.Locale.getDefault());
 
-        TextView viewCourseName = (TextView) findViewById(R.id.assignment_viewer_course_name);
-        TextView viewDueDate = (TextView) findViewById(R.id.assignment_viewer_due_date);
-        TextView viewComplete = (TextView) findViewById(R.id.assignment_viewer_complete);
-        TextView viewDescription = (TextView) findViewById(R.id.assignment_viewer_description);
+        final TextView viewCourseName = (TextView) findViewById(R.id.assignment_viewer_course_name);
+        final TextView viewDueDate = (TextView) findViewById(R.id.assignment_viewer_due_date);
+        final TextView viewComplete = (TextView) findViewById(R.id.assignment_viewer_complete);
+        final TextView viewDescription = (TextView) findViewById(R.id.assignment_viewer_description);
 
-        String assignmentID = getIntent().getStringExtra("ID");
-        for (Assignment assignment : Database.getAssignments()) {
-            if (assignment.getID().equals(assignmentID)) {
-                this.assignment = assignment;
-                layout.setVisibility(View.VISIBLE);
+        final String assignmentID = getIntent().getStringExtra("ID");
+        Database.allAssignmentDb.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
+                    if (userSnapshot.getValue(Assignment.class).getID().equals(assignmentID)) {
+                        assignment = userSnapshot.getValue(Assignment.class);
 
-                toolbarLayout.setBackgroundColor(assignment.getDueCourse().getColor());
-                toolbarLayout.setTitle(assignment.getName());
+                        if (getIntent().getBooleanExtra("finish", false)) {
+                            // Updating UI accordingly
+                            Assignment newAssignment = new Assignment(assignment);
+                            newAssignment.setPercentComplete(100);
+                            Database.editAssignment(newAssignment, assignment);
+                            assignment = newAssignment;
+                        }
 
-                viewCourseName.setText(assignment.getDueCourse().getName());
-                viewDueDate.setText(formatter.format(new Date(assignment.getDueDate())));
-                if (assignment.getPercentComplete() == 100) {
-                    viewComplete.setText(R.string.assignment_viewer_done);
-                } else {
-                    viewComplete.setText(R.string.assignment_viewer_not_done);
-                }
-                if (assignment.getExtraInfo() == null) {
-                    viewDescription.setText(R.string.assignment_viewer_none);
-                } else if (assignment.getExtraInfo().equals("")) {
-                    viewDescription.setText(R.string.assignment_viewer_none);
-                } else {
-                    viewDescription.setText(assignment.getExtraInfo());
+                        layout.setVisibility(View.VISIBLE);
+
+                        toolbarLayout.setBackgroundColor(assignment.getDueCourse().getColor());
+                        toolbarLayout.setTitle(assignment.getName());
+
+                        viewCourseName.setText(assignment.getDueCourse().getName());
+                        viewDueDate.setText(formatter.format(new Date(assignment.getDueDate())));
+                        if (assignment.getPercentComplete() == 100) {
+                            viewComplete.setText(R.string.assignment_viewer_done);
+                        } else {
+                            viewComplete.setText(R.string.assignment_viewer_not_done);
+                        }
+                        if (assignment.getExtraInfo() == null) {
+                            viewDescription.setText(R.string.assignment_viewer_none);
+                        } else if (assignment.getExtraInfo().equals("")) {
+                            viewDescription.setText(R.string.assignment_viewer_none);
+                        } else {
+                            viewDescription.setText(assignment.getExtraInfo());
+                        }
+                    }
                 }
             }
-        }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.assignment_viewer_button);
         fab.setOnClickListener(new View.OnClickListener() {
