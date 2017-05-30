@@ -227,13 +227,15 @@ public class Database {
     public static void deleteCourse(final Course course) {
         // Find all assignments under that name and delete them
         for (Assignment assignment : assignments) {
-            if (assignment.getDueCourse().equals(course)) {
-                if (assignment.getPercentComplete() == 100) {
-                    doneAssignmentDb.child(assignment.getID()).removeValue();
-                } else {
-                    dueAssignmentDb.child(assignment.getID()).removeValue();
+            if (assignment.getDueCourse() != null) {
+                if (assignment.getDueCourse().equals(course)) {
+                    if (assignment.getPercentComplete() == 100) {
+                        doneAssignmentDb.child(assignment.getID()).removeValue();
+                    } else {
+                        dueAssignmentDb.child(assignment.getID()).removeValue();
+                    }
+                    allAssignmentDb.child(assignment.getID()).removeValue();
                 }
-                allAssignmentDb.child(assignment.getID()).removeValue();
             }
         }
         courseDb.child(course.getID()).removeValue();
