@@ -11,6 +11,7 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
 import com.google.api.services.classroom.ClassroomScopes;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 import com.nbdeg.unityplanner.Utils.Database;
 
 import java.util.Arrays;
@@ -24,6 +25,8 @@ public class LauncherLogin extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher_login);
+
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
         // Checks if any user is signed in.
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
