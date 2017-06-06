@@ -1,21 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp">
-
-    <View
-        android:layout_gravity="center_vertical"
-        android:id="@+id/assignment_color"
-        android:layout_width="5dp"
-        android:layout_height="match_parent" />
+    android:layout_marginBottom="10dp"
+    android:paddingLeft="5dp">
 
     <RelativeLayout
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:paddingLeft="15dp">
+        android:paddingLeft="5dp">
 
         <TextView
             android:layout_width="50dp"
@@ -23,35 +18,36 @@
             android:textAllCaps="true"
             android:text="@string/late"
             android:gravity="center"
-            android:background="@android:color/holo_red_dark"
             android:layout_alignParentRight="true"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/holo_red_dark"
             android:visibility="invisible"
-            android:id="@+id/assignment_late"
+            android:id="@+id/widget_assignment_late"
             tools:ignore="RtlHardcoded" />
 
         <TextView
+            android:textColor="@android:color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="2dp"
             android:textSize="20sp"
             android:layout_alignParentLeft="true"
-            android:layout_toLeftOf="@id/assignment_late"
-            android:id="@+id/assignment_name"/>
+            android:layout_toLeftOf="@id/widget_assignment_late"
+            android:id="@+id/widget_assignment_name"/>
 
         <TextView
+            android:textColor="@android:color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/assignment_name"
-            android:layout_marginBottom="5dp"
-            android:id="@+id/assignment_class"/>
+            android:layout_below="@id/widget_assignment_name"
+            android:layout_marginBottom="2dp"
+            android:id="@+id/widget_assignment_class"/>
 
         <TextView
+            android:textColor="@android:color/white"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/assignment_class"
+            android:layout_below="@id/widget_assignment_class"
             android:textStyle="italic"
-            android:id="@+id/assignment_date"/>
-
+            android:id="@+id/widget_assignment_date"/>
     </RelativeLayout>
-</LinearLayout>
+</RelativeLayout>

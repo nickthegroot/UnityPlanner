@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.widget.RemoteViews;
 
-import com.nbdeg.unityplanner.Utils.Database;
 import com.nbdeg.unityplanner.Utils.WidgetService;
 
 /**
@@ -25,16 +24,15 @@ public class AssignmentWidget extends AppWidgetProvider {
 
         RemoteViews widget = new RemoteViews(context.getPackageName(),
                 R.layout.assignment_widget);
-
         widget.setRemoteAdapter(R.id.widget_list_view, svcIntent);
 
-        Intent clickIntent = new Intent(context, Database.class);
-        PendingIntent clickPI = PendingIntent
-                .getActivity(context, 0,
-                        clickIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent addAssignmentIntent = new Intent(context, CreateAssignment.class);
+        PendingIntent addAssignmentPI = PendingIntent.getActivity(context, 0, addAssignmentIntent, 0);
+        widget.setOnClickPendingIntent(R.id.widget_add_assignment, addAssignmentPI);
 
-        widget.setPendingIntentTemplate(R.id.widget_list_view, clickPI);
+        Intent dashboardIntent = new Intent(context, Dashboard.class);
+        PendingIntent dashboardPI = PendingIntent.getActivity(context, 0, dashboardIntent, 0);
+        widget.setOnClickPendingIntent(R.id.widget_title, dashboardPI);
 
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, widget);
@@ -46,6 +44,11 @@ public class AssignmentWidget extends AppWidgetProvider {
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
         }
+    }
+
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        super.onReceive(context, intent);
     }
 }
 

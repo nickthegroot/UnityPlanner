@@ -127,7 +127,7 @@ public class CreateAssignment extends AppCompatActivity {
         assignment.setExtraInfo(viewExtra.getText().toString());
 
         // Creating assignment if all went well
-        Database.createAssignment(assignment);
+        Database.createAssignment(assignment, getApplicationContext());
         FirebaseAnalytics.getInstance(getApplicationContext()).logEvent("assignment_created", null);
         startActivity(new Intent(CreateAssignment.this, Dashboard.class));
 

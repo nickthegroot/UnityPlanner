@@ -97,6 +97,12 @@ public class Dashboard extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (Database.getUser() == null) {
+            startActivity(new Intent(Dashboard.this, LauncherLogin.class));
+        }
+
+
         setContentView(R.layout.activity_dashboard);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.dashboard_fab);
@@ -587,7 +593,7 @@ public class Dashboard extends AppCompatActivity
                                                 dbCourse,
                                                 100,
                                                 courseWork.getDescription(),
-                                                courseWork));
+                                                courseWork), getApplicationContext());
                                         FirebaseAnalytics.getInstance(getApplicationContext()).logEvent("assignment_created", null);
                                         Log.i("Classroom", "Assignment Created: " + courseWork.getTitle());
                                     } else {
@@ -597,7 +603,7 @@ public class Dashboard extends AppCompatActivity
                                                 dbCourse,
                                                 0,
                                                 courseWork.getDescription(),
-                                                courseWork));
+                                                courseWork), getApplicationContext());
                                         FirebaseAnalytics.getInstance(getApplicationContext()).logEvent("assignment_created", null);
                                         Log.i("Classroom", "Assignment Created: " + courseWork.getTitle());
                                     }

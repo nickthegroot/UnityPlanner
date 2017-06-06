@@ -4,7 +4,10 @@ package com.nbdeg.unityplanner.Utils;
  * Created by nbdeg on 6/4/2017.
  */
 
+import android.app.PendingIntent;
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -13,6 +16,7 @@ import android.widget.RemoteViewsService;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.nbdeg.unityplanner.AssignmentWidget;
 import com.nbdeg.unityplanner.Data.Assignment;
 import com.nbdeg.unityplanner.R;
 
@@ -23,10 +27,13 @@ import java.util.Calendar;
 public class WidgetViewFactory implements RemoteViewsService.RemoteViewsFactory {
     SimpleDateFormat assignmentFormatter = new SimpleDateFormat("MMMM d, yyyy", java.util.Locale.getDefault());
     private Context ctxt=null;
+    private int appWidgetID;
     private ArrayList<Assignment> assignments = new ArrayList<>();
 
-    public WidgetViewFactory(Context ctxt) {
+    public WidgetViewFactory(Context ctxt, Intent intent) {
         this.ctxt=ctxt;
+        appWidgetID = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+                AppWidgetManager.INVALID_APPWIDGET_ID);
     }
 
     @Override
@@ -38,14 +45,15 @@ public class WidgetViewFactory implements RemoteViewsService.RemoteViewsFactory 
                     Assignment assignment = userSnapshot.getValue(Assignment.class);
                     assignments.add(assignment);
                 }
+                AppWidgetManager.getInstance(ctxt).notifyAppWidgetViewDataChanged(appWidgetID, R.id.widget_list_view);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
             }
         });
     }
+
 
     @Override
     public void onDestroy() {
@@ -70,15 +78,25 @@ public class WidgetViewFactory implements RemoteViewsService.RemoteViewsFactory 
         dueCal.set(Calendar.MINUTE, 0);
         dueCal.set(Calendar.SECOND, -1);
 
-        card.setTextViewText(R.id.assignment_name ,assignment.getName());
-        card.setTextViewText(R.id.assignment_class, assignment.getDueCourse().getName());
-        card.setTextViewText(R.id.assignment_date, assignmentFormatter.format(assignment.getDueDate()));
-        card.setInt(R.id.assignment_color, "setBackgroundColor", assignment.getDueCourse().getColor());
+        card.setTextViewText(R.id.widget_assignment_name ,assignment.getName());
+        card.setTextViewText(R.id.widget_assignment_class, assignment.getDueCourse().getName());
+        card.setTextViewText(R.id.widget_assignment_date, assignmentFormatter.format(assignment.getDueDate()));
         if (assignment.getDueDate() < dueCal.getTimeInMillis()) {
-            card.setInt(R.id.assignment_late, "setVisibility", View.VISIBLE);
+            card.setInt(R.id.widget_assignment_late, "setVisibility", View.VISIBLE);
         } else {
-            card.setInt(R.id.assignment_late, "setVisibility", View.INVISIBLE);
+            card.setInt(R.id.widget_assignment_late, "setVisibility", View.INVISIBLE);
         }
+
+        Intent clickIntent = new Intent(ctxt, AssignmentWidget.class);
+        clickIntent.putExtra("ID", assignment.getID());
+        PendingIntent clickPI = PendingIntent
+                .getActivity(ctxt,
+                        position,
+                        clickIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+        card.setOnClickPendingIntent(appWidgetID, clickPI);
 
         return card;
     }
