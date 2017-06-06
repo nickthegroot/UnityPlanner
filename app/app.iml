@@ -1,35 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module external.linked.project.id=":app" external.linked.project.path="$MODULE_DIR$" external.root.project.path="$MODULE_DIR$/.." external.system.id="GRADLE" type="JAVA_MODULE" version="4">
-  <component name="CloudCustomPersistentConfigurations">
-    <option name="myCloudPersistentConfigurations">
-      <list>
-        <CloudPersistentConfiguration>
-          <option name="name" value="Old Virtual Test" />
-          <option name="devices">
-            <list>
-              <option value="Nexus6" />
-              <option value="Nexus5X" />
-            </list>
-          </option>
-          <option name="apiLevels">
-            <list>
-              <option value="19" />
-            </list>
-          </option>
-          <option name="languages">
-            <list>
-              <option value="en" />
-            </list>
-          </option>
-          <option name="orientations">
-            <list>
-              <option value="landscape" />
-            </list>
-          </option>
-        </CloudPersistentConfiguration>
-      </list>
-    </option>
-  </component>
   <component name="FacetManager">
     <facet type="android-gradle" name="Android-Gradle">
       <configuration>
@@ -113,7 +83,6 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/builds" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/check-manifest" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/classes" />
-      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/classes-jar" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-classes" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental-runtime-classes" />

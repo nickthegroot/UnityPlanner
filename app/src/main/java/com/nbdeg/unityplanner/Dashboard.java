@@ -59,6 +59,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nbdeg.unityplanner.Data.Assignment;
 import com.nbdeg.unityplanner.Data.Time;
@@ -111,7 +112,7 @@ public class Dashboard extends AppCompatActivity
 
         mAdView = (AdView) findViewById(R.id.adView);
 
-        Database.refreshDatabase();
+        Database.refreshDatabase(getApplicationContext());
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -125,6 +126,8 @@ public class Dashboard extends AppCompatActivity
         // Set Up Notifications
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         if (prefs.getBoolean("firstTime", true)) {
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
             Intent alarmIntent = new Intent(this, AlarmReceiver.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
 
@@ -628,7 +631,7 @@ public class Dashboard extends AppCompatActivity
             // Hide spinner
             syncLayout.setVisibility(View.INVISIBLE);
             Toast.makeText(Dashboard.this, "Sync finished", Toast.LENGTH_SHORT).show();
-            Database.refreshDatabase();
+            Database.refreshDatabase(getApplicationContext());
         }
 
         @Override

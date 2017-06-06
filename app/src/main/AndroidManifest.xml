@@ -31,15 +31,6 @@
         <activity
             android:name=".LauncherLogin"
             android:theme="@style/LoginTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.app.shortcuts"
-                android:resource="@xml/shortcuts" />
         </activity>
         <activity
             android:name=".Dashboard"
@@ -107,8 +98,23 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/assignment_widget_info" />
         </receiver>
-        <service android:name=".Utils.WidgetService"
-            android:permission="android.permission.BIND_REMOTEVIEWS"/>
+
+        <service
+            android:name=".Utils.WidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <activity android:name=".DatabasePersistance"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+        </activity>
     </application>
 
 </manifest>

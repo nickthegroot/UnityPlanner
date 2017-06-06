@@ -11,7 +11,6 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
 import com.google.api.services.classroom.ClassroomScopes;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
 import com.nbdeg.unityplanner.Utils.Database;
 
 import java.util.Arrays;
@@ -26,14 +25,14 @@ public class LauncherLogin extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher_login);
 
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-
         // Checks if any user is signed in.
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             // No user signed in, sign them in.
             signIn();
         } else {
-            startActivity(new Intent(LauncherLogin.this, Dashboard.class));
+            Intent i = new Intent(LauncherLogin.this, Dashboard.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(i);
         }
     }
 
@@ -75,9 +74,11 @@ public class LauncherLogin extends AppCompatActivity {
             if (resultCode == ResultCodes.OK) {
 
                 // Start app intro
-                Database.refreshDatabase();
+                Database.refreshDatabase(getApplicationContext());
                 // TODO: 5/3/2017 When Intro Complete set activity back to Intro
-                startActivity(new Intent(LauncherLogin.this, Dashboard.class));
+                Intent i = new Intent(LauncherLogin.this, Dashboard.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                startActivity(i);
                 finish();
                 return;
 

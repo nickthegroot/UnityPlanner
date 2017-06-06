@@ -57,7 +57,7 @@ public class Database {
     /**
      * Refreshes DatabaseReferences and updates ArrayLists
      */
-    public static void refreshDatabase() {
+    public static void refreshDatabase(Context context) {
         user = FirebaseAuth.getInstance().getCurrentUser();
         userDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid());
         courseDb = userDb.child("classes");
@@ -112,6 +112,8 @@ public class Database {
 
             }
         });
+
+        updateWidget(context);
     }
 
     /**

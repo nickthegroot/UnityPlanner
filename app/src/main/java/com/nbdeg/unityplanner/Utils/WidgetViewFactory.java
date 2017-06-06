@@ -38,7 +38,7 @@ public class WidgetViewFactory implements RemoteViewsService.RemoteViewsFactory 
 
     @Override
     public void onCreate() {
-        Database.dueAssignmentDb.addListenerForSingleValueEvent(new ValueEventListener() {
+        Database.dueAssignmentDb.orderByChild("dueDate").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot userSnapshot : dataSnapshot.getChildren()) {
