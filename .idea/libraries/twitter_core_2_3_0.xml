@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="twitter-core-2.3.0">
     <CLASSES>
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/twitter-core-2.3.0.aar/fa3696b2e1a8c504970f93aceec600da/res" />
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/twitter-core-2.3.0.aar/fa3696b2e1a8c504970f93aceec600da/jars/classes.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/twitter-core-2.3.0.aar/55e57c02ca7fbd9296cb847887d4b04d/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/twitter-core-2.3.0.aar/55e57c02ca7fbd9296cb847887d4b04d/res" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

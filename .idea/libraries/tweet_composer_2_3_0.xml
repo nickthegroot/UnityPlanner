@@ -1,8 +1,8 @@
 <component name="libraryTable">
   <library name="tweet-composer-2.3.0">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/tweet-composer-2.3.0.aar/ede55f489eb3ca06baf312cfa9dcbf2d/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/tweet-composer-2.3.0.aar/ede55f489eb3ca06baf312cfa9dcbf2d/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/tweet-composer-2.3.0.aar/762b3fd07cf78007656ad915c1f96ac7/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/tweet-composer-2.3.0.aar/762b3fd07cf78007656ad915c1f96ac7/jars/classes.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
