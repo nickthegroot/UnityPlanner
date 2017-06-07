@@ -12,7 +12,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
-        android:name="android.support.multidex.MultiDexApplication"
+        android:name=".Utils.SetPersistance"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -31,6 +31,15 @@
         <activity
             android:name=".LauncherLogin"
             android:theme="@style/LoginTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
         <activity
             android:name=".Dashboard"
@@ -103,18 +112,6 @@
             android:name=".Utils.WidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
-        <activity android:name=".DatabasePersistance"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.app.shortcuts"
-                android:resource="@xml/shortcuts" />
-        </activity>
     </application>
 
 </manifest>

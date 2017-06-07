@@ -59,7 +59,6 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nbdeg.unityplanner.Data.Assignment;
 import com.nbdeg.unityplanner.Data.Time;
@@ -126,8 +125,6 @@ public class Dashboard extends AppCompatActivity
         // Set Up Notifications
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         if (prefs.getBoolean("firstTime", true)) {
-            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-
             Intent alarmIntent = new Intent(this, AlarmReceiver.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
 
