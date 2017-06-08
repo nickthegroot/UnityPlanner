@@ -1,5 +1,9 @@
 package com.nbdeg.unityplanner.Utils;
 
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
+import android.content.Context;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -7,9 +11,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.nbdeg.unityplanner.AssignmentWidget;
 import com.nbdeg.unityplanner.Data.Assignment;
 import com.nbdeg.unityplanner.Data.ChangedCourseName;
 import com.nbdeg.unityplanner.Data.Course;
+import com.nbdeg.unityplanner.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,7 +57,7 @@ public class Database {
     /**
      * Refreshes DatabaseReferences and updates ArrayLists
      */
-    public static void refreshDatabase() {
+    public static void refreshDatabase(Context context) {
         user = FirebaseAuth.getInstance().getCurrentUser();
         userDb = FirebaseDatabase.getInstance().getReference().child("users").child(user.getUid());
         courseDb = userDb.child("classes");
@@ -106,13 +112,16 @@ public class Database {
 
             }
         });
+
+        updateWidget(context);
     }
 
     /**
      * Adds an assignment to the database
      * @param assignment The added assignment
      */
-    public static void createAssignment(Assignment assignment) {
+    public static void createAssignment(Assignment assignment, Context context) {
+        updateWidget(context);
         if (assignment.getPercentComplete() == 100) {
             String key = doneAssignmentDb.push().getKey();
             assignment.setID(key);
@@ -133,7 +142,8 @@ public class Database {
      * @param newAssignment The new, updated assignment
      * @param oldAssignment The old, previous assignment
      */
-    public static void editAssignment(final Assignment newAssignment, Assignment oldAssignment) {
+    public static void editAssignment(final Assignment newAssignment, Assignment oldAssignment, Context context) {
+        updateWidget(context);
         if (oldAssignment.getPercentComplete() == 100) {
 
             // Assignment used to be finished, check and see if it's not anymore.
@@ -170,7 +180,8 @@ public class Database {
      * Deletes an assignment from the database
      * @param assignments Old assignment to be deleted
      */
-    public static void deleteAssignment(final Assignment assignments) {
+    public static void deleteAssignment(final Assignment assignments, Context context) {
+        updateWidget(context);
         if (assignments.getPercentComplete() == 100) {
             // Assignment was finished
             doneAssignmentDb.child(assignments.getID()).removeValue();
@@ -227,15 +238,21 @@ public class Database {
     public static void deleteCourse(final Course course) {
         // Find all assignments under that name and delete them
         for (Assignment assignment : assignments) {
-            if (assignment.getDueCourse().equals(course)) {
-                if (assignment.getPercentComplete() == 100) {
-                    doneAssignmentDb.child(assignment.getID()).removeValue();
-                } else {
-                    dueAssignmentDb.child(assignment.getID()).removeValue();
+            if (assignment.getDueCourse() != null) {
+                if (assignment.getDueCourse().equals(course)) {
+                    if (assignment.getPercentComplete() == 100) {
+                        doneAssignmentDb.child(assignment.getID()).removeValue();
+                    } else {
+                        dueAssignmentDb.child(assignment.getID()).removeValue();
+                    }
+                    allAssignmentDb.child(assignment.getID()).removeValue();
                 }
-                allAssignmentDb.child(assignment.getID()).removeValue();
             }
         }
         courseDb.child(course.getID()).removeValue();
+    }
+
+    private static void updateWidget(Context context) {
+        AppWidgetManager.getInstance(context).notifyAppWidgetViewDataChanged(AppWidgetManager.getInstance(context).getAppWidgetIds(new ComponentName(context, AssignmentWidget.class)), R.id.widget_list_view);
     }
 }

@@ -79,7 +79,7 @@ public class EditAssignment extends AppCompatActivity {
                 viewDelete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Database.deleteAssignment(oldAssignment);
+                        Database.deleteAssignment(oldAssignment, getApplicationContext());
                         startActivity(new Intent(EditAssignment.this, Dashboard.class));
                     }
                 });
@@ -145,7 +145,7 @@ public class EditAssignment extends AppCompatActivity {
         // Setting any extra info
         newAssignment.setExtraInfo(viewExtra.getText().toString());
 
-        Database.editAssignment(newAssignment, oldAssignment);
+        Database.editAssignment(newAssignment, oldAssignment, getApplicationContext());
         startActivity(new Intent(EditAssignment.this, Dashboard.class));
 
         return super.onOptionsItemSelected(item);

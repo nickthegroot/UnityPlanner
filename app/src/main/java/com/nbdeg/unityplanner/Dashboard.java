@@ -97,6 +97,12 @@ public class Dashboard extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (Database.getUser() == null) {
+            startActivity(new Intent(Dashboard.this, LauncherLogin.class));
+        }
+
+
         setContentView(R.layout.activity_dashboard);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.dashboard_fab);
@@ -105,7 +111,7 @@ public class Dashboard extends AppCompatActivity
 
         mAdView = (AdView) findViewById(R.id.adView);
 
-        Database.refreshDatabase();
+        Database.refreshDatabase(getApplicationContext());
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -587,7 +593,7 @@ public class Dashboard extends AppCompatActivity
                                                 dbCourse,
                                                 100,
                                                 courseWork.getDescription(),
-                                                courseWork));
+                                                courseWork), getApplicationContext());
                                         FirebaseAnalytics.getInstance(getApplicationContext()).logEvent("assignment_created", null);
                                         Log.i("Classroom", "Assignment Created: " + courseWork.getTitle());
                                     } else {
@@ -597,7 +603,7 @@ public class Dashboard extends AppCompatActivity
                                                 dbCourse,
                                                 0,
                                                 courseWork.getDescription(),
-                                                courseWork));
+                                                courseWork), getApplicationContext());
                                         FirebaseAnalytics.getInstance(getApplicationContext()).logEvent("assignment_created", null);
                                         Log.i("Classroom", "Assignment Created: " + courseWork.getTitle());
                                     }
@@ -622,7 +628,7 @@ public class Dashboard extends AppCompatActivity
             // Hide spinner
             syncLayout.setVisibility(View.INVISIBLE);
             Toast.makeText(Dashboard.this, "Sync finished", Toast.LENGTH_SHORT).show();
-            Database.refreshDatabase();
+            Database.refreshDatabase(getApplicationContext());
         }
 
         @Override
