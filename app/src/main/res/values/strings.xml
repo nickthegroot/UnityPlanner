@@ -90,4 +90,6 @@
     <string name="activity_course_add_time_title">Add times</string>
     <string name="finished_assignments">Finished Assignments</string>
     <string name="dashboard_sync">Sync With Classroom</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>

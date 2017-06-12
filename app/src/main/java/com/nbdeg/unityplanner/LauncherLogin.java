@@ -30,7 +30,9 @@ public class LauncherLogin extends AppCompatActivity {
             // No user signed in, sign them in.
             signIn();
         } else {
-            startActivity(new Intent(LauncherLogin.this, Dashboard.class));
+            Intent i = new Intent(LauncherLogin.this, Dashboard.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            startActivity(i);
         }
     }
 
@@ -72,9 +74,11 @@ public class LauncherLogin extends AppCompatActivity {
             if (resultCode == ResultCodes.OK) {
 
                 // Start app intro
-                Database.refreshDatabase();
+                Database.refreshDatabase(getApplicationContext());
                 // TODO: 5/3/2017 When Intro Complete set activity back to Intro
-                startActivity(new Intent(LauncherLogin.this, Dashboard.class));
+                Intent i = new Intent(LauncherLogin.this, Dashboard.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                startActivity(i);
                 finish();
                 return;
 

@@ -54,7 +54,7 @@ public class AssignmentViewer extends AppCompatActivity {
                             // Updating UI accordingly
                             Assignment newAssignment = new Assignment(assignment);
                             newAssignment.setPercentComplete(100);
-                            Database.editAssignment(newAssignment, assignment);
+                            Database.editAssignment(newAssignment, assignment, getApplicationContext());
                             assignment = newAssignment;
                         }
 

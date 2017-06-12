@@ -1,6 +1,7 @@
 package com.nbdeg.unityplanner;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -58,6 +59,8 @@ public class EditCourse extends AppCompatActivity implements SimpleDialog.OnDial
 
     final static private String COLOR_DIALOG = "colorDialog";
     static private int courseColor;
+
+    final static private String[] perms = {android.Manifest.permission.READ_CALENDAR, android.Manifest.permission.WRITE_CALENDAR};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +121,6 @@ public class EditCourse extends AppCompatActivity implements SimpleDialog.OnDial
                                 if (time.getCalEventID() != null) {
                                     deleteCalEvent();
                                 }
-                                Database.deleteCourse(oldCourse);
                                 break;
 
                             case DialogInterface.BUTTON_NEGATIVE:
@@ -128,10 +130,12 @@ public class EditCourse extends AppCompatActivity implements SimpleDialog.OnDial
                     }
                 };
 
-                AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-                builder.setMessage("Are you sure you want delete " + oldCourse.getName() + "? Deleting this course will also delete all assignments ").setPositiveButton("Yes", dialogClickListener)
-                        .setNegativeButton("No", dialogClickListener).show();
-
+                AlertDialog.Builder builder = new AlertDialog.Builder(EditCourse.this);
+                builder.setTitle("Are you sure you want delete " + oldCourse.getName() + "?")
+                        .setMessage("Deleting this course will also delete all assignments attached to it.")
+                        .setPositiveButton("Yes", dialogClickListener)
+                        .setNegativeButton("No", dialogClickListener)
+                        .show();
             }
         });
 
@@ -252,10 +256,9 @@ public class EditCourse extends AppCompatActivity implements SimpleDialog.OnDial
 
     @AfterPermissionGranted(REQUEST_CALENDAR)
     private void deleteCalEvent() {
-        if (EasyPermissions.hasPermissions(this, android.Manifest.permission.GET_ACCOUNTS)) {
-            new EditCalEvent(false).execute();
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            new DeleteCalEvent().execute();
         } else {
-            String[] perms = {android.Manifest.permission.READ_CALENDAR, android.Manifest.permission.WRITE_CALENDAR};
             EasyPermissions.requestPermissions(
                     this,
                     "This app needs to access your calendar.",
@@ -266,9 +269,8 @@ public class EditCourse extends AppCompatActivity implements SimpleDialog.OnDial
 
     @AfterPermissionGranted(REQUEST_CALENDAR)
     private void editCalEvent() {
-        String[] perms = {android.Manifest.permission.READ_CALENDAR, android.Manifest.permission.WRITE_CALENDAR};
         if (EasyPermissions.hasPermissions(this, perms)) {
-            new EditCalEvent(true).execute();
+            new EditCalEvent().execute();
         } else {
             EasyPermissions.requestPermissions(
                     this,
@@ -290,83 +292,65 @@ public class EditCourse extends AppCompatActivity implements SimpleDialog.OnDial
 
     private class EditCalEvent extends AsyncTask<Void, Void, Time> {
 
-        boolean deleteEvent = false;
-        boolean editEvent = false;
-
-        EditCalEvent(boolean editEvent) {
-            if (editEvent) {
-                this.editEvent = true;
-                this.deleteEvent = false;
-            } else {
-                this.editEvent = false;
-                this.deleteEvent = true;
-            }
-        }
-
+        @SuppressLint("MissingPermission")
         @Override
         protected Time doInBackground(Void... params) {
 
-            if (editEvent) {
-                // Getting user default timezone
-                String timezone = TimeZone.getDefault().getID();
+            // Getting user default timezone
+            String timezone = TimeZone.getDefault().getID();
 
-                SimpleDateFormat recurrenceFormatter = new SimpleDateFormat("yyyyMMdd", java.util.Locale.getDefault());
+            SimpleDateFormat recurrenceFormatter = new SimpleDateFormat("yyyyMMdd", java.util.Locale.getDefault());
 
-                ContentResolver cr = getContentResolver();
-                ContentValues values = new ContentValues();
+            ContentResolver cr = getContentResolver();
+            ContentValues values = new ContentValues();
 
-                // Getting user cal
-                long calID = 0;
+            // Getting user cal
+            long calID = 0;
 
-                final String[] EVENT_PROJECTION = new String[] {
-                        CalendarContract.Calendars._ID,                           // 0
-                };
+            final String[] EVENT_PROJECTION = new String[] {
+                    CalendarContract.Calendars._ID,                           // 0
+            };
 
-                // The indices for the projection array above.
-                final int PROJECTION_ID_INDEX = 0;
+            // The indices for the projection array above.
+            final int PROJECTION_ID_INDEX = 0;
 
-                Cursor cur;
-                Uri calUri = CalendarContract.Calendars.CONTENT_URI;
-                String selection = "((" + CalendarContract.Calendars.OWNER_ACCOUNT + " = ?))";
-                String[] selectionArgs = new String[] {Database.getUser().getEmail()};
-                cur = cr.query(calUri, EVENT_PROJECTION, selection, selectionArgs, null);
+            Cursor cur;
+            Uri calUri = CalendarContract.Calendars.CONTENT_URI;
+            String selection = "((" + CalendarContract.Calendars.OWNER_ACCOUNT + " = ?))";
+            String[] selectionArgs = new String[] {Database.getUser().getEmail()};
+            cur = cr.query(calUri, EVENT_PROJECTION, selection, selectionArgs, null);
 
-                while (cur.moveToNext()) {
-                    calID = cur.getLong(PROJECTION_ID_INDEX);
-                    if (calID != 0) {
-                        break;
-                    }
+            while (cur.moveToNext()) {
+                calID = cur.getLong(PROJECTION_ID_INDEX);
+                if (calID != 0) {
+                    break;
                 }
+            }
 
-                cur.close();
+            cur.close();
 
-                // Setting event
+            // Setting event
 
-                values.put(CalendarContract.Events.DTSTART, time.getStartLong());
-                values.put(CalendarContract.Events.DTEND, time.getEndLong());
-                values.put(CalendarContract.Events.TITLE, newCourse.getName());
-                values.put(CalendarContract.Events.EVENT_TIMEZONE, timezone);
-                values.put(CalendarContract.Events.CALENDAR_ID, calID);
-                values.put(CalendarContract.Events.EVENT_COLOR, newCourse.getColor());
-                if (time.isBlockSchedule()) {
-                    values.put(CalendarContract.Events.RRULE, "FREQ=DAILY;INTERVAL=2;BYDAY=MO,TU,WE,TH,FR;UNTIL=" + recurrenceFormatter.format(new Date(time.getFinish())));
-                } else if (time.isDaySchedule()) {
-                    values.put(CalendarContract.Events.RRULE, "FREQ=WEEKLY;INTERVAL=1;BYDAY=" + time.getDays() + ";UNTIL=" + recurrenceFormatter.format(new Date(time.getFinish())));
+            values.put(CalendarContract.Events.DTSTART, time.getStartLong());
+            values.put(CalendarContract.Events.DTEND, time.getEndLong());
+            values.put(CalendarContract.Events.TITLE, newCourse.getName());
+            values.put(CalendarContract.Events.EVENT_TIMEZONE, timezone);
+            values.put(CalendarContract.Events.CALENDAR_ID, calID);
+            values.put(CalendarContract.Events.EVENT_COLOR, newCourse.getColor());
+            if (time.isBlockSchedule()) {
+                values.put(CalendarContract.Events.RRULE, "FREQ=DAILY;INTERVAL=2;BYDAY=MO,TU,WE,TH,FR;UNTIL=" + recurrenceFormatter.format(new Date(time.getFinish())));
+            } else if (time.isDaySchedule()) {
+                values.put(CalendarContract.Events.RRULE, "FREQ=WEEKLY;INTERVAL=1;BYDAY=" + time.getDays() + ";UNTIL=" + recurrenceFormatter.format(new Date(time.getFinish())));
+            }
+
+            if (ActivityCompat.checkSelfPermission(EditCourse.this, Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
+                if (time.getCalEventID() != null) {
+                    Uri updateUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, time.getCalEventID());
+                    cr.update(updateUri, values, null, null);       // Updates event
+                } else {
+                    Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
+                    time.setCalEventID(Long.parseLong(uri.getLastPathSegment()));
                 }
-
-                if (ActivityCompat.checkSelfPermission(EditCourse.this, Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED) {
-                    if (time.getCalEventID() != null) {
-                        Uri updateUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, time.getCalEventID());
-                        cr.update(updateUri, values, null, null);       // Updates event
-                    } else {
-                        Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
-                        time.setCalEventID(Long.parseLong(uri.getLastPathSegment()));
-                    }
-                }
-            } else if (deleteEvent) {
-                Uri deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, time.getCalEventID());
-                getContentResolver().delete(deleteUri, null, null); // Deletes event
-                time.setCalEventID(null);
             }
 
             return time;
@@ -378,6 +362,25 @@ public class EditCourse extends AppCompatActivity implements SimpleDialog.OnDial
 
             newCourse.setTime(time);
             Database.editCourse(newCourse, oldCourse);
+            startActivity(new Intent(EditCourse.this, Dashboard.class));
+        }
+    }
+
+    private class DeleteCalEvent extends AsyncTask<Void, Void, Void> {
+
+        @SuppressLint("MissingPermission")
+        @Override
+        protected Void doInBackground(Void... params) {
+            Uri deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, time.getCalEventID());
+            getContentResolver().delete(deleteUri, null, null); // Deletes event
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+            Database.deleteCourse(oldCourse);
             startActivity(new Intent(EditCourse.this, Dashboard.class));
         }
     }
