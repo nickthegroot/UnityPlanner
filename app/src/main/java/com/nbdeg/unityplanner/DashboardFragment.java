@@ -16,10 +16,10 @@ import android.widget.TextView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.nbdeg.unityplanner.Data.Assignment;
-import com.nbdeg.unityplanner.Utils.Database;
-import com.nbdeg.unityplanner.Utils.TodayAssignmentHolder;
-import com.nbdeg.unityplanner.Utils.TomorrowAssignmentHolder;
+import com.nbdeg.unityplanner.data.Assignment;
+import com.nbdeg.unityplanner.utils.Database;
+import com.nbdeg.unityplanner.utils.TodayAssignmentHolder;
+import com.nbdeg.unityplanner.utils.TomorrowAssignmentHolder;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
+        NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
         navigationView.setCheckedItem(R.id.nav_home);
 
         getActivity().setTitle("Dashboard");
@@ -53,12 +53,12 @@ public class DashboardFragment extends Fragment {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
 
-        final TextView todayTitle = (TextView) view.findViewById(R.id.dashboard_today_title);
-        final TextView tomorrowTitle = (TextView) view.findViewById(R.id.dashboard_tomorrow_title);
-        final ListView todayList = (ListView) view.findViewById(R.id.dashboard_today_list);
-        final ListView tomorrowList = (ListView) view.findViewById(R.id.dashboard_tomorrow_list);
-        final ImageView todayAdd = (ImageView) view.findViewById(R.id.dashboard_today_add);
-        final ImageView tomorrowAdd = (ImageView) view.findViewById(R.id.dashboard_tomorrow_add);
+        final TextView todayTitle = view.findViewById(R.id.dashboard_today_title);
+        final TextView tomorrowTitle = view.findViewById(R.id.dashboard_tomorrow_title);
+        final ListView todayList = view.findViewById(R.id.dashboard_today_list);
+        final ListView tomorrowList = view.findViewById(R.id.dashboard_tomorrow_list);
+        final ImageView todayAdd = view.findViewById(R.id.dashboard_today_add);
+        final ImageView tomorrowAdd = view.findViewById(R.id.dashboard_tomorrow_add);
 
         todayTitle.setText("Due Today - " + formatter.format(new Date()));
 

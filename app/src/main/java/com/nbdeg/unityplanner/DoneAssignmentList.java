@@ -7,9 +7,9 @@ import android.support.v7.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.Query;
-import com.nbdeg.unityplanner.Data.Assignment;
-import com.nbdeg.unityplanner.Utils.AssignmentHolder;
-import com.nbdeg.unityplanner.Utils.Database;
+import com.nbdeg.unityplanner.data.Assignment;
+import com.nbdeg.unityplanner.utils.AssignmentHolder;
+import com.nbdeg.unityplanner.utils.Database;
 
 import java.util.Date;
 

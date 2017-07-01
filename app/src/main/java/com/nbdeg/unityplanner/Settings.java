@@ -31,8 +31,8 @@ import android.widget.LinearLayout;
 
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
-import com.nbdeg.unityplanner.Utils.AlarmReceiver;
-import com.nbdeg.unityplanner.Utils.AppCompatPreferenceActivity;
+import com.nbdeg.unityplanner.utils.AlarmReceiver;
+import com.nbdeg.unityplanner.utils.AppCompatPreferenceActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

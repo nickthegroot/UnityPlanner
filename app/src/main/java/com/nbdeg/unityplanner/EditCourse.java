@@ -27,10 +27,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.nbdeg.unityplanner.Data.Course;
-import com.nbdeg.unityplanner.Data.Time;
-import com.nbdeg.unityplanner.Utils.CourseAddTime;
-import com.nbdeg.unityplanner.Utils.Database;
+import com.nbdeg.unityplanner.data.Course;
+import com.nbdeg.unityplanner.data.Time;
+import com.nbdeg.unityplanner.utils.CourseAddTime;
+import com.nbdeg.unityplanner.utils.Database;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

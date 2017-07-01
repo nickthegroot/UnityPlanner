@@ -14,10 +14,10 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.nbdeg.unityplanner.Data.Assignment;
-import com.nbdeg.unityplanner.Data.Course;
-import com.nbdeg.unityplanner.Utils.Database;
-import com.nbdeg.unityplanner.Utils.EditTextDatePicker;
+import com.nbdeg.unityplanner.data.Assignment;
+import com.nbdeg.unityplanner.data.Course;
+import com.nbdeg.unityplanner.utils.Database;
+import com.nbdeg.unityplanner.utils.EditTextDatePicker;
 
 import java.util.ArrayList;
 import java.util.Date;

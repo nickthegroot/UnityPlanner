@@ -11,7 +11,7 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
 import com.google.api.services.classroom.ClassroomScopes;
 import com.google.firebase.auth.FirebaseAuth;
-import com.nbdeg.unityplanner.Utils.Database;
+import com.nbdeg.unityplanner.utils.Database;
 
 import java.util.Arrays;
 
@@ -48,10 +48,10 @@ public class LauncherLogin extends AppCompatActivity {
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setIsSmartLockEnabled(false)
-                        .setProviders(Arrays.asList(
-                                new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
+                        .setAvailableProviders(Arrays.asList(
                                 googleIdp,
-                                new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
+                                new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build(),
+                                new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build()))
                         .setLogo(R.mipmap.ic_launcher_round)
                         .build(),
                 RC_SIGN_IN);
@@ -75,7 +75,6 @@ public class LauncherLogin extends AppCompatActivity {
 
                 // Start app intro
                 Database.refreshDatabase(getApplicationContext());
-                // TODO: 5/3/2017 When Intro Complete set activity back to Intro
                 Intent i = new Intent(LauncherLogin.this, Dashboard.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 startActivity(i);

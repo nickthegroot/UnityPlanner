@@ -60,10 +60,10 @@ import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.nbdeg.unityplanner.Data.Assignment;
-import com.nbdeg.unityplanner.Data.Time;
-import com.nbdeg.unityplanner.Utils.AlarmReceiver;
-import com.nbdeg.unityplanner.Utils.Database;
+import com.nbdeg.unityplanner.data.Assignment;
+import com.nbdeg.unityplanner.data.Time;
+import com.nbdeg.unityplanner.utils.AlarmReceiver;
+import com.nbdeg.unityplanner.utils.Database;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -159,9 +159,9 @@ public class Dashboard extends AppCompatActivity
 
         // Adding Name and E-Mail to Nav
         View hView =  navigationView.getHeaderView(0);
-        final ImageView userPhoto = (ImageView) hView.findViewById(R.id.nav_header_photo);
-        final TextView userName = (TextView) hView.findViewById(R.id.nav_header_user);
-        final TextView userEmail = (TextView) hView.findViewById(R.id.nav_header_email);
+        final ImageView userPhoto = hView.findViewById(R.id.nav_header_photo);
+        final TextView userName = hView.findViewById(R.id.nav_header_user);
+        final TextView userEmail = hView.findViewById(R.id.nav_header_email);
 
         if (Database.getUser().getDisplayName() != null) {
             userName.setText(Database.getUser().getDisplayName());
@@ -522,7 +522,7 @@ public class Dashboard extends AppCompatActivity
                     .setPageSize(10)
                     .execute();
 
-            ArrayList<com.nbdeg.unityplanner.Data.Course> classroomCourses = new ArrayList<>();
+            ArrayList<com.nbdeg.unityplanner.data.Course> classroomCourses = new ArrayList<>();
             ArrayList<String> courseIDs = new ArrayList<>();
             ArrayList<String> courseWorkIDs = new ArrayList<>();
 
@@ -531,7 +531,7 @@ public class Dashboard extends AppCompatActivity
                     courseWorkIDs.add(assignment.getClassroomCourseWork().getId());
                 }
             }
-            for (com.nbdeg.unityplanner.Data.Course course : Database.getCourses()) {
+            for (com.nbdeg.unityplanner.data.Course course : Database.getCourses()) {
                 if (course.getClassroomCourse() != null) {
                     classroomCourses.add(course);
                     courseIDs.add(course.getClassroomCourse().getId());
@@ -548,7 +548,7 @@ public class Dashboard extends AppCompatActivity
                 }
 
                 if (course.getCourseState().equals("ACTIVE")) {
-                    com.nbdeg.unityplanner.Data.Course dbCourse = new com.nbdeg.unityplanner.Data.Course(
+                    com.nbdeg.unityplanner.data.Course dbCourse = new com.nbdeg.unityplanner.data.Course(
                             course.getName(),
                             mService.userProfiles().get(course.getOwnerId()).execute().getName().getFullName(),
                             new Time(startDate),
@@ -566,7 +566,7 @@ public class Dashboard extends AppCompatActivity
                         FirebaseAnalytics.getInstance(getApplicationContext()).logEvent("course_created", null);
                         Log.i("Classroom", "Course Created: " + dbCourse.getName());
                     } else {
-                        for (com.nbdeg.unityplanner.Data.Course mCourse : classroomCourses) {
+                        for (com.nbdeg.unityplanner.data.Course mCourse : classroomCourses) {
                             if (mCourse.getClassroomCourse().getId().equals(course.getId())) {
                                 dbCourse = mCourse;
                             }

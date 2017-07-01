@@ -1,4 +1,4 @@
-package com.nbdeg.unityplanner.Utils;
+package com.nbdeg.unityplanner.utils;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -14,8 +14,8 @@ import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.nbdeg.unityplanner.Data.Time;
 import com.nbdeg.unityplanner.R;
+import com.nbdeg.unityplanner.data.Time;
 
 import java.util.Calendar;
 

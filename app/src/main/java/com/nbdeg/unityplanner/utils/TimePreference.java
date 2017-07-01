@@ -1,4 +1,4 @@
-package com.nbdeg.unityplanner.Utils;
+package com.nbdeg.unityplanner.utils;
 
 import android.content.Context;
 import android.content.res.TypedArray;

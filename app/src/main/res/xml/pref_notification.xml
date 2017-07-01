@@ -24,7 +24,7 @@
         android:ringtoneType="notification"
         android:title="@string/pref_title_ringtone" />
 
-    <com.nbdeg.unityplanner.Utils.TimePreference
+    <com.nbdeg.unityplanner.utils.TimePreference
         android:defaultValue="90000000"
         android:dependency="notifications"
         android:key="notifications_time"

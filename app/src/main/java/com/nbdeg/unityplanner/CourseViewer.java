@@ -9,8 +9,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
-import com.nbdeg.unityplanner.Data.Course;
-import com.nbdeg.unityplanner.Utils.Database;
+import com.nbdeg.unityplanner.data.Course;
+import com.nbdeg.unityplanner.utils.Database;
 
 import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
 

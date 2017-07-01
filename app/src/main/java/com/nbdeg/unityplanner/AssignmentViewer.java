@@ -12,8 +12,8 @@ import android.widget.TextView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.nbdeg.unityplanner.Data.Assignment;
-import com.nbdeg.unityplanner.Utils.Database;
+import com.nbdeg.unityplanner.data.Assignment;
+import com.nbdeg.unityplanner.utils.Database;
 
 import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
 

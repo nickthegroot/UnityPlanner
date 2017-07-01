@@ -1,4 +1,4 @@
-package com.nbdeg.unityplanner.Utils;
+package com.nbdeg.unityplanner.utils;
 
 /**
  * Created by nbdeg on 6/4/2017.
@@ -17,8 +17,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.nbdeg.unityplanner.AssignmentWidget;
-import com.nbdeg.unityplanner.Data.Assignment;
 import com.nbdeg.unityplanner.R;
+import com.nbdeg.unityplanner.data.Assignment;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
