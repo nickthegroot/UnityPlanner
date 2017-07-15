@@ -36,7 +36,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.common.ConnectionResult;
@@ -57,9 +56,6 @@ import com.google.api.services.classroom.model.ListStudentSubmissionsResponse;
 import com.google.api.services.classroom.model.StudentSubmission;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.UserInfo;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 import com.nbdeg.unityplanner.Data.Assignment;
 import com.nbdeg.unityplanner.Data.Time;
 import com.nbdeg.unityplanner.Utils.AlarmReceiver;
@@ -76,6 +72,8 @@ import java.util.Calendar;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 public class Dashboard extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -109,8 +107,6 @@ public class Dashboard extends AppCompatActivity
         syncLayout = (LinearLayout) findViewById(R.id.dashboard_sync);
         setSupportActionBar(toolbar);
 
-        mAdView = (AdView) findViewById(R.id.adView);
-
         Database.refreshDatabase(getApplicationContext());
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -122,29 +118,9 @@ public class Dashboard extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        // Set Up Notifications
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         if (prefs.getBoolean("firstTime", true)) {
-            Intent alarmIntent = new Intent(this, AlarmReceiver.class);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
-
-            AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-            Calendar calendar = Calendar.getInstance();
-
-            Calendar hourCal = Calendar.getInstance();
-            hourCal.setTimeInMillis(prefs.getLong("notification_time", 90000000));
-
-            calendar.set(Calendar.HOUR_OF_DAY, hourCal.get(Calendar.HOUR_OF_DAY));
-            calendar.set(Calendar.MINUTE, 0);
-            calendar.set(Calendar.SECOND, 0);
-
-            manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                    AlarmManager.INTERVAL_DAY, pendingIntent);
-
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putBoolean("firstTime", false);
-            editor.apply();
+            onFirstStart(prefs);
         }
 
         // Adding Dashboard Fragment as primary fragment
@@ -159,9 +135,9 @@ public class Dashboard extends AppCompatActivity
 
         // Adding Name and E-Mail to Nav
         View hView =  navigationView.getHeaderView(0);
-        final ImageView userPhoto = (ImageView) hView.findViewById(R.id.nav_header_photo);
-        final TextView userName = (TextView) hView.findViewById(R.id.nav_header_user);
-        final TextView userEmail = (TextView) hView.findViewById(R.id.nav_header_email);
+        final ImageView userPhoto = hView.findViewById(R.id.nav_header_photo);
+        final TextView userName = hView.findViewById(R.id.nav_header_user);
+        final TextView userEmail = hView.findViewById(R.id.nav_header_email);
 
         if (Database.getUser().getDisplayName() != null) {
             userName.setText(Database.getUser().getDisplayName());
@@ -203,27 +179,59 @@ public class Dashboard extends AppCompatActivity
             }
         });
 
-        Database.userDb.child("settings").child("ads").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                Boolean ads = true;
-                if (snapshot.exists()) {
-                    ads = snapshot.getValue(Boolean.class);
-                } else {
-                    Database.userDb.child("settings").child("ads").setValue(true);
-                }
+    }
 
-                if (ads) {
-                    AdRequest adRequest = new AdRequest.Builder().build();
-                    mAdView.setVisibility(View.VISIBLE);
-                    mAdView.loadAd(adRequest);
-                }
-            }
+    /**
+     * Run when dashboard is first launched
+     * User WILL be logged in
+     * @param prefs Shared preferences containing notification preferences
+     */
+    private void onFirstStart(SharedPreferences prefs) {
+        // Showcase tutorial
+        // TODO: 7/5/2017 Add showcase view (refer to notes for order)
+        // TODO: 7/5/2017 Use .setListener for changing fragments
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
+        String SHOWCASE_ID = "dashboard";
+
+        ShowcaseConfig config = new ShowcaseConfig();
+        config.setDelay(500); // half second between each showcase view
+
+        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this, SHOWCASE_ID);
+        sequence.setConfig(config);
+
+//        sequence.addSequenceItem();
+
+        sequence.start();
+
+
+        // Notifications
+        Intent alarmIntent = new Intent(this, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
+
+        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        Calendar calendar = Calendar.getInstance();
+        Calendar hourCal = Calendar.getInstance();
+        hourCal.setTimeInMillis(prefs.getLong("notification_time", 90000000));
+
+        calendar.set(Calendar.HOUR_OF_DAY, hourCal.get(Calendar.HOUR_OF_DAY));
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+
+        manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY, pendingIntent);
+
+        // Not first time anymore
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("firstTime", false);
+        editor.apply();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+
     }
 
     @Override

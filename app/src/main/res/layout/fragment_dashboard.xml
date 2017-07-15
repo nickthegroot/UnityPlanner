@@ -35,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="None!"
+        android:text="Nothing due"
         android:textSize="17sp"/>
 
     <ListView
@@ -64,6 +64,7 @@
             android:paddingBottom="10dp"/>
 
         <ImageView
+            android:contentDescription="Add assignment button"
             android:layout_alignParentRight="true"
             android:id="@+id/dashboard_tomorrow_add"
             android:layout_width="wrap_content"
@@ -76,7 +77,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="None!"
+        android:text="Nothing due"
         android:textSize="17sp"/>
 
     <ListView
