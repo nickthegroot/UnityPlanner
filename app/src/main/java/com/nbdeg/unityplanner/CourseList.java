@@ -14,9 +14,9 @@ import android.view.ViewGroup;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.DatabaseReference;
-import com.nbdeg.unityplanner.Data.Course;
-import com.nbdeg.unityplanner.Utils.CourseHolder;
-import com.nbdeg.unityplanner.Utils.Database;
+import com.nbdeg.unityplanner.data.Course;
+import com.nbdeg.unityplanner.utils.CourseHolder;
+import com.nbdeg.unityplanner.utils.Database;
 
 
 /**
@@ -38,7 +38,7 @@ public class CourseList extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
+        NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
         navigationView.setCheckedItem(R.id.nav_courses);
 
         getActivity().setTitle("Courses");
@@ -49,7 +49,7 @@ public class CourseList extends Fragment {
                              Bundle savedInstanceState) {
 
         View mView = inflater.inflate(R.layout.fragment_course_list, container, false);
-        RecyclerView courseView = (RecyclerView) mView.findViewById(R.id.course_list_view);
+        RecyclerView courseView = mView.findViewById(R.id.course_list_view);
         LinearLayoutManager courseLayoutManager = new LinearLayoutManager(getContext());
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(courseView.getContext(),

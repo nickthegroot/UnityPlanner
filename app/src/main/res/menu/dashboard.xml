@@ -13,6 +13,11 @@
         android:title="@string/dashboard_sync"
         app:showAsAction="never" />
     <item
+        android:id="@+id/action_first_start"
+        android:orderInCategory="75"
+        android:title="Test First Start"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/action_logout"
         android:orderInCategory="100"
         android:title="@string/dashboard_logout"

@@ -1,4 +1,4 @@
-package com.nbdeg.unityplanner.Utils;
+package com.nbdeg.unityplanner.utils;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -25,7 +25,7 @@ public class EditTextDatePicker implements View.OnFocusChangeListener, DatePicke
     public EditTextDatePicker(Context context, int editTextViewID)
     {
         Activity act = (Activity) context;
-        this._editText = (EditText)act.findViewById(editTextViewID);
+        this._editText = act.findViewById(editTextViewID);
         this._editText.setKeyListener(null);
         this._editText.setOnFocusChangeListener(this);
         this._context = context;

@@ -12,21 +12,20 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
-        android:name=".Utils.SetPersistance"
+        android:name=".utils.SetPersistance"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <receiver
-            android:name=".Utils.DeviceBootReceiver"
+            android:name=".utils.DeviceBootReceiver"
             android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".Utils.AlarmReceiver" />
+        <receiver android:name=".utils.AlarmReceiver" />
 
         <activity
             android:name=".LauncherLogin"
@@ -73,19 +72,34 @@
         </activity>
         <activity
             android:name=".CreateAssignment"
-            android:label="@string/title_activity_create_assignment" />
+            android:label="@string/title_activity_create_assignment"
+            android:parentActivityName=".Dashboard">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.nbdeg.unityplanner.Dashboard" />
+        </activity>
         <activity
             android:name=".CreateCourse"
-            android:label="@string/title_activity_create_course" />
-        <activity android:name=".EditAssignment" />
+            android:label="@string/title_activity_create_course"
+            android:parentActivityName=".Dashboard">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.nbdeg.unityplanner.Dashboard" />
+        </activity>
+        <activity android:name=".EditAssignment"
+            android:parentActivityName=".Dashboard">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.nbdeg.unityplanner.Dashboard" />
+        </activity>
         <activity
-            android:name=".Utils.CourseAddTime"
+            android:name=".utils.CourseAddTime"
             android:label="@string/activity_course_add_time_title"
             android:parentActivityName=".CreateCourse"
             android:theme="@style/AppTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.nbdeg.unityplanner.Dashboard" />
+                android:value="com.nbdeg.unityplanner.CreateCourse" />
         </activity>
         <activity
             android:name=".EditCourse"
@@ -109,7 +123,7 @@
         </receiver>
 
         <service
-            android:name=".Utils.WidgetService"
+            android:name=".utils.WidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
     </application>

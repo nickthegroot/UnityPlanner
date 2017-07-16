@@ -36,7 +36,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.ads.AdView;
 import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -55,11 +54,12 @@ import com.google.api.services.classroom.model.ListCoursesResponse;
 import com.google.api.services.classroom.model.ListStudentSubmissionsResponse;
 import com.google.api.services.classroom.model.StudentSubmission;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserInfo;
-import com.nbdeg.unityplanner.Data.Assignment;
-import com.nbdeg.unityplanner.Data.Time;
-import com.nbdeg.unityplanner.Utils.AlarmReceiver;
-import com.nbdeg.unityplanner.Utils.Database;
+import com.nbdeg.unityplanner.data.Assignment;
+import com.nbdeg.unityplanner.data.Time;
+import com.nbdeg.unityplanner.utils.AlarmReceiver;
+import com.nbdeg.unityplanner.utils.Database;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -72,14 +72,15 @@ import java.util.Calendar;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
+import uk.co.deanwild.materialshowcaseview.IShowcaseListener;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 public class Dashboard extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private LinearLayout syncLayout;
-    private AdView mAdView;
 
     private int FragmentLayoutID;
     private GoogleAccountCredential mCredential;
@@ -91,15 +92,18 @@ public class Dashboard extends AppCompatActivity
 
     private static final String[] SCOPES = LauncherLogin.SCOPES;
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            startActivity(new Intent(Dashboard.this, LauncherLogin.class));
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (Database.getUser() == null) {
-            startActivity(new Intent(Dashboard.this, LauncherLogin.class));
-        }
-
 
         setContentView(R.layout.activity_dashboard);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -141,8 +145,6 @@ public class Dashboard extends AppCompatActivity
 
         if (Database.getUser().getDisplayName() != null) {
             userName.setText(Database.getUser().getDisplayName());
-        } else {
-            userName.setVisibility(View.INVISIBLE);
         }
         if (Database.getUser().getEmail() != null) {
             userEmail.setText(Database.getUser().getEmail());
@@ -181,27 +183,27 @@ public class Dashboard extends AppCompatActivity
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        FragmentLayoutID = R.id.dashboard_fragments;
+        DashboardFragment dashFrag = new DashboardFragment();
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(FragmentLayoutID, dashFrag);
+        transaction.addToBackStack(null);
+
+        transaction.commit();
+    }
+
     /**
      * Run when dashboard is first launched
      * User WILL be logged in
      * @param prefs Shared preferences containing notification preferences
      */
     private void onFirstStart(SharedPreferences prefs) {
-        // Showcase tutorial
-        // TODO: 7/5/2017 Add showcase view (refer to notes for order)
-        // TODO: 7/5/2017 Use .setListener for changing fragments
-
-        String SHOWCASE_ID = "dashboard";
-
-        ShowcaseConfig config = new ShowcaseConfig();
-        config.setDelay(500); // half second between each showcase view
-
-        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this, SHOWCASE_ID);
-        sequence.setConfig(config);
-
-//        sequence.addSequenceItem();
-
-        sequence.start();
+        startTutorial();
 
 
         // Notifications
@@ -227,11 +229,93 @@ public class Dashboard extends AppCompatActivity
         editor.apply();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    private void startTutorial() {
+        // Showcase tutorial
+        // TODO: 7/5/2017 Add showcase view (refer to notes for order)
+        // TODO: 7/15/2017 Set up example assignment and course pages to use as targets
 
+        String SHOWCASE_ID = "dashboard";
 
+        ShowcaseConfig config = new ShowcaseConfig();
+        config.setDelay(500); // half second between each showcase view
+
+        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this, SHOWCASE_ID);
+        sequence.setConfig(config);
+
+        // sequence.addSequenceItem(TARGET VIEW, TEXT, ACCEPT BUTTON TEXT);
+        sequence.addSequenceItem(findViewById(R.id.dashboard_fab), "Welcome to Unity Planner", "Continue");
+        sequence.addSequenceItem(new MaterialShowcaseView.Builder(this)
+                .setTarget(findViewById(R.id.dashboard_fab))
+                .setTitleText("Courses")
+                .setContentText("In order to add assignments, you have to have classes. Use this button to add all of your classes")
+                .setDismissText("Continue")
+                .setListener(new IShowcaseListener() {
+                    @Override
+                    public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
+                        CourseList courseFrag = new CourseList();
+
+                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.replace(FragmentLayoutID, courseFrag);
+                        transaction.addToBackStack(null);
+
+                        transaction.commit();
+                    }
+
+                    @Override
+                    public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
+
+                    }
+                })
+                .build());
+        sequence.addSequenceItem(new MaterialShowcaseView.Builder(this)
+                .setTarget(findViewById(R.id.dashboard_fab))
+                .setTitleText("Assignments")
+                .setContentText("Assignments are at the core of Unity Planner, allowing you to get reminders and see where you're at in your courses. Use this button to add any assignments assigned to you.")
+                .setDismissText("Continue")
+                .setListener(new IShowcaseListener() {
+                    @Override
+                    public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
+                        CourseList courseFrag = new CourseList();
+
+                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.replace(FragmentLayoutID, courseFrag);
+                        transaction.addToBackStack(null);
+
+                        transaction.commit();
+                    }
+
+                    @Override
+                    public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
+
+                    }
+                })
+                .build());
+//        sequence.addSequenceItem(
+//                new MaterialShowcaseView.Builder(this)
+//                    .setTarget(findViewById(R.id.action_sync))
+//                    .setTitleText("Google Classroom")
+//                    .setContentText("Go to a school that uses Google Classroom? Sync over all your assignments and courses in one swoop by using this button.")
+//                    .setDismissText("READY? LET'S GO.")
+//                    .setListener(new IShowcaseListener() {
+//                        @Override
+//                        public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
+//                            DashboardFragment dashFrag = new DashboardFragment();
+//
+//                            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+//                            transaction.replace(FragmentLayoutID, dashFrag);
+//                            transaction.addToBackStack(null);
+//
+//                            transaction.commit();
+//                        }
+//
+//                        @Override
+//                        public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
+//
+//                        }
+//                    })
+//                    .build());
+
+        sequence.start();
     }
 
     @Override
@@ -264,11 +348,12 @@ public class Dashboard extends AppCompatActivity
                         .signOut(this);
                 startActivity(new Intent(Dashboard.this, LauncherLogin.class));
                 break;
-
+            case R.id.action_first_start:
+                startTutorial();
+                break;
             case R.id.action_old_assignments:
                 startActivity(new Intent(Dashboard.this, DoneAssignmentList.class));
                 break;
-
             case R.id.action_sync:
                 // Initialize credentials and service object.
                 for (UserInfo info : Database.getUser().getProviderData()) {
@@ -530,7 +615,7 @@ public class Dashboard extends AppCompatActivity
                     .setPageSize(10)
                     .execute();
 
-            ArrayList<com.nbdeg.unityplanner.Data.Course> classroomCourses = new ArrayList<>();
+            ArrayList<com.nbdeg.unityplanner.data.Course> classroomCourses = new ArrayList<>();
             ArrayList<String> courseIDs = new ArrayList<>();
             ArrayList<String> courseWorkIDs = new ArrayList<>();
 
@@ -539,7 +624,7 @@ public class Dashboard extends AppCompatActivity
                     courseWorkIDs.add(assignment.getClassroomCourseWork().getId());
                 }
             }
-            for (com.nbdeg.unityplanner.Data.Course course : Database.getCourses()) {
+            for (com.nbdeg.unityplanner.data.Course course : Database.getCourses()) {
                 if (course.getClassroomCourse() != null) {
                     classroomCourses.add(course);
                     courseIDs.add(course.getClassroomCourse().getId());
@@ -556,7 +641,7 @@ public class Dashboard extends AppCompatActivity
                 }
 
                 if (course.getCourseState().equals("ACTIVE")) {
-                    com.nbdeg.unityplanner.Data.Course dbCourse = new com.nbdeg.unityplanner.Data.Course(
+                    com.nbdeg.unityplanner.data.Course dbCourse = new com.nbdeg.unityplanner.data.Course(
                             course.getName(),
                             mService.userProfiles().get(course.getOwnerId()).execute().getName().getFullName(),
                             new Time(startDate),
@@ -574,7 +659,7 @@ public class Dashboard extends AppCompatActivity
                         FirebaseAnalytics.getInstance(getApplicationContext()).logEvent("course_created", null);
                         Log.i("Classroom", "Course Created: " + dbCourse.getName());
                     } else {
-                        for (com.nbdeg.unityplanner.Data.Course mCourse : classroomCourses) {
+                        for (com.nbdeg.unityplanner.data.Course mCourse : classroomCourses) {
                             if (mCourse.getClassroomCourse().getId().equals(course.getId())) {
                                 dbCourse = mCourse;
                             }

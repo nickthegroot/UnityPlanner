@@ -1,4 +1,4 @@
-package com.nbdeg.unityplanner.Data;
+package com.nbdeg.unityplanner.data;
 
 import com.google.api.services.classroom.model.CourseWork;
 

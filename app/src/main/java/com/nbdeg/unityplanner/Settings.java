@@ -31,8 +31,8 @@ import android.widget.LinearLayout;
 
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
-import com.nbdeg.unityplanner.Utils.AlarmReceiver;
-import com.nbdeg.unityplanner.Utils.AppCompatPreferenceActivity;
+import com.nbdeg.unityplanner.utils.AlarmReceiver;
+import com.nbdeg.unityplanner.utils.AppCompatPreferenceActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -93,6 +93,12 @@ public class Settings extends AppCompatPreferenceActivity {
             return true;
         }
     };
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        startActivity(new Intent(Settings.this, Dashboard.class));
+    }
 
     /**
      * Helper method to determine if the device has an extra-large screen. For

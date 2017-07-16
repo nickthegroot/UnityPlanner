@@ -15,10 +15,10 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
-import com.nbdeg.unityplanner.Data.Assignment;
-import com.nbdeg.unityplanner.Data.Course;
-import com.nbdeg.unityplanner.Utils.Database;
-import com.nbdeg.unityplanner.Utils.EditTextDatePicker;
+import com.nbdeg.unityplanner.data.Assignment;
+import com.nbdeg.unityplanner.data.Course;
+import com.nbdeg.unityplanner.utils.Database;
+import com.nbdeg.unityplanner.utils.EditTextDatePicker;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -40,6 +40,8 @@ public class CreateAssignment extends AppCompatActivity {
         if (Database.getUser() == null) {
             startActivity(new Intent(CreateAssignment.this, LauncherLogin.class));
         }
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         viewName = (EditText) findViewById(R.id.assignment_create_name);
         viewExtra = (EditText) findViewById(R.id.assignment_create_extra);
@@ -86,51 +88,59 @@ public class CreateAssignment extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Assignment assignment = new Assignment();
+        if (item.getItemId() == R.id.action_save) {
+            Assignment assignment = new Assignment();
 
-        // Checking if assignment name is valid
-        if (viewName.getText().toString().equals("")) {
-            Toast.makeText(this, "An assignment name is needed", Toast.LENGTH_SHORT).show();
-            return super.onOptionsItemSelected(item);
-        } else {
-            assignment.setName(viewName.getText().toString());
-        }
+            // Checking if assignment name is valid
+            if (viewName.getText().toString().equals("")) {
+                Toast.makeText(this, "An assignment name is needed", Toast.LENGTH_SHORT).show();
+                return super.onOptionsItemSelected(item);
+            } else {
+                assignment.setName(viewName.getText().toString());
+            }
 
-        // Checking if assignment date is valid
-        if (viewDate.date == null) {
-            Toast.makeText(this, "An assignment date is needed", Toast.LENGTH_SHORT).show();
-            return super.onOptionsItemSelected(item);
-        } else {
-            assignment.setDueDate(viewDate.date.getTime());
-        }
+            // Checking if assignment date is valid
+            if (viewDate.date == null) {
+                Toast.makeText(this, "An assignment date is needed", Toast.LENGTH_SHORT).show();
+                return super.onOptionsItemSelected(item);
+            } else {
+                assignment.setDueDate(viewDate.date.getTime());
+            }
 
-        // Checking if assignment course is valid
-        if (viewCourse.getSelectedItem().toString().equals("Please create a course")) {
-            Toast.makeText(this, "Please create a course first", Toast.LENGTH_SHORT).show();
-            return super.onOptionsItemSelected(item);
-        } else {
-            for (Course course : courses) {
-                if (course.getName().equals(viewCourse.getSelectedItem().toString())) {
-                    assignment.setDueCourse(course);
+            // Checking if assignment course is valid
+            if (viewCourse.getSelectedItem().toString().equals("Please create a course")) {
+                Toast.makeText(this, "Please create a course first", Toast.LENGTH_SHORT).show();
+                return super.onOptionsItemSelected(item);
+            } else {
+                for (Course course : courses) {
+                    if (course.getName().equals(viewCourse.getSelectedItem().toString())) {
+                        assignment.setDueCourse(course);
+                    }
                 }
             }
+
+            // Checking if assignment is complected
+            if (viewCompleted.isChecked()) {
+                assignment.setPercentComplete(100);
+            } else {
+                assignment.setPercentComplete(0);
+            }
+
+            // Setting any extra info
+            assignment.setExtraInfo(viewExtra.getText().toString());
+
+            // Creating assignment if all went well
+            Database.createAssignment(assignment, getApplicationContext());
+            FirebaseAnalytics.getInstance(getApplicationContext()).logEvent("assignment_created", null);
+            startActivity(new Intent(CreateAssignment.this, Dashboard.class));
         }
-
-        // Checking if assignment is complected
-        if (viewCompleted.isChecked()) {
-            assignment.setPercentComplete(100);
-        } else {
-            assignment.setPercentComplete(0);
-        }
-
-        // Setting any extra info
-        assignment.setExtraInfo(viewExtra.getText().toString());
-
-        // Creating assignment if all went well
-        Database.createAssignment(assignment, getApplicationContext());
-        FirebaseAnalytics.getInstance(getApplicationContext()).logEvent("assignment_created", null);
-        startActivity(new Intent(CreateAssignment.this, Dashboard.class));
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onNavigateUp() {
+        startActivity(new Intent(CreateAssignment.this, Dashboard.class));
+        return super.onNavigateUp();
     }
 }

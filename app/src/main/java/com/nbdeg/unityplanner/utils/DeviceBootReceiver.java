@@ -1,4 +1,4 @@
-package com.nbdeg.unityplanner.Utils;
+package com.nbdeg.unityplanner.utils;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;

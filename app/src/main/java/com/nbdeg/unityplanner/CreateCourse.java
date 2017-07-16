@@ -26,10 +26,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.nbdeg.unityplanner.Data.Course;
-import com.nbdeg.unityplanner.Data.Time;
-import com.nbdeg.unityplanner.Utils.CourseAddTime;
-import com.nbdeg.unityplanner.Utils.Database;
+import com.nbdeg.unityplanner.data.Course;
+import com.nbdeg.unityplanner.data.Time;
+import com.nbdeg.unityplanner.utils.CourseAddTime;
+import com.nbdeg.unityplanner.utils.Database;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -62,6 +62,8 @@ public class CreateCourse extends AppCompatActivity implements SimpleDialog.OnDi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_course);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (Database.getUser() == null) {
             startActivity(new Intent(CreateCourse.this, LauncherLogin.class));

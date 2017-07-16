@@ -1,4 +1,4 @@
-package com.nbdeg.unityplanner.Utils;
+package com.nbdeg.unityplanner.utils;
 
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -26,9 +26,9 @@ public class AssignmentHolder extends RecyclerView.ViewHolder {
         super(view);
         assignment = view;
         assignmentColor = view.findViewById(R.id.assignment_color);
-        assignmentName = (TextView) view.findViewById(R.id.assignment_name);
-        assignmentDate = (TextView) view.findViewById(R.id.assignment_date);
-        assignmentCourse = (TextView) view.findViewById(R.id.assignment_class);
+        assignmentName = view.findViewById(R.id.assignment_name);
+        assignmentDate = view.findViewById(R.id.assignment_date);
+        assignmentCourse = view.findViewById(R.id.assignment_class);
         assignmentLate = view.findViewById(R.id.assignment_late);
     }
 

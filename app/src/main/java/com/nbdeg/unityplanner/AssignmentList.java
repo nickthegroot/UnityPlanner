@@ -12,9 +12,9 @@ import android.view.ViewGroup;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.database.Query;
-import com.nbdeg.unityplanner.Data.Assignment;
-import com.nbdeg.unityplanner.Utils.AssignmentHolder;
-import com.nbdeg.unityplanner.Utils.Database;
+import com.nbdeg.unityplanner.data.Assignment;
+import com.nbdeg.unityplanner.utils.AssignmentHolder;
+import com.nbdeg.unityplanner.utils.Database;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -34,7 +34,7 @@ public class AssignmentList extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
+        NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
         navigationView.setCheckedItem(R.id.nav_assignment);
 
         getActivity().setTitle("Assignments");
@@ -45,7 +45,7 @@ public class AssignmentList extends Fragment {
                              Bundle savedInstanceState) {
 
         View mView = inflater.inflate(R.layout.fragment_assignment_list, container, false);
-        RecyclerView assignmentView = (RecyclerView) mView.findViewById(R.id.assignment_list_view);
+        RecyclerView assignmentView = mView.findViewById(R.id.assignment_list_view);
         LinearLayoutManager assignmentLayoutManager = new LinearLayoutManager(getContext());
 
         assignmentView.setLayoutManager(assignmentLayoutManager);

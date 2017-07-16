@@ -1,4 +1,4 @@
-package com.nbdeg.unityplanner.Utils;
+package com.nbdeg.unityplanner.utils;
 
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
@@ -12,10 +12,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.nbdeg.unityplanner.AssignmentWidget;
-import com.nbdeg.unityplanner.Data.Assignment;
-import com.nbdeg.unityplanner.Data.ChangedCourseName;
-import com.nbdeg.unityplanner.Data.Course;
 import com.nbdeg.unityplanner.R;
+import com.nbdeg.unityplanner.data.Assignment;
+import com.nbdeg.unityplanner.data.ChangedCourseName;
+import com.nbdeg.unityplanner.data.Course;
 
 import java.util.ArrayList;
 import java.util.HashMap;

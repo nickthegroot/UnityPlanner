@@ -8,7 +8,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.widget.RemoteViews;
 
-import com.nbdeg.unityplanner.Utils.WidgetService;
+import com.nbdeg.unityplanner.utils.WidgetService;
 
 /**
  * Implementation of App Widget functionality.

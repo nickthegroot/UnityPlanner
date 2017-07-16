@@ -11,7 +11,7 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.ResultCodes;
 import com.google.api.services.classroom.ClassroomScopes;
 import com.google.firebase.auth.FirebaseAuth;
-import com.nbdeg.unityplanner.Utils.Database;
+import com.nbdeg.unityplanner.utils.Database;
 
 import java.util.Arrays;
 
@@ -31,7 +31,7 @@ public class LauncherLogin extends AppCompatActivity {
             signIn();
         } else {
             Intent i = new Intent(LauncherLogin.this, Dashboard.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(i);
         }
     }

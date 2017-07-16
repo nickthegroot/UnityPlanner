@@ -1,4 +1,4 @@
-package com.nbdeg.unityplanner.Utils;
+package com.nbdeg.unityplanner.utils;
 
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
@@ -6,8 +6,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.nbdeg.unityplanner.CourseViewer;
-import com.nbdeg.unityplanner.Data.Time;
 import com.nbdeg.unityplanner.R;
+import com.nbdeg.unityplanner.data.Time;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -28,10 +28,10 @@ public class CourseHolder extends RecyclerView.ViewHolder {
         super(view);
         course = view;
         courseColor = view.findViewById(R.id.course_color);
-        courseName = (TextView)view.findViewById(R.id.course_name);
-        courseTeacher = (TextView)view.findViewById(R.id.course_teacher);
-        courseRoomNumber = (TextView)view.findViewById(R.id.course_room_number);
-        courseTime = (TextView)view.findViewById(R.id.course_time);
+        courseName = view.findViewById(R.id.course_name);
+        courseTeacher = view.findViewById(R.id.course_teacher);
+        courseRoomNumber = view.findViewById(R.id.course_room_number);
+        courseTime = view.findViewById(R.id.course_time);
     }
 
     public void setName(String name) {

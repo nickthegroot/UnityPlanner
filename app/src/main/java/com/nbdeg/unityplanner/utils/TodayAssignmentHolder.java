@@ -1,4 +1,4 @@
-package com.nbdeg.unityplanner.Utils;
+package com.nbdeg.unityplanner.utils;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,8 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.nbdeg.unityplanner.AssignmentViewer;
-import com.nbdeg.unityplanner.Data.Assignment;
 import com.nbdeg.unityplanner.R;
+import com.nbdeg.unityplanner.data.Assignment;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

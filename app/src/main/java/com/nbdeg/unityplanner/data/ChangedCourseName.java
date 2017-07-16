@@ -1,4 +1,4 @@
-package com.nbdeg.unityplanner.Data;
+package com.nbdeg.unityplanner.data;
 
 /**
  * Class that stores old and new course names. Useful when adding new assignments from Classroom that
