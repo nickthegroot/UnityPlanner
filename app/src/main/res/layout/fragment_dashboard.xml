@@ -7,6 +7,7 @@
     android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/dashboard_day_1_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 

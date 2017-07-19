@@ -28,10 +28,10 @@ public class CourseHolder extends RecyclerView.ViewHolder {
         super(view);
         course = view;
         courseColor = view.findViewById(R.id.course_color);
-        courseName = view.findViewById(R.id.course_name);
-        courseTeacher = view.findViewById(R.id.course_teacher);
-        courseRoomNumber = view.findViewById(R.id.course_room_number);
-        courseTime = view.findViewById(R.id.course_time);
+        courseName = (TextView) view.findViewById(R.id.course_name);
+        courseTeacher = (TextView) view.findViewById(R.id.course_teacher);
+        courseRoomNumber = (TextView) view.findViewById(R.id.course_room_number);
+        courseTime = (TextView) view.findViewById(R.id.course_time);
     }
 
     public void setName(String name) {

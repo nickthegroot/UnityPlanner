@@ -26,9 +26,9 @@ public class AssignmentHolder extends RecyclerView.ViewHolder {
         super(view);
         assignment = view;
         assignmentColor = view.findViewById(R.id.assignment_color);
-        assignmentName = view.findViewById(R.id.assignment_name);
-        assignmentDate = view.findViewById(R.id.assignment_date);
-        assignmentCourse = view.findViewById(R.id.assignment_class);
+        assignmentName = (TextView) view.findViewById(R.id.assignment_name);
+        assignmentDate = (TextView) view.findViewById(R.id.assignment_date);
+        assignmentCourse = (TextView) view.findViewById(R.id.assignment_class);
         assignmentLate = view.findViewById(R.id.assignment_late);
     }
 

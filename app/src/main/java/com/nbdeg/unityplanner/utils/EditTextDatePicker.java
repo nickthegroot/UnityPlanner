@@ -25,7 +25,7 @@ public class EditTextDatePicker implements View.OnFocusChangeListener, DatePicke
     public EditTextDatePicker(Context context, int editTextViewID)
     {
         Activity act = (Activity) context;
-        this._editText = act.findViewById(editTextViewID);
+        this._editText = (EditText) act.findViewById(editTextViewID);
         this._editText.setKeyListener(null);
         this._editText.setOnFocusChangeListener(this);
         this._context = context;

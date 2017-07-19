@@ -1,0 +1,126 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.nbdeg.unityplanner.showcase.CourseShowcase"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/showcase_course"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <View
+                android:background="@android:color/holo_blue_dark"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/showcase1_course_color"
+                android:padding="15dp"
+                android:layout_width="5dp"
+                android:layout_height="80dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="15dp">
+
+                <TextView
+                    android:text="May 20, 2016 - June 15, 2017"
+                    android:id="@+id/showcase1_course_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"/>
+                <TextView
+                    android:text="Sophomore English"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:textSize="20sp"
+                    android:layout_toLeftOf="@id/showcase1_course_time"
+                    android:layout_alignParentLeft="true"
+                    android:id="@+id/showcase1_course_name"/>
+
+                <TextView
+                    android:text="Mr. Dennis"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/showcase1_course_name"
+                    android:layout_marginBottom="5dp"
+                    android:id="@+id/showcase1_course_teacher"/>
+
+                <TextView
+                    android:text="201"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/showcase1_course_teacher"
+                    android:textStyle="italic"
+                    android:id="@+id/showcase1_course_room_number"/>
+            </RelativeLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <View
+                android:background="@android:color/holo_green_dark"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/showcase2_course_color"
+                android:padding="15dp"
+                android:layout_width="5dp"
+                android:layout_height="80dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="15dp">
+
+                <TextView
+                    android:text="May 20, 2016 - June 15, 2017"
+                    android:id="@+id/showcase2_course_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"/>
+                <TextView
+                    android:text="Algebra II"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:textSize="20sp"
+                    android:layout_toLeftOf="@id/showcase2_course_time"
+                    android:layout_alignParentLeft="true"
+                    android:id="@+id/showcase2_course_name"/>
+
+                <TextView
+                    android:text="Mrs. Michael"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/showcase2_course_name"
+                    android:layout_marginBottom="5dp"
+                    android:id="@+id/showcase2_course_teacher"/>
+
+                <TextView
+                    android:text="105"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/showcase2_course_teacher"
+                    android:textStyle="italic"
+                    android:id="@+id/showcase2_course_room_number"/>
+            </RelativeLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

@@ -34,7 +34,7 @@ public class AssignmentList extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
+        NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
         navigationView.setCheckedItem(R.id.nav_assignment);
 
         getActivity().setTitle("Assignments");
@@ -45,7 +45,7 @@ public class AssignmentList extends Fragment {
                              Bundle savedInstanceState) {
 
         View mView = inflater.inflate(R.layout.fragment_assignment_list, container, false);
-        RecyclerView assignmentView = mView.findViewById(R.id.assignment_list_view);
+        RecyclerView assignmentView = (RecyclerView) mView.findViewById(R.id.assignment_list_view);
         LinearLayoutManager assignmentLayoutManager = new LinearLayoutManager(getContext());
 
         assignmentView.setLayoutManager(assignmentLayoutManager);

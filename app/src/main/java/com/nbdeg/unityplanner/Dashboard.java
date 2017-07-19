@@ -58,6 +58,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserInfo;
 import com.nbdeg.unityplanner.data.Assignment;
 import com.nbdeg.unityplanner.data.Time;
+import com.nbdeg.unityplanner.showcase.CourseShowcase;
 import com.nbdeg.unityplanner.utils.AlarmReceiver;
 import com.nbdeg.unityplanner.utils.Database;
 import com.squareup.picasso.Callback;
@@ -73,9 +74,7 @@ import java.util.Calendar;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 import uk.co.deanwild.materialshowcaseview.IShowcaseListener;
-import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
-import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
 
 public class Dashboard extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -139,9 +138,9 @@ public class Dashboard extends AppCompatActivity
 
         // Adding Name and E-Mail to Nav
         View hView =  navigationView.getHeaderView(0);
-        final ImageView userPhoto = hView.findViewById(R.id.nav_header_photo);
-        final TextView userName = hView.findViewById(R.id.nav_header_user);
-        final TextView userEmail = hView.findViewById(R.id.nav_header_email);
+        final ImageView userPhoto = (ImageView)hView.findViewById(R.id.nav_header_photo);
+        final TextView userName = (TextView)hView.findViewById(R.id.nav_header_user);
+        final TextView userEmail = (TextView)hView.findViewById(R.id.nav_header_email);
 
         if (Database.getUser().getDisplayName() != null) {
             userName.setText(Database.getUser().getDisplayName());
@@ -187,7 +186,6 @@ public class Dashboard extends AppCompatActivity
     protected void onResume() {
         super.onResume();
 
-        FragmentLayoutID = R.id.dashboard_fragments;
         DashboardFragment dashFrag = new DashboardFragment();
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -195,6 +193,32 @@ public class Dashboard extends AppCompatActivity
         transaction.addToBackStack(null);
 
         transaction.commit();
+    }
+
+    private void startTutorial() {
+        new MaterialShowcaseView.Builder(this)
+                .setTitleText("Welcome to Unity Planner")
+                .setContentText("The app to unify your school life")
+                .setDismissText("Continue")
+                .setTarget(findViewById(R.id.dashboard_day_1_layout))
+                .setListener(new IShowcaseListener() {
+                    @Override
+                    public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
+
+                    }
+
+                    @Override
+                    public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
+                        CourseShowcase courseShow = new CourseShowcase();
+
+                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        transaction.replace(FragmentLayoutID, courseShow);
+                        transaction.addToBackStack(null);
+
+                        transaction.commit();
+                    }
+                })
+                .show();
     }
 
     /**
@@ -227,95 +251,6 @@ public class Dashboard extends AppCompatActivity
         SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean("firstTime", false);
         editor.apply();
-    }
-
-    private void startTutorial() {
-        // Showcase tutorial
-        // TODO: 7/5/2017 Add showcase view (refer to notes for order)
-        // TODO: 7/15/2017 Set up example assignment and course pages to use as targets
-
-        String SHOWCASE_ID = "dashboard";
-
-        ShowcaseConfig config = new ShowcaseConfig();
-        config.setDelay(500); // half second between each showcase view
-
-        MaterialShowcaseSequence sequence = new MaterialShowcaseSequence(this, SHOWCASE_ID);
-        sequence.setConfig(config);
-
-        // sequence.addSequenceItem(TARGET VIEW, TEXT, ACCEPT BUTTON TEXT);
-        sequence.addSequenceItem(findViewById(R.id.dashboard_fab), "Welcome to Unity Planner", "Continue");
-        sequence.addSequenceItem(new MaterialShowcaseView.Builder(this)
-                .setTarget(findViewById(R.id.dashboard_fab))
-                .setTitleText("Courses")
-                .setContentText("In order to add assignments, you have to have classes. Use this button to add all of your classes")
-                .setDismissText("Continue")
-                .setListener(new IShowcaseListener() {
-                    @Override
-                    public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
-                        CourseList courseFrag = new CourseList();
-
-                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                        transaction.replace(FragmentLayoutID, courseFrag);
-                        transaction.addToBackStack(null);
-
-                        transaction.commit();
-                    }
-
-                    @Override
-                    public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
-
-                    }
-                })
-                .build());
-        sequence.addSequenceItem(new MaterialShowcaseView.Builder(this)
-                .setTarget(findViewById(R.id.dashboard_fab))
-                .setTitleText("Assignments")
-                .setContentText("Assignments are at the core of Unity Planner, allowing you to get reminders and see where you're at in your courses. Use this button to add any assignments assigned to you.")
-                .setDismissText("Continue")
-                .setListener(new IShowcaseListener() {
-                    @Override
-                    public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
-                        CourseList courseFrag = new CourseList();
-
-                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                        transaction.replace(FragmentLayoutID, courseFrag);
-                        transaction.addToBackStack(null);
-
-                        transaction.commit();
-                    }
-
-                    @Override
-                    public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
-
-                    }
-                })
-                .build());
-//        sequence.addSequenceItem(
-//                new MaterialShowcaseView.Builder(this)
-//                    .setTarget(findViewById(R.id.action_sync))
-//                    .setTitleText("Google Classroom")
-//                    .setContentText("Go to a school that uses Google Classroom? Sync over all your assignments and courses in one swoop by using this button.")
-//                    .setDismissText("READY? LET'S GO.")
-//                    .setListener(new IShowcaseListener() {
-//                        @Override
-//                        public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
-//                            DashboardFragment dashFrag = new DashboardFragment();
-//
-//                            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-//                            transaction.replace(FragmentLayoutID, dashFrag);
-//                            transaction.addToBackStack(null);
-//
-//                            transaction.commit();
-//                        }
-//
-//                        @Override
-//                        public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
-//
-//                        }
-//                    })
-//                    .build());
-
-        sequence.start();
     }
 
     @Override

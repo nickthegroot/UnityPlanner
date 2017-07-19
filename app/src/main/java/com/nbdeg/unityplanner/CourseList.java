@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +39,7 @@ public class CourseList extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        NavigationView navigationView = getActivity().findViewById(R.id.nav_view);
+        NavigationView navigationView = (NavigationView) getActivity().findViewById(R.id.nav_view);
         navigationView.setCheckedItem(R.id.nav_courses);
 
         getActivity().setTitle("Courses");
@@ -49,7 +50,7 @@ public class CourseList extends Fragment {
                              Bundle savedInstanceState) {
 
         View mView = inflater.inflate(R.layout.fragment_course_list, container, false);
-        RecyclerView courseView = mView.findViewById(R.id.course_list_view);
+        RecyclerView courseView = (RecyclerView) mView.findViewById(R.id.course_list_view);
         LinearLayoutManager courseLayoutManager = new LinearLayoutManager(getContext());
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(courseView.getContext(),
@@ -63,6 +64,7 @@ public class CourseList extends Fragment {
         mAdapter = new FirebaseRecyclerAdapter<Course, CourseHolder>(Course.class, R.layout.database_course_view, CourseHolder.class, courseDb) {
             @Override
             protected void populateViewHolder(CourseHolder viewHolder, Course course, int position) {
+                Log.d("Course", "populateViewHolder: " + course.getName());
                 viewHolder.setName(course.getName());
                 viewHolder.setTeacher(course.getTeacher());
                 viewHolder.setRoomNumber(course.getRoomNumber());
