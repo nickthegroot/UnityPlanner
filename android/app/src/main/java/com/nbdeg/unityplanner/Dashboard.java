@@ -58,7 +58,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.UserInfo;
 import com.nbdeg.unityplanner.data.Assignment;
 import com.nbdeg.unityplanner.data.Time;
-import com.nbdeg.unityplanner.showcase.CourseShowcase;
+import com.nbdeg.unityplanner.showcase.ShowcaseActivity;
 import com.nbdeg.unityplanner.utils.AlarmReceiver;
 import com.nbdeg.unityplanner.utils.Database;
 import com.squareup.picasso.Callback;
@@ -73,15 +73,12 @@ import java.util.Calendar;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
-import uk.co.deanwild.materialshowcaseview.IShowcaseListener;
-import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
 public class Dashboard extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private LinearLayout syncLayout;
 
-    private int FragmentLayoutID;
     private GoogleAccountCredential mCredential;
 
     static final int REQUEST_AUTHORIZATION = 1001;
@@ -121,17 +118,12 @@ public class Dashboard extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        if (prefs.getBoolean("firstTime", true)) {
-            onFirstStart(prefs);
-        }
 
         // Adding Dashboard Fragment as primary fragment
-        FragmentLayoutID = R.id.dashboard_fragments;
         DashboardFragment dashFrag = new DashboardFragment();
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(FragmentLayoutID, dashFrag);
+        transaction.replace(R.id.dashboard_fragments, dashFrag);
         transaction.addToBackStack(null);
 
         transaction.commit();
@@ -171,7 +163,7 @@ public class Dashboard extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                android.support.v4.app.Fragment currentFragment = getSupportFragmentManager().findFragmentById(FragmentLayoutID);
+                android.support.v4.app.Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.dashboard_fragments);
                 if (currentFragment instanceof DashboardFragment || currentFragment instanceof AssignmentList) {
                     startActivity(new Intent(Dashboard.this, CreateAssignment.class));
                 } else if (currentFragment instanceof CourseList){
@@ -180,6 +172,10 @@ public class Dashboard extends AppCompatActivity
             }
         });
 
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (prefs.getBoolean("firstTime", true)) {
+            onFirstStart(prefs);
+        }
     }
 
     @Override
@@ -189,69 +185,12 @@ public class Dashboard extends AppCompatActivity
         DashboardFragment dashFrag = new DashboardFragment();
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(FragmentLayoutID, dashFrag);
+        transaction.replace(R.id.dashboard_fragments, dashFrag);
         transaction.addToBackStack(null);
 
         transaction.commit();
     }
 
-    private void startTutorial() {
-        new MaterialShowcaseView.Builder(this)
-                .setTitleText("Welcome to Unity Planner")
-                .setContentText("The app to unify your school life")
-                .setDismissText("Continue")
-                .setTarget(findViewById(R.id.dashboard_day_1_layout))
-                .setListener(new IShowcaseListener() {
-                    @Override
-                    public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
-
-                    }
-
-                    @Override
-                    public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
-                        CourseShowcase courseShow = new CourseShowcase();
-
-                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                        transaction.replace(FragmentLayoutID, courseShow);
-                        transaction.addToBackStack(null);
-
-                        transaction.commit();
-                    }
-                })
-                .show();
-    }
-
-    /**
-     * Run when dashboard is first launched
-     * User WILL be logged in
-     * @param prefs Shared preferences containing notification preferences
-     */
-    private void onFirstStart(SharedPreferences prefs) {
-        startTutorial();
-
-
-        // Notifications
-        Intent alarmIntent = new Intent(this, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, 0);
-
-        AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-        Calendar calendar = Calendar.getInstance();
-        Calendar hourCal = Calendar.getInstance();
-        hourCal.setTimeInMillis(prefs.getLong("notification_time", 90000000));
-
-        calendar.set(Calendar.HOUR_OF_DAY, hourCal.get(Calendar.HOUR_OF_DAY));
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-
-        manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                AlarmManager.INTERVAL_DAY, pendingIntent);
-
-        // Not first time anymore
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean("firstTime", false);
-        editor.apply();
-    }
 
     @Override
     public void onBackPressed() {
@@ -283,11 +222,12 @@ public class Dashboard extends AppCompatActivity
                         .signOut(this);
                 startActivity(new Intent(Dashboard.this, LauncherLogin.class));
                 break;
-            case R.id.action_first_start:
-                startTutorial();
-                break;
             case R.id.action_old_assignments:
                 startActivity(new Intent(Dashboard.this, DoneAssignmentList.class));
+                break;
+            case R.id.action_showcase:
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+                onFirstStart(prefs);
                 break;
             case R.id.action_sync:
                 // Initialize credentials and service object.
@@ -324,7 +264,7 @@ public class Dashboard extends AppCompatActivity
             DashboardFragment dashFrag = new DashboardFragment();
 
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(FragmentLayoutID, dashFrag);
+            transaction.replace(R.id.dashboard_fragments, dashFrag);
             transaction.addToBackStack(null);
 
             transaction.commit();
@@ -332,7 +272,7 @@ public class Dashboard extends AppCompatActivity
             AssignmentList assignmentFrag = new AssignmentList();
 
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(FragmentLayoutID, assignmentFrag);
+            transaction.replace(R.id.dashboard_fragments, assignmentFrag);
             transaction.addToBackStack(null);
 
             transaction.commit();
@@ -340,7 +280,7 @@ public class Dashboard extends AppCompatActivity
             CourseList courseFrag = new CourseList();
 
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(FragmentLayoutID, courseFrag);
+            transaction.replace(R.id.dashboard_fragments, courseFrag);
             transaction.addToBackStack(null);
 
             transaction.commit();
@@ -357,6 +297,42 @@ public class Dashboard extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+
+    /**
+     * Run when dashboard is first launched
+     * User WILL be logged in
+     *
+     * @param prefs Shared preferences containing notification preferences and firstTime boolean
+     */
+    private void onFirstStart(SharedPreferences prefs) {
+
+        // Notifications
+        Intent alarmIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, alarmIntent, 0);
+
+        AlarmManager manager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+
+        Calendar calendar = Calendar.getInstance();
+        Calendar hourCal = Calendar.getInstance();
+        hourCal.setTimeInMillis(prefs.getLong("notification_time", 90000000));
+
+        calendar.set(Calendar.HOUR_OF_DAY, hourCal.get(Calendar.HOUR_OF_DAY));
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+
+        manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY, pendingIntent);
+
+        Intent i = new Intent(Dashboard.this, ShowcaseActivity.class);
+        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
+
+        // Not first time anymore
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("firstTime", false);
+        editor.apply();
     }
 
     @AfterPermissionGranted(REQUEST_PERMISSION_GET_ACCOUNTS)

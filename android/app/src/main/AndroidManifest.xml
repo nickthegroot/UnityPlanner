@@ -27,8 +27,10 @@
         </receiver>
         <receiver android:name=".utils.AlarmReceiver" />
 
-        <!--todo turn back on crash reporting for release-->
-        <meta-data android:name="firebase_crash_collection_enabled" android:value="false" />
+        <!-- todo turn back on crash reporting for release -->
+        <meta-data
+            android:name="firebase_crash_collection_enabled"
+            android:value="false" />
 
         <activity
             android:name=".LauncherLogin"
@@ -89,7 +91,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.nbdeg.unityplanner.Dashboard" />
         </activity>
-        <activity android:name=".EditAssignment"
+        <activity
+            android:name=".EditAssignment"
             android:parentActivityName=".Dashboard">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -129,6 +132,9 @@
             android:name=".utils.WidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
+        <activity
+            android:name=".showcase.ShowcaseActivity"
+            android:theme="@style/AppTheme" />
     </application>
 
 </manifest>

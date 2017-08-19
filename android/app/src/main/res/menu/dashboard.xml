@@ -13,13 +13,14 @@
         android:title="@string/dashboard_sync"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_first_start"
-        android:orderInCategory="75"
-        android:title="Test First Start"
+        android:id="@+id/action_showcase"
+        android:orderInCategory="100"
+        android:title="Launch Showcase"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_logout"
-        android:orderInCategory="100"
+        android:orderInCategory="1000"
         android:title="@string/dashboard_logout"
         app:showAsAction="never"/>
+
 </menu>

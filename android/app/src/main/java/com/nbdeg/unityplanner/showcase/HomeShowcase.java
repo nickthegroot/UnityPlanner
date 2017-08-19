@@ -2,6 +2,7 @@ package com.nbdeg.unityplanner.showcase;
 
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
@@ -16,10 +17,10 @@ import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CourseShowcase extends Fragment {
+public class HomeShowcase extends Fragment {
 
 
-    public CourseShowcase() {
+    public HomeShowcase() {
         // Required empty public constructor
     }
 
@@ -28,33 +29,36 @@ public class CourseShowcase extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_course_showcase, container, false);
+        return inflater.inflate(R.layout.fragment_home_showcase, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         new MaterialShowcaseView.Builder(getActivity())
-                .setTarget(view.findViewById(R.id.showcase_course))
-                .withRectangleShape()
-                .setTitleText("Courses")
-                .setContentText("In order to add assignments, you have to have classes. Use this button to add all of your classes")
+                .setTitleText("Welcome to Unity Planner")
+                .setContentText("The app to unify your school life")
                 .setDismissText("Continue")
+                .setTarget(view.findViewById(R.id.showcase_home_layout))
+                .withRectangleShape()
                 .setListener(new IShowcaseListener() {
                     @Override
                     public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
+
                     }
 
                     @Override
                     public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
-                        AssignmentShowcase showFrag = new AssignmentShowcase();
+                        CourseShowcase courseShow = new CourseShowcase();
 
-                        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                        transaction.replace(R.id.showcase_fragments, showFrag);
+                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                        transaction.replace(R.id.showcase_fragments, courseShow);
                         transaction.addToBackStack(null);
 
                         transaction.commit();
                     }
                 })
                 .show();
-
-        return view;
     }
-
 }
