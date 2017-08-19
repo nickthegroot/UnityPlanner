@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "26.0.0"
+    buildToolsVersion "26.0.1"
     defaultConfig {
         applicationId "com.nbdeg.unityplanner"
         minSdkVersion 20
         targetSdkVersion 25
         versionCode 20
-        versionName "1.0.8"
+        versionName "1.1-beta"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
@@ -20,8 +20,6 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-    }
-    productFlavors {
     }
 }
 
@@ -39,6 +37,7 @@ dependencies {
     compile('com.mikepenz:aboutlibraries:5.9.6@aar') {
         transitive = true
     }
+    compile 'com.android.support:multidex:1.0.1'
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.google.android.gms:play-services-auth:11.0.1'
@@ -49,7 +48,7 @@ dependencies {
     compile 'com.google.firebase:firebase-crash:11.0.1'
     compile 'com.firebaseui:firebase-ui-auth:2.0.1'
     compile 'com.firebaseui:firebase-ui-database:2.0.1'
-    compile 'com.facebook.android:facebook-android-sdk:4.+'
+    compile 'com.facebook.android:facebook-android-sdk:4.25.0'
     compile 'pub.devrel:easypermissions:0.2.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.github.deano2390:MaterialShowcaseView:1.1.0'
@@ -59,13 +58,5 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
 }
-
-
-
-
-
-
-
-
 
 apply plugin: 'com.google.gms.google-services'
