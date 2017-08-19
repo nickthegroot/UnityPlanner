@@ -1,0 +1,81 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.nbdeg.unityplanner.AssignmentList"
+    android:padding="15dp"
+    android:orientation="vertical">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/showcase_assignment"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <View
+                android:layout_gravity="center_vertical"
+                android:id="@+id/showcase_assignment_color"
+                android:layout_width="5dp"
+                android:background="@android:color/holo_green_dark"
+                android:layout_height="match_parent" />
+
+            <RelativeLayout
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:paddingLeft="15dp">
+
+                <TextView
+                    android:layout_width="50dp"
+                    android:layout_height="18dp"
+                    android:textAllCaps="true"
+                    android:text="@string/late"
+                    android:gravity="center"
+                    android:background="@android:color/holo_red_dark"
+                    android:layout_alignParentRight="true"
+                    android:textColor="@android:color/white"
+                    android:visibility="visible"
+                    android:id="@+id/showcase_assignment_late"
+                    tools:ignore="RtlHardcoded" />
+
+                <TextView
+                    android:text="Book Problems #12-64"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:textSize="20sp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@id/showcase_assignment_late"
+                    android:id="@+id/showcase_assignment_name"/>
+
+                <TextView
+                    android:text="Algebra II"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/showcase_assignment_name"
+                    android:layout_marginBottom="5dp"
+                    android:id="@+id/showcase_assignment_class"/>
+
+                <TextView
+                    android:text="June 10, 2017"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/showcase_assignment_class"
+                    android:textStyle="italic"
+                    android:id="@+id/showcase_assignment_date"/>
+
+            </RelativeLayout>
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/showcase_assignment_list_view" />
+
+</LinearLayout>

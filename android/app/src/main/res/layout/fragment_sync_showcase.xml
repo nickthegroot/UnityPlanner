@@ -1,0 +1,15 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.nbdeg.unityplanner.showcase.SyncShowcase">
+
+    <ImageView
+        android:id="@+id/showcase_googleclassroom"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@mipmap/classroom"
+        android:layout_centerInParent="true"
+        android:padding="15dp" />
+
+</RelativeLayout>

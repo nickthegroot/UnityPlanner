@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:checkableBehavior="single"
+        android:id="@+id/nav_main">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_logo"
+            android:title="Dashboard" />
+        <item
+            android:id="@+id/nav_assignment"
+            android:icon="@drawable/ic_assignment_black"
+            android:title="Assignments" />
+        <item
+            android:id="@+id/nav_courses"
+            android:icon="@drawable/ic_course"
+            android:title="Courses" />
+    </group>
+
+    <group
+        android:checkableBehavior="single"
+        android:id="@+id/nav_support" >
+        <item
+            android:id="@+id/nav_sync"
+            android:icon="@drawable/ic_sync_black_24dp"
+            android:title="Sync with Google Classroom" />
+        <item
+            android:id="@+id/nav_share"
+            android:icon="@drawable/ic_menu_share"
+            android:title="Share" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings_black"
+            android:title="Settings" />
+    </group>
+</menu>

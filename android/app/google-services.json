@@ -1,0 +1,95 @@
+{
+  "project_info": {
+    "project_number": "1084759978628",
+    "firebase_url": "https://unity-planner.firebaseio.com",
+    "project_id": "unity-planner",
+    "storage_bucket": "unity-planner.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1084759978628:android:10d3885fcd3be0f5",
+        "android_client_info": {
+          "package_name": "com.nbdeg.unityplanner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1084759978628-8sq6rafntkiivbjrd8sm1iob2tb17lek.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nbdeg.unityplanner",
+            "certificate_hash": "5e0b605af5a2719dbfe76391f067b127a01f5551"
+          }
+        },
+        {
+          "client_id": "1084759978628-8l12ffd3d2la7s4434hfca77c3mf7qbi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nbdeg.unityplanner",
+            "certificate_hash": "24926a1fe839f8aa52b982915800b0d1af51c1d6"
+          }
+        },
+        {
+          "client_id": "1084759978628-f836jlhfpf76cpf6mfhm45v4ts5laf5o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nbdeg.unityplanner",
+            "certificate_hash": "c6089fbe5ea7c52bdef179dc7c988e5f4952fe26"
+          }
+        },
+        {
+          "client_id": "1084759978628-5ueamfbm0t3ks257r6gcg0f28f96f87m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nbdeg.unityplanner",
+            "certificate_hash": "6c323e6765494cc2ae31009f6d6ce990f0dcaf26"
+          }
+        },
+        {
+          "client_id": "1084759978628-nfq2b6db24hhgkba29b4h36o2tfq6ou6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nbdeg.unityplanner",
+            "certificate_hash": "e04bb1c25deeafcd423a79ad8bc23122422b4dc9"
+          }
+        },
+        {
+          "client_id": "1084759978628-qu0fcoads4anhekqgvqkifo8sd368j9g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nbdeg.unityplanner",
+            "certificate_hash": "277f623468bfd04cf46a455fa4f6350f58a2a471"
+          }
+        },
+        {
+          "client_id": "1084759978628-je98io85qo41ca7a1isl0829keu8b914.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2nupmuKPdt9pAUJVJ3GTFXd5G2x7c8dw"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1084759978628-je98io85qo41ca7a1isl0829keu8b914.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
