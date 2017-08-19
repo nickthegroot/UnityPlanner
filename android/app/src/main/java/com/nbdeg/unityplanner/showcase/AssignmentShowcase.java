@@ -1,16 +1,15 @@
 package com.nbdeg.unityplanner.showcase;
 
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.nbdeg.unityplanner.Dashboard;
 import com.nbdeg.unityplanner.R;
 import com.nbdeg.unityplanner.data.Assignment;
 import com.nbdeg.unityplanner.data.Course;
@@ -88,7 +87,7 @@ public class AssignmentShowcase extends Fragment {
                 .withRectangleShape()
             .setTitleText("Assignments")
                 .setContentText("Assignments are at the core of Unity Planner, allowing you to get reminders and see what's coming up.")
-            .setDismissText("Ready? Let's go.")
+                .setDismissText("Continue")
             .setListener(new IShowcaseListener() {
                 @Override
                 public void onShowcaseDisplayed(MaterialShowcaseView materialShowcaseView) {
@@ -96,9 +95,13 @@ public class AssignmentShowcase extends Fragment {
 
                 @Override
                 public void onShowcaseDismissed(MaterialShowcaseView materialShowcaseView) {
-                    Intent i = new Intent(getActivity(), Dashboard.class);
-                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(i);
+                    SyncShowcase showFrag = new SyncShowcase();
+
+                    FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.showcase_fragments, showFrag);
+                    transaction.addToBackStack(null);
+
+                    transaction.commit();
                 }
             })
             .show();

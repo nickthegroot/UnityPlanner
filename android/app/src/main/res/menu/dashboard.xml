@@ -8,14 +8,9 @@
         android:title="@string/finished_assignments"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_sync"
-        android:orderInCategory="50"
-        android:title="@string/dashboard_sync"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/action_showcase"
         android:orderInCategory="100"
-        android:title="Launch Showcase"
+        android:title="Tutorial"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_logout"

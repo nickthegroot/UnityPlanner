@@ -21,12 +21,16 @@
         android:checkableBehavior="single"
         android:id="@+id/nav_support" >
         <item
-        android:id="@+id/nav_share"
-        android:icon="@drawable/ic_menu_share"
-        android:title="Share" />
+            android:id="@+id/nav_sync"
+            android:icon="@drawable/ic_sync_black_24dp"
+            android:title="Sync with Google Classroom" />
         <item
-        android:id="@+id/nav_settings"
-        android:icon="@drawable/ic_settings_black"
-        android:title="Settings" />
+            android:id="@+id/nav_share"
+            android:icon="@drawable/ic_menu_share"
+            android:title="Share" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings_black"
+            android:title="Settings" />
     </group>
 </menu>

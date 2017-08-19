@@ -61,7 +61,7 @@
     <string name="dashboard_logout">Log Out</string>
     <string name="settings_about_description">Unity Planner helps students like you
         manage assignments and courses in a centralized and simplified way.\n\n
-        Created by Nick DeGroot, self taught high school developer</string>
+        Created by Nick DeGroot, a self taught high school developer</string>
     <string name="invitation_cta">Download Now!</string>
 
     <string name="shortcut_assignment_short_label">Create assignment</string>

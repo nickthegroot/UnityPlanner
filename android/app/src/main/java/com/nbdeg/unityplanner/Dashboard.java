@@ -221,15 +221,46 @@ public class Dashboard extends AppCompatActivity
                 AuthUI.getInstance()
                         .signOut(this);
                 startActivity(new Intent(Dashboard.this, LauncherLogin.class));
+
                 break;
             case R.id.action_old_assignments:
                 startActivity(new Intent(Dashboard.this, DoneAssignmentList.class));
+
                 break;
             case R.id.action_showcase:
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-                onFirstStart(prefs);
+                Intent i = new Intent(Dashboard.this, ShowcaseActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
+
                 break;
-            case R.id.action_sync:
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        switch (id) {
+            case R.id.nav_home:
+                DashboardFragment dashFrag = new DashboardFragment();
+                getSupportFragmentManager().beginTransaction().replace(R.id.dashboard_fragments, dashFrag).addToBackStack(null).commit();
+
+                break;
+            case R.id.nav_assignment:
+                AssignmentList assignmentFrag = new AssignmentList();
+                getSupportFragmentManager().beginTransaction().replace(R.id.dashboard_fragments, assignmentFrag).addToBackStack(null).commit();
+
+                break;
+            case R.id.nav_courses:
+                CourseList courseFrag = new CourseList();
+                getSupportFragmentManager().beginTransaction().replace(R.id.dashboard_fragments, courseFrag).addToBackStack(null).commit();
+
+                break;
+            case R.id.nav_sync:
                 // Initialize credentials and service object.
                 for (UserInfo info : Database.getUser().getProviderData()) {
                     if (info.getProviderId().equals("google.com")) {
@@ -248,50 +279,20 @@ public class Dashboard extends AppCompatActivity
                 }
 
                 Toast.makeText(this, "Please log in with a Google Education account.", Toast.LENGTH_SHORT).show();
+
                 break;
-        }
+            case R.id.nav_share:
+                Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.app_name))
+                        .setMessage(getString(R.string.invitation_message))
+                        .setCallToActionText(getString(R.string.invitation_cta))
+                        .build();
+                startActivityForResult(intent, REQUEST_INVITE);
 
-        return super.onOptionsItemSelected(item);
-    }
+                break;
+            case R.id.nav_settings:
+                startActivity(new Intent(Dashboard.this, Settings.class));
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_home) {
-            DashboardFragment dashFrag = new DashboardFragment();
-
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.dashboard_fragments, dashFrag);
-            transaction.addToBackStack(null);
-
-            transaction.commit();
-        } else if (id == R.id.nav_assignment) {
-            AssignmentList assignmentFrag = new AssignmentList();
-
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.dashboard_fragments, assignmentFrag);
-            transaction.addToBackStack(null);
-
-            transaction.commit();
-        } else if (id == R.id.nav_courses) {
-            CourseList courseFrag = new CourseList();
-
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.dashboard_fragments, courseFrag);
-            transaction.addToBackStack(null);
-
-            transaction.commit();
-        } else if (id == R.id.nav_share) {
-            Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.app_name))
-                    .setMessage(getString(R.string.invitation_message))
-                    .setCallToActionText(getString(R.string.invitation_cta))
-                    .build();
-            startActivityForResult(intent, REQUEST_INVITE);
-        } else if (id == R.id.nav_settings) {
-            startActivity(new Intent(Dashboard.this, Settings.class));
+                break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -325,6 +326,7 @@ public class Dashboard extends AppCompatActivity
         manager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 AlarmManager.INTERVAL_DAY, pendingIntent);
 
+        // Launching showcase tutorial
         Intent i = new Intent(Dashboard.this, ShowcaseActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);

@@ -94,11 +94,6 @@ public class Settings extends AppCompatPreferenceActivity {
         }
     };
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        startActivity(new Intent(Settings.this, Dashboard.class));
-    }
 
     /**
      * Helper method to determine if the device has an extra-large screen. For
@@ -235,9 +230,9 @@ public class Settings extends AppCompatPreferenceActivity {
 
             // Connect Tab
                 aboutPage.addGroup("Connect with us")
-                    .addEmail("unityplanner@nbdeg.com")
+                        .addEmail("contact@nbdeg.com")
                     .addWebsite("http://nbdeg.com/")
-                    .addTwitter("OfficalNbd9")
+                        .addTwitter("OfficialNbd9")
                     .addPlayStore("com.nbdeg.unityplanner")
                     .addGitHub("nbd9");
 

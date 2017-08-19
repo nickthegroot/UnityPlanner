@@ -25,12 +25,12 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class WidgetViewFactory implements RemoteViewsService.RemoteViewsFactory {
-    SimpleDateFormat assignmentFormatter = new SimpleDateFormat("MMMM d, yyyy", java.util.Locale.getDefault());
+    private SimpleDateFormat assignmentFormatter = new SimpleDateFormat("MMMM d, yyyy", java.util.Locale.getDefault());
     private Context ctxt=null;
     private int appWidgetID;
     private ArrayList<Assignment> assignments = new ArrayList<>();
 
-    public WidgetViewFactory(Context ctxt, Intent intent) {
+    WidgetViewFactory(Context ctxt, Intent intent) {
         this.ctxt=ctxt;
         appWidgetID = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
                 AppWidgetManager.INVALID_APPWIDGET_ID);
