@@ -236,7 +236,7 @@ public class EditCourse extends AppCompatActivity implements SimpleDialog.OnDial
         newCourse.setColor(courseColor);
 
 
-        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("preference_sync_gcalendar", true) && newCourse.getTime() != null && newCourse.getTime().getEndLong() != null) {
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("preference_sync_gcalendar", true) && time != null && time.getEndLong() != null) {
             editCalEvent();
         } else {
             newCourse.setTime(time);
