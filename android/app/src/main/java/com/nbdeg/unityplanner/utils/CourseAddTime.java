@@ -118,7 +118,7 @@ public class CourseAddTime extends AppCompatActivity {
         // Setting date
         startCal.setTimeInMillis(viewStartDate.date.getTime());
         // Setting time
-        startCal.set(Calendar.HOUR, viewStartTime.cal.get(Calendar.HOUR));
+        startCal.set(Calendar.HOUR_OF_DAY, viewStartTime.cal.get(Calendar.HOUR_OF_DAY));
         startCal.set(Calendar.MINUTE, viewStartTime.cal.get(Calendar.MINUTE));
         startCal.set(Calendar.SECOND, 0);
 
@@ -126,7 +126,7 @@ public class CourseAddTime extends AppCompatActivity {
         // Setting date
         endCal.setTimeInMillis(viewStartDate.date.getTime());
         // Setting time
-        endCal.set(Calendar.HOUR, viewStopTime.cal.get(Calendar.HOUR));
+        endCal.set(Calendar.HOUR_OF_DAY, viewStopTime.cal.get(Calendar.HOUR_OF_DAY));
         endCal.set(Calendar.MINUTE, viewStopTime.cal.get(Calendar.MINUTE));
         endCal.set(Calendar.SECOND, 0);
 
