@@ -125,15 +125,17 @@ public class AssignmentList extends Fragment {
                     float height = (float) itemView.getBottom() - (float) itemView.getTop();
                     float width = height / 3;
 
-                    Assignment assignment = (Assignment) mAdapter.getItem(viewHolder.getAdapterPosition());
+                    if (viewHolder.getAdapterPosition() != -1) {
+                        Assignment assignment = (Assignment) mAdapter.getItem(viewHolder.getAdapterPosition());
 
-                    if(dX > 0){
-                        p.setColor(assignment.getDueCourse().getColor());
-                        RectF background = new RectF((float) itemView.getLeft(), (float) itemView.getTop(), dX,(float) itemView.getBottom());
-                        c.drawRect(background,p);
-                        icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_check_white);
-                        RectF icon_dest = new RectF((float) itemView.getLeft() + width ,(float) itemView.getTop() + width,(float) itemView.getLeft()+ 2*width,(float)itemView.getBottom() - width);
-                        c.drawBitmap(icon,null,icon_dest,p);
+                        if (dX > 0) {
+                            p.setColor(assignment.getDueCourse().getColor());
+                            RectF background = new RectF((float) itemView.getLeft(), (float) itemView.getTop(), dX, (float) itemView.getBottom());
+                            c.drawRect(background, p);
+                            icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_check_white);
+                            RectF icon_dest = new RectF((float) itemView.getLeft() + width, (float) itemView.getTop() + width, (float) itemView.getLeft() + 2 * width, (float) itemView.getBottom() - width);
+                            c.drawBitmap(icon, null, icon_dest, p);
+                        }
                     }
                 }
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
