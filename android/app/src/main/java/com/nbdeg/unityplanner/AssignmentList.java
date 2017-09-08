@@ -27,9 +27,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class AssignmentList extends Fragment {
 
     FirebaseRecyclerAdapter mAdapter;

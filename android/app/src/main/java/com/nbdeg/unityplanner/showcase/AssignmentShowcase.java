@@ -14,7 +14,7 @@ import com.nbdeg.unityplanner.R;
 import com.nbdeg.unityplanner.data.Assignment;
 import com.nbdeg.unityplanner.data.Course;
 import com.nbdeg.unityplanner.data.Time;
-import com.nbdeg.unityplanner.utils.TomorrowAssignmentHolder;
+import com.nbdeg.unityplanner.utils.ShowcaseAssignmentHolder;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -79,7 +79,7 @@ public class AssignmentShowcase extends Fragment {
         assignments.add(bookWork);
         assignments.add(essay);
 
-        TomorrowAssignmentHolder holder = new TomorrowAssignmentHolder(getContext(), assignments);
+        ShowcaseAssignmentHolder holder = new ShowcaseAssignmentHolder(getContext(), assignments);
         ((ListView)view.findViewById(R.id.showcase_assignment_list_view)).setAdapter(holder);
 
         new MaterialShowcaseView.Builder(getActivity())

@@ -39,9 +39,7 @@
         android:text="Nothing due"
         android:textSize="17sp"/>
 
-    <ListView
-        android:divider="@null"
-        android:dividerHeight="10dp"
+    <android.support.v7.widget.RecyclerView
         android:visibility="gone"
         android:id="@+id/dashboard_today_list"
         android:layout_width="match_parent"
@@ -81,9 +79,7 @@
         android:text="Nothing due"
         android:textSize="17sp"/>
 
-    <ListView
-        android:divider="@null"
-        android:dividerHeight="10dp"
+    <android.support.v7.widget.RecyclerView
         android:visibility="gone"
         android:id="@+id/dashboard_tomorrow_list"
         android:layout_width="match_parent"
