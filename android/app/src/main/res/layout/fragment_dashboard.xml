@@ -31,23 +31,20 @@
             android:layout_alignParentRight="true"/>
     </RelativeLayout>
 
+    <android.support.v7.widget.RecyclerView
+        android:visibility="gone"
+        android:id="@+id/dashboard_today_list"
+        android:layout_width="match_parent"
+        android:layout_height="200dp" />
+
     <TextView
         android:id="@+id/dashboard_today_none"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:paddingBottom="175dp"
         android:text="Nothing due"
-        android:textSize="17sp"/>
-
-    <android.support.v7.widget.RecyclerView
-        android:visibility="gone"
-        android:id="@+id/dashboard_today_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="50sp" />
+        android:textSize="17sp" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -77,12 +74,11 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:text="Nothing due"
-        android:textSize="17sp"/>
+        android:textSize="17sp" />
 
     <android.support.v7.widget.RecyclerView
         android:visibility="gone"
         android:id="@+id/dashboard_tomorrow_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
+        android:layout_height="200dp" />
 </LinearLayout>

@@ -60,8 +60,8 @@ public class ListAssignmentAdapter extends RecyclerView.Adapter<AssignmentHolder
         Database.editAssignment(newAssignment, oldAssignment, context);
 
         assignmentList.remove(index);
-        notifyDataSetChanged();
-    }
+        notifyItemRemoved(index);
+}
 
     @Override
     public int getItemCount() {
