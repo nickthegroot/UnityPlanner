@@ -76,6 +76,8 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/showcase_assignment_list_view" />
+        android:id="@+id/showcase_assignment_list_view"
+        android:divider="@null"
+        android:dividerHeight="10dp"/>
 
 </LinearLayout>

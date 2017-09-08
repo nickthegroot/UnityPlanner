@@ -75,7 +75,6 @@ public class LauncherLogin extends AppCompatActivity {
 
                 // Start app intro
                 Database.refreshDatabase(getApplicationContext());
-                // TODO: 5/3/2017 When Intro Complete set activity back to Intro
                 Intent i = new Intent(LauncherLogin.this, Dashboard.class);
                 i.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 startActivity(i);

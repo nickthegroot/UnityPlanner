@@ -115,11 +115,13 @@ public class EditCourse extends AppCompatActivity implements SimpleDialog.OnDial
                 DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        switch (which){
+                        switch (which) {
                             case DialogInterface.BUTTON_POSITIVE:
                                 //Yes button clicked
                                 if (time.getCalEventID() != null) {
                                     deleteCalEvent();
+                                } else {
+                                    Database.deleteCourse(oldCourse);
                                 }
                                 break;
 
@@ -234,7 +236,7 @@ public class EditCourse extends AppCompatActivity implements SimpleDialog.OnDial
         newCourse.setColor(courseColor);
 
 
-        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("preference_sync_gcalendar", true)) {
+        if (PreferenceManager.getDefaultSharedPreferences(this).getBoolean("preference_sync_gcalendar", true) && time != null && time.getEndLong() != null) {
             editCalEvent();
         } else {
             newCourse.setTime(time);
