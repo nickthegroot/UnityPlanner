@@ -184,7 +184,7 @@ public class Settings extends AppCompatPreferenceActivity {
 
 
     /**
-     * This fragment show infomation about the app.
+     * This fragment show information about the app.
      */
     public static class AboutFragment extends Fragment {
         @Nullable
@@ -220,21 +220,21 @@ public class Settings extends AppCompatPreferenceActivity {
             usedLibraries.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    new LibsBuilder()
-                            .withActivityStyle(Libs.ActivityStyle.LIGHT)
-                            //start the activity
-                            .start(getActivity());
+                new LibsBuilder()
+                        .withActivityStyle(Libs.ActivityStyle.LIGHT)
+                        //start the activity
+                        .start(getActivity());
                 }
             });
             aboutPage.addItem(usedLibraries);
 
             // Connect Tab
-                aboutPage.addGroup("Connect with us")
-                        .addEmail("contact@nbdeg.com")
-                    .addWebsite("http://nbdeg.com/")
-                        .addTwitter("OfficialNbd9")
-                    .addPlayStore("com.nbdeg.unityplanner")
-                    .addGitHub("nbd9");
+            aboutPage.addGroup("Connect")
+                .addEmail("contact@nbdeg.com")
+                .addWebsite("http://nbdeg.com/")
+                .addTwitter("OfficialNbd9")
+                .addPlayStore("com.nbdeg.unityplanner")
+                .addGitHub("nbd9");
 
             layout.addView(aboutPage.create());
             return layout;
